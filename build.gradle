@@ -2,22 +2,18 @@ buildscript {
   apply plugin: 'hyperskill'
 
   wrapper {
-    gradleVersion = hs.android.gradleVersion
+    gradleVersion = '8.1'
   }
 
-  def kotlinGradleVersion = hs.android.kotlinGradleVersion
-  def androidGradleVersion = hs.android.getAndroidGradleVersion(gradle.gradleVersion)
-
   repositories {
+    maven { url 'https://packages.jetbrains.team/maven/p/academy/hyperskill-hspc' }
+    maven { url 'https://jitpack.io' }
     google()
     mavenCentral()
-    maven { url 'https://jitpack.io' }
   }
 
   dependencies {
     classpath 'com.github.hyperskill:hs-gradle-plugin:release-SNAPSHOT'
-    classpath "com.android.tools.build:gradle:$androidGradleVersion"
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGradleVersion"
   }
 
   configurations.all {
@@ -25,13 +21,13 @@ buildscript {
   }
 }
 
+plugins {
+  id 'com.android.application' version '7.3.0' apply false
+  id 'org.jetbrains.kotlin.android' version '1.8.10' apply false
+}
+
 allprojects {
   apply plugin: 'hyperskill'
-
-  repositories {
-    google()
-    mavenCentral()
-  }
 
   afterEvaluate {
     if (extensions.findByName('android') != null) {

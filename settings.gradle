@@ -1,5 +1,23 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        maven { url 'https://packages.jetbrains.team/maven/p/academy/hyperskill-hspc' }
+        maven { url 'https://jitpack.io' }
+        google()
+        mavenCentral()
+    }
+}
+
 buildscript {
     repositories {
+        maven { url 'https://packages.jetbrains.team/maven/p/academy/hyperskill-hspc' }
         maven { url 'https://jitpack.io' }
     }
 
@@ -36,4 +54,3 @@ def isTaskDir(File dir) {
     return new File(dir, "src").exists()
 }
 
-include 'util'
