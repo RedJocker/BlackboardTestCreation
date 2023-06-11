@@ -26,3 +26,15 @@ files:
   visible: false
 - name: src/test/java/org/hyperskill/blackboard/internals/AbstractUnitTest.kt
   visible: false
+- name: src/main/res/navigation/nav_graph.xml
+  visible: true
+- name: src/main/res/layout/fragment_login.xml
+  visible: true
+- name: src/main/res/layout/#activity_main.xml#
+  visible: true
+- name: src/main/java/org/hyperskill/blackboard/ui/LoginFragment.kt
+  visible: true
+- name: src/main/java/org/hyperskill/blackboard/util/Extensions.kt
+  visible: true
+- name: src/main/res/layout/blackboard_title.xml
+  visible: true
