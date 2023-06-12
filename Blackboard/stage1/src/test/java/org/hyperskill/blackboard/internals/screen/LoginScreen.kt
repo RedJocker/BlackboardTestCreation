@@ -4,8 +4,9 @@ import android.app.Activity
 import android.widget.Button
 import android.widget.EditText
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
+import org.robolectric.shadows.ShadowToast
 
-class LoginScreen<T: Activity>(test: BlackboardUnitTest<T>, initViews: Boolean = true) {
+class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boolean = true) {
 
     companion object {
         const val DESCRIPTION_INITIALIZATION = "On LoginFragment initialization"
@@ -67,7 +68,25 @@ class LoginScreen<T: Activity>(test: BlackboardUnitTest<T>, initViews: Boolean =
         }
     }
 
-    // functions that are high level abstraction for testing the login screen
+    fun fillLogin(username: String, plainPass: String) = with(test) {
+        loginUsernameEt.setText(username)
+        loginPassEt.setText(plainPass)
+        loginSubmitBt.clickAndRun()
+    }
 
+    fun assertToastTeacherLoginSuccess(teacherUsername: String, caseDescription: String) = with(test) {
 
+        assertLastToastMessageEquals(
+                errorMessage = "$caseDescription expected toast message with text",
+                expectedMessage = "Good day teacher $teacherUsername")
+        ShadowToast.reset()
+    }
+
+    fun assertToastStudentLoginSuccess(studentUsername: String, caseDescription: String) = with(test) {
+
+        assertLastToastMessageEquals(
+                errorMessage = "$caseDescription expected toast message with text",
+                expectedMessage = "Hello $studentUsername")
+        ShadowToast.reset()
+    }
 }
