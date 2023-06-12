@@ -38,7 +38,7 @@ files:
   visible: true
 - name: src/test/java/org/hyperskill/blackboard/internals/BlackboardUnitTest.kt
   visible: true
-- name: src/test/java/org/hyperskill/blackboard/internals/screen/LoginScreen.kt~
+- name: src/test/java/org/hyperskill/blackboard/internals/screen/LoginScreen.kt
   visible: true
 - name: src/test/java/org/hyperskill/blackboard/internals/screen/BlackboardTitle.kt
   visible: true
