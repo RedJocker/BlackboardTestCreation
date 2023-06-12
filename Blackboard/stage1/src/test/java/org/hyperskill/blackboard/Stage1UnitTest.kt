@@ -58,6 +58,7 @@ class Stage1UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 fillLogin(teacher.username, teacher.plainPass)
                 val caseDescription = "With default userMap and correct teacher ${teacher.username} login"
                 assertToastTeacherLoginSuccess(teacher.username, caseDescription)
+                assertLoginSuccessClearInput()
             }
         }
     }
@@ -71,7 +72,31 @@ class Stage1UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 fillLogin(student.username, student.plainPass)
                 val caseDescription = "With default userMap and correct student ${student.username} login"
                 assertToastStudentLoginSuccess(student.username, caseDescription)
+                assertLoginSuccessClearInput()
             }
         }
     }
+
+    @Test
+    fun test06_checkInvalidSubmissionWithNoInputGiven() {
+
+        testActivity {
+            LoginScreen(this).apply {
+                val caseDescription = "After clicking submit without giving any input"
+                loginSubmitBt.clickAndRun()
+                assertLoginInvalid(username = "", caseDescription = caseDescription)
+            }
+        }
+    }
+
+    //TODO
+    // invalid with empty input
+    // invalid with unknown user
+    // invalid with wrong pass default teacher and then correct pass only (check error cleared)
+    // invalid with wrong pass default student and then correct pass only (check error cleared)
+    // invalid with wrong username and then fix username (check error cleared), but don't type pass again (invalid login)
+    // invalid with wrong username and then fix username (check error cleared), retype password (valid login)
+    // custom input
+    // valid custom teacher
+    // valid custom student
 }

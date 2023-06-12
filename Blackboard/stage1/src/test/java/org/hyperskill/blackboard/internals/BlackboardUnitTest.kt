@@ -41,6 +41,26 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
         assertEquals(message, expectedText, actualText)
     }
 
+    internal fun EditText.assertError(
+            expectedError: String?,
+            idString: String,
+            caseDescription: String) {
+
+        val actualError = error?.toString()
+        val message = "$caseDescription, on property error of EditText with id $idString"
+        assertEquals(message, expectedError, actualError)
+    }
+
+    internal fun EditText.assertFocus(
+            expectedIsFocused: Boolean,
+            idString: String,
+            caseDescription: String) {
+
+        val actualIsFocused = isFocused
+        val message = "$caseDescription, on property isFocused of EditText with id $idString"
+        assertEquals(message, expectedIsFocused, actualIsFocused)
+    }
+
     internal fun EditText.assertHint(
             expectedHint: String,
             idString: String,

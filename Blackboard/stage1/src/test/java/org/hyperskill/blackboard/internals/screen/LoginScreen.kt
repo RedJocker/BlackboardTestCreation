@@ -75,18 +75,56 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     }
 
     fun assertToastTeacherLoginSuccess(teacherUsername: String, caseDescription: String) = with(test) {
-
-        assertLastToastMessageEquals(
-                errorMessage = "$caseDescription expected toast message with text",
-                expectedMessage = "Good day teacher $teacherUsername")
-        ShadowToast.reset()
+        assertToastLoginSuccess(
+            expectedMessage = "Good day teacher $teacherUsername",
+            caseDescription = caseDescription)
     }
 
     fun assertToastStudentLoginSuccess(studentUsername: String, caseDescription: String) = with(test) {
+        assertToastLoginSuccess(
+                expectedMessage = "Hello $studentUsername",
+                caseDescription = caseDescription)
+    }
 
+    private fun assertToastLoginSuccess(expectedMessage: String, caseDescription: String) = with(test) {
         assertLastToastMessageEquals(
                 errorMessage = "$caseDescription expected toast message with text",
-                expectedMessage = "Hello $studentUsername")
+                expectedMessage = expectedMessage)
         ShadowToast.reset()
+    }
+
+    fun assertLoginSuccessClearInput() = with(test) {
+        val caseDescription = "After successful login input should be cleared"
+        loginUsernameEt.assertText(
+                expectedText = "",
+                idString = LOGIN_USERNAME_ET_ID,
+                caseDescription = caseDescription)
+
+        loginPassEt.assertText(
+                expectedText = "",
+                idString = LOGIN_PASS_ET_ID,
+                caseDescription = caseDescription)
+    }
+
+    fun assertLoginInvalid(username: String, caseDescription: String) = with(test) {
+
+        loginUsernameEt.apply {
+            assertError(
+                expectedError = "Invalid Login",
+                idString = LOGIN_USERNAME_ET_ID,
+                caseDescription = "$caseDescription should set error")
+
+            assertText(
+                expectedText = username,
+                idString = LOGIN_USERNAME_ET_ID,
+                caseDescription = "$caseDescription should keep username")
+
+            assertFocus(expectedIsFocused = true, LOGIN_USERNAME_ET_ID, caseDescription)
+        }
+        loginPassEt.apply {
+            assertError(expectedError = null, LOGIN_PASS_ET_ID, caseDescription)
+            assertText("", LOGIN_PASS_ET_ID, "$caseDescription should clear password")
+            assertFocus(expectedIsFocused = false, LOGIN_PASS_ET_ID, caseDescription)
+        }
     }
 }
