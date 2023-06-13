@@ -127,4 +127,12 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
             assertFocus(expectedIsFocused = false, LOGIN_PASS_ET_ID, caseDescription)
         }
     }
+
+    fun refillLoginPassOnlyAndAssertErrorMessageCleared(
+            plainPass: String, caseDescription: String) = with(test) {
+
+        loginPassEt.setText(plainPass)
+        loginUsernameEt.assertError(null, LOGIN_USERNAME_ET_ID, caseDescription)
+        loginSubmitBt.clickAndRun()
+    }
 }
