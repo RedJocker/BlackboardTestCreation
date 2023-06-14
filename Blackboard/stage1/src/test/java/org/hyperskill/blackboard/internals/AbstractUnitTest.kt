@@ -64,10 +64,17 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     }
 
     /**
-     * Decorate your test code with this method to ensure better error messages displayed
-     * when tests are run with check button and exceptions are thrown by user implementation.
+     * Setup an activity for a robolectric test.
      *
-     * returns a value for convenience use, like in tests that involve navigation between Activities
+     * It accepts an Intent as argument that will be the intent associated with the activity.
+     * It also accepts a Bundle which that will be the savedInstanceState associated with the activity
+     *
+     * The Intent may be used to pass input from tests to the implementation side through the extras.
+     *
+     * Returns a value for convenience use, like in tests that involve navigation between Activities.
+     *
+     * Captures exception to ensure better error messages displayed when tests are run with
+     * check button and exceptions are thrown by user implementation
      */
     fun <ReturnValue> testActivity(arguments: Intent = Intent(), savedInstanceState: Bundle = Bundle(), testCodeBlock: (Activity) -> ReturnValue): ReturnValue {
         try {
