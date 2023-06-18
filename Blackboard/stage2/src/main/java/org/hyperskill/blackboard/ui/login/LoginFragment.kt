@@ -1,35 +1,31 @@
-package org.hyperskill.blackboard.ui
+package org.hyperskill.blackboard.ui.login
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import org.hyperskill.blackboard.BlackboardApplication
+import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentLoginBinding
 import org.hyperskill.blackboard.util.Extensions.showToast
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 
 
 class LoginFragment : Fragment() {
 
+    private val loginViewModel: LoginViewModel by viewModels {
+        val activity = requireActivity()
+        val application = activity.application as BlackboardApplication
+        LoginViewModel.Factory(application.loginClient, Handler(activity.mainLooper))
+    }
+
     lateinit var loginBinding: FragmentLoginBinding
     lateinit var titleBinding: BlackboardTitleBinding
-
-    val defaultUserMap = mapOf(
-            "George" to ("TEACHER" to "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ="), // plainPass = 1234
-            "Lucas" to ("STUDENT" to "SfjRCkJKMPlfohEJae0FOjNlJYbaGQ++tcY3LWnX40Q="),  // plainPass = 32A1
-    )
-
-    @Suppress("DEPRECATION", "UNCHECKED_CAST")
-    val userMap by lazy(LazyThreadSafetyMode.NONE) {
-        requireActivity().intent
-                .getSerializableExtra("userMap") as? Map<String, Pair<String, String>>
-                ?: defaultUserMap
-    }
 
     private val clearEtError: (text: Editable?) -> Unit = {
         println("clearEtError")
@@ -48,7 +44,6 @@ class LoginFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         println("LoginFragment.onViewCreated")
 
-
         loginBinding.apply {
 
             loginSubmitBtn.setOnClickListener {
@@ -57,17 +52,32 @@ class LoginFragment : Fragment() {
                 val username = loginUsernameEt.text.toString()
                 val plainPass = loginPassEt.text.toString()
 
-                if(userMap.containsKey(username)) {
-                    val (role, storedPass) = userMap[username]!!
-                    if(encryptPass(plainPass) == storedPass) {
-                        onValidLogin(username, role)
-                    } else {
-                        onInvalidLogin()
-                    }
-                } else {
-                    onInvalidLogin()
-                }
+                loginViewModel.makeLogin(username, plainPass)
+            }
 
+            loginViewModel.credential.observe(viewLifecycleOwner) { credential ->
+                println("credential.observe: $credential")
+                if(credential != null) {
+                    onValidLogin(credential)
+                }
+            }
+
+            loginViewModel.messageLoginError.observe(viewLifecycleOwner) { errorMessage ->
+                println("messageLoginError.observe: $errorMessage")
+                if(errorMessage != null) {
+                    onInvalidLogin(errorMessage)
+                } else {
+                    loginBinding.loginUsernameEt.error = null
+                }
+            }
+
+            loginViewModel.messageNetworkError.observe(viewLifecycleOwner) { errorMessage ->
+                println("messageNetworkError.observe: $errorMessage")
+                if (errorMessage != null) {
+                    context!!.showToast(errorMessage)
+                } else {
+
+                }
             }
 
             loginUsernameEt.addTextChangedListener(afterTextChanged = clearEtError)
@@ -77,11 +87,10 @@ class LoginFragment : Fragment() {
         println(loginBinding)
     }
 
-    private fun onValidLogin(username: String, role: String) {
-        val message = when (role) {
-            "STUDENT" -> "Hello $username"
-            "TEACHER" -> "Good day teacher $username"
-            else -> throw IllegalArgumentException("Invalid Role $role")
+    private fun onValidLogin(credential: Credential) {
+        val message = when (credential.role) {
+            Credential.Role.STUDENT -> "Hello ${credential.username}"
+            Credential.Role.TEACHER -> "Good day teacher ${credential.username}"
         }
         context!!.showToast(message)
         clearUserInput()
@@ -92,19 +101,9 @@ class LoginFragment : Fragment() {
         loginBinding.loginUsernameEt.setText("")
     }
 
-    private fun onInvalidLogin() {
+    private fun onInvalidLogin(message: String) {
         loginBinding.loginPassEt.setText("")
-        loginBinding.loginUsernameEt.error = "Invalid Login"
+        loginBinding.loginUsernameEt.error = message
         loginBinding.loginUsernameEt.requestFocus()
-    }
-
-    fun encryptPass(pass: String): String {
-        val rawPassBytes = pass.toByteArray(StandardCharsets.UTF_8)
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        val sha256HashPass = messageDigest.digest(rawPassBytes)
-        val base64sha256HashPass = android.util.Base64.encodeToString(
-                sha256HashPass, android.util.Base64.NO_WRAP
-        )
-        return base64sha256HashPass
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.Button
 import android.widget.EditText
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
+import org.junit.Assert
 import org.robolectric.shadows.ShadowToast
 
 class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boolean = true) {
@@ -134,5 +135,27 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
         loginPassEt.setText(plainPass)
         loginUsernameEt.assertError(null, LOGIN_USERNAME_ET_ID, caseDescription)
         loginSubmitBt.clickAndRun()
+    }
+
+    fun assertLoginRequestSuccess() = with(test) {
+        val request = mockWebServer.takeRequest()
+        Assert.assertNotNull(
+            "After clicking login_submit_btn expected a request to be sent",
+            request
+        )
+        Assert.assertEquals("Wrong request method", "POST", request.method)
+        Assert.assertEquals("Wrong request path", "/login", request.path)
+
+
+        val loginResponse = blackBoardMockBackEnd.poolResponse()
+
+        if(loginResponse.status != "HTTP/1.1 200 OK") {
+            throw AssertionError(
+                "Wrong status '${loginResponse.status}' with body '${loginResponse.getBody()?.readUtf8()}'"
+            )
+        }
+
+        Thread.sleep(50)           // Callback.onResponse is async
+        shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
     }
 }

@@ -1,13 +1,32 @@
 package org.hyperskill.blackboard.internals
 
 import android.app.Activity
+import android.content.Intent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import okhttp3.mockwebserver.MockWebServer
+import org.hyperskill.blackboard.internals.backend.BlackBoardMockBackEnd
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 
 open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T>(clazz) {
+
+    val moshi = Moshi.Builder()
+        .add(KotlinJsonAdapterFactory())
+        .build()
+
+    val baseUrlArg by lazy {
+        Intent().apply {
+            putExtra("baseUrl", baseUrlMockWebServer)
+        }
+    }
+
+    lateinit var mockWebServer: MockWebServer
+    lateinit var baseUrlMockWebServer: String
+    lateinit var blackBoardMockBackEnd: BlackBoardMockBackEnd
 
     internal fun TextView.assertText(
             expectedText: String,

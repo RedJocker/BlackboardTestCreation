@@ -1,4 +1,4 @@
-package org.hyperskill.blackboard.ui
+package org.hyperskill.blackboard.ui.login
 
 import android.os.Bundle
 import android.text.Editable

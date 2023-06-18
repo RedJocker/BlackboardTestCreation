@@ -30,7 +30,7 @@ files:
   visible: true
 - name: src/main/res/layout/fragment_login.xml
   visible: true
-- name: src/main/java/org/hyperskill/blackboard/ui/LoginFragment.kt
+- name: src/main/java/org/hyperskill/blackboard/ui/login/LoginFragment.kt
   visible: true
 - name: src/main/java/org/hyperskill/blackboard/util/Extensions.kt
   visible: true
