@@ -1,12 +1,16 @@
 package org.hyperskill.blackboard.internals
 
+import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import org.junit.Assert.*
 import org.robolectric.Robolectric
+import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
 import org.robolectric.shadow.api.Shadow
@@ -170,5 +174,26 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         )
 
         return latestAlertDialog!!
+    }
+
+    fun assertInternetPermission() {
+        val packageManager = RuntimeEnvironment.getApplication().packageManager
+
+        val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            packageManager.getPackageInfo(
+                activity.packageName,
+                PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            packageManager.getPackageInfo(activity.packageName, PackageManager.GET_PERMISSIONS)
+        }
+
+        val permissions = packageInfo.requestedPermissions ?: emptyArray()
+        val hasInternetPermission = permissions.contains(Manifest.permission.INTERNET)
+
+        val messageNoInternetPermission =
+            "Internet permission is not set in the AndroidManifest.xml file"
+        assertTrue(messageNoInternetPermission, hasInternetPermission)
     }
 }
