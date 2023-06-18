@@ -83,8 +83,6 @@ class LoginFragment : Fragment() {
             loginUsernameEt.addTextChangedListener(afterTextChanged = clearEtError)
             loginPassEt.addTextChangedListener(afterTextChanged = clearEtError)
         }
-
-        println(loginBinding)
     }
 
     private fun onValidLogin(credential: Credential) {

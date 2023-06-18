@@ -4,8 +4,10 @@ import android.app.Activity
 import android.widget.Button
 import android.widget.EditText
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
-import org.junit.Assert
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.robolectric.shadows.ShadowToast
+import java.util.concurrent.TimeUnit
 
 class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boolean = true) {
 
@@ -137,23 +139,30 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
         loginSubmitBt.clickAndRun()
     }
 
-    fun assertLoginRequestSuccess() = with(test) {
-        val request = mockWebServer.takeRequest()
-        Assert.assertNotNull(
-            "After clicking login_submit_btn expected a request to be sent",
+    fun assertLoginRequestOk(caseDescription: String) {
+        assertLoginRequest(caseDescription, expectedResponseStatus = "HTTP/1.1 200 OK")
+    }
+
+    fun assertLoginRequestUnauthorized(caseDescription: String) {
+        assertLoginRequest(caseDescription, expectedResponseStatus = "HTTP/1.1 401 Unauthorized")
+    }
+
+    private fun assertLoginRequest(caseDescription: String, expectedResponseStatus: String) = with(test) {
+        val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
+        assertNotNull(
+            "$caseDescription expected a request to be sent",
             request
         )
-        Assert.assertEquals("Wrong request method", "POST", request.method)
-        Assert.assertEquals("Wrong request path", "/login", request.path)
+        request!!
+        assertEquals("Wrong request method", "POST", request.method)
+        assertEquals("Wrong request path", "/login", request.path)
 
 
         val loginResponse = blackBoardMockBackEnd.poolResponse()
 
-        if(loginResponse.status != "HTTP/1.1 200 OK") {
-            throw AssertionError(
-                "Wrong status '${loginResponse.status}' with body '${loginResponse.getBody()?.readUtf8()}'"
-            )
-        }
+        val messageUnexpectedResponse =
+            "$caseDescription got unexpected response status, check you are doing the right request, response "
+        assertEquals(messageUnexpectedResponse, expectedResponseStatus, loginResponse.status)
 
         Thread.sleep(50)           // Callback.onResponse is async
         shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue

@@ -1,11 +1,13 @@
 package org.hyperskill.blackboard
 
+import okhttp3.internal.closeQuietly
 import okhttp3.mockwebserver.MockWebServer
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
 import org.hyperskill.blackboard.internals.backend.BlackBoardMockBackEnd
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.GEORGE
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.LUCAS
+import org.hyperskill.blackboard.internals.backend.model.Teacher
 import org.hyperskill.blackboard.internals.screen.LoginScreen
 import org.junit.After
 import org.junit.Before
@@ -27,11 +29,13 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
         blackBoardMockBackEnd = BlackBoardMockBackEnd(moshi)
         mockWebServer.dispatcher = blackBoardMockBackEnd
         baseUrlMockWebServer = mockWebServer.url("/").toString()
+        println("baseUrlMockWebServer $baseUrlMockWebServer")
     }
 
     @After
     fun tearDown() {
         mockWebServer.shutdown()
+        mockWebServer.closeQuietly()
     }
 
 
@@ -85,9 +89,9 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
         testActivity(arguments = baseUrlArg) {
             LoginScreen(this).apply {
                 fillLogin(teacher.username, teacher.plainPass)
-                assertLoginRequestSuccess()
 
                 val caseDescription = "With correct ${teacher.role} ${teacher.username} login"
+                assertLoginRequestOk(caseDescription)
                 assertToastTeacherLoginSuccess(teacher.username, caseDescription)
                 assertLoginSuccessClearInput()
             }
@@ -101,18 +105,109 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
         testActivity(arguments = baseUrlArg) {
             LoginScreen(this).apply {
                 fillLogin(student.username, student.plainPass)
-                assertLoginRequestSuccess()
 
                 val caseDescription = "With correct ${student.role} ${student.username} login"
+                assertLoginRequestOk(caseDescription)
                 assertToastStudentLoginSuccess(student.username, caseDescription)
                 assertLoginSuccessClearInput()
             }
         }
     }
 
+    @Test
+    fun test07_checkInvalidSubmissionWithNoInputGiven() {
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                val caseDescription = "After clicking submit without giving any input"
+                loginSubmitBt.clickAndRun()
+                assertLoginRequestUnauthorized(caseDescription)
+                assertLoginInvalid(username = "", caseDescription = caseDescription)
+            }
+        }
+    }
+
+    @Test
+    fun test08_checkInvalidSubmissionWithEmptyInputGiven() {
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                val caseDescription = "After clicking submit with empty strings for username and password"
+                fillLogin("", "")
+                assertLoginRequestUnauthorized(caseDescription)
+                assertLoginInvalid(username = "", caseDescription = caseDescription)
+            }
+        }
+    }
+
+    @Test
+    fun test09_checkInvalidSubmissionWithUnknownUser() {
+        val unknownUser = Teacher("Jose", "asdf")
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                val caseDescription = "After clicking submit with unknown user"
+                fillLogin(unknownUser.username, unknownUser.plainPass)
+                assertLoginRequestUnauthorized(caseDescription)
+                assertLoginInvalid(username = unknownUser.username, caseDescription = caseDescription)
+            }
+        }
+    }
+
+    @Test
+    fun test10_checkTeacherLoginRefillPassOnlyAfterInvalidPass() {
+        val teacher = MockUserDatabase.users[GEORGE]!!
 
 
-    //TODO
-    // test invalid login
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(teacher.username, teacher.plainPass.take(1))
+
+                val caseDescriptionInvalidPass = "${teacher.role} ${teacher.username} with invalid pass"
+                assertLoginRequestUnauthorized(caseDescriptionInvalidPass)
+                assertLoginInvalid(username = teacher.username, caseDescription = caseDescriptionInvalidPass)
+
+                val caseDescriptionRetryLoginPassOnly = "After invalid pass with existing username correcting pass only"
+                refillLoginPassOnlyAndAssertErrorMessageCleared(
+                    teacher.plainPass, caseDescriptionRetryLoginPassOnly
+                )
+
+                val caseDescriptionRetrySuccess =
+                    "On retry login with default userMap and correct ${teacher.role} ${teacher.username} login"
+                assertLoginRequestOk(caseDescriptionRetrySuccess)
+                assertToastTeacherLoginSuccess(teacher.username, caseDescriptionRetrySuccess)
+                assertLoginSuccessClearInput()
+            }
+        }
+    }
+
+    @Test
+    fun test11_checkStudentLoginRefillPassOnlyAfterInvalidPass() {
+        val student = MockUserDatabase.users[LUCAS]!!
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(student.username, student.plainPass + "nope")
+
+                val caseDescriptionInvalidPass =
+                    "${student.role} ${student.username} with invalid pass"
+                assertLoginRequestUnauthorized(caseDescriptionInvalidPass)
+                assertLoginInvalid(username = student.username, caseDescription = caseDescriptionInvalidPass)
+
+                val caseDescriptionRetryLoginPassOnly =
+                    "After invalid pass with existing username correcting pass only"
+                refillLoginPassOnlyAndAssertErrorMessageCleared(
+                    student.plainPass, caseDescriptionRetryLoginPassOnly
+                )
+
+                val caseDescriptionRetrySuccess =
+                    "On retry login with default userMap and correct ${student.role} ${student.username} login"
+                assertLoginRequestOk(caseDescriptionRetrySuccess)
+                assertToastStudentLoginSuccess(student.username, caseDescriptionRetrySuccess)
+                assertLoginSuccessClearInput()
+            }
+        }
+    }
+
     // test login network failure
 }

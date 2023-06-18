@@ -17,7 +17,7 @@ object Response {
     }
 
     fun MockResponse.withBody(body: String): MockResponse {
-        println("mock $status $body")
+        println("mock response body '$body'")
         return apply {
             setBody(body)
             addHeader("Content-Type", "application/json")

@@ -23,8 +23,4 @@ object MockUserDatabase {
         ORWELL to Student(ORWELL, "A$4@2ds", Grades(listOf(100, 80, 70, 90, 60, -1, 100), -1)),
         BENSON to Student(BENSON, "35799b8", Grades(listOf(60, -1, 50, 99, 99, 80, -1), 50)),
     )
-
-    init{
-        println("MockUserDatabase\n$users}")
-    }
 }

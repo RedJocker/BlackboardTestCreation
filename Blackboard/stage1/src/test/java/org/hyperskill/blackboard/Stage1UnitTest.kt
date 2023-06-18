@@ -111,7 +111,6 @@ class Stage1UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             LoginScreen(this).apply {
                 val caseDescription = "After clicking submit with empty strings for username and password"
                 fillLogin("", "")
-                loginSubmitBt.clickAndRun()
                 assertLoginInvalid(username = "", caseDescription = caseDescription)
             }
         }
@@ -125,7 +124,6 @@ class Stage1UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             LoginScreen(this).apply {
                 val caseDescription = "After clicking submit with unknown user"
                 fillLogin(unknownUser.username, unknownUser.plainPass)
-                loginSubmitBt.clickAndRun()
                 assertLoginInvalid(username = unknownUser.username, caseDescription = caseDescription)
             }
         }
