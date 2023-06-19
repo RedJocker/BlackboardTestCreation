@@ -80,3 +80,13 @@ files:
   visible: true
 - name: src/test/java/org/hyperskill/blackboard/Stage2UnitTest.kt
   visible: true
+- name: src/main/res/layout/fragment_student.xml
+  visible: true
+- name: src/main/res/layout/list_item_grade.xml
+  visible: true
+- name: src/main/java/org/hyperskill/blackboard/ui/student/StudentFragment.kt
+  visible: true
+- name: src/main/java/org/hyperskill/blackboard/ui/student/GradesRecyclerAdapter.kt
+  visible: true
+- name: src/main/java/org/hyperskill/blackboard/ui/student/StudentViewModel.kt
+  visible: true

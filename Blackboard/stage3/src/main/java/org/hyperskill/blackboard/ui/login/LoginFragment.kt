@@ -9,8 +9,11 @@ import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import org.hyperskill.blackboard.BlackboardApplication
+import org.hyperskill.blackboard.R
 import org.hyperskill.blackboard.data.model.Credential
+import org.hyperskill.blackboard.data.model.Credential.Companion.putCredential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentLoginBinding
 import org.hyperskill.blackboard.util.Extensions.showToast
@@ -93,11 +96,22 @@ class LoginFragment : Fragment() {
 
     private fun onValidLogin(credential: Credential) {
         println("LoginFragment.onValidLogin $credential")
-        val message = when (credential.role) {
-            Credential.Role.STUDENT -> "Hello ${credential.username}"
-            Credential.Role.TEACHER -> "Good day teacher ${credential.username}"
+        when (credential.role) {
+            Credential.Role.STUDENT -> {
+                val message = "Hello ${credential.username}"
+                context!!.showToast(message)
+                val args = Bundle().apply {
+                    putCredential(credential)
+                }
+                findNavController().navigate(R.id.action_loginFragment_to_studentFragment, args)
+                loginViewModel.clearCredential()
+            }
+            Credential.Role.TEACHER -> {
+                val message = "Good day teacher ${credential.username}"
+                context!!.showToast(message)
+            }
         }
-        context!!.showToast(message)
+
         clearUserInput()
     }
 
