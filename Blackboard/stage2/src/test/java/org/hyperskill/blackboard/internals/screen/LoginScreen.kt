@@ -4,6 +4,7 @@ import android.app.Activity
 import android.widget.Button
 import android.widget.EditText
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
+import org.hyperskill.blackboard.internals.screen.BlackboardTitle.Companion.BLACKBOARD_TITLE_ID
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.robolectric.shadows.ShadowToast
@@ -19,7 +20,7 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     }
 
     val blackboardTitle by lazy {
-        BlackboardTitle("LoginFragment", test)
+        BlackboardTitle("LoginFragment", test).blackboardTitle
     }
 
     val loginUsernameEt: EditText by lazy {
@@ -55,7 +56,7 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
             activity.findViewByString<Button>(LOGIN_SUBMIT_BTN_ID).apply {
                 assertText(
                     expectedText = "SUBMIT",
-                    idString = BlackboardTitle.BLACKBOARD_TITLE_ID,
+                    idString = BLACKBOARD_TITLE_ID,
                     caseDescription = DESCRIPTION_INITIALIZATION
                 )
             }
@@ -166,5 +167,14 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
 
         Thread.sleep(50)           // Callback.onResponse is async
         shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
+    }
+
+    fun assertLoginNetworkError(caseDescription: String, expectedError: String) = with(test) {
+        Thread.sleep(50)           // Callback.onResponse is async
+        shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
+
+        blackboardTitle.assertError(expectedError, BLACKBOARD_TITLE_ID, caseDescription)
+        loginUsernameEt.assertError(null, LOGIN_USERNAME_ET_ID, caseDescription)
+        loginPassEt.assertError(null, LOGIN_PASS_ET_ID, caseDescription)
     }
 }

@@ -24,6 +24,12 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
         }
     }
 
+    val invalidBaseUrlArg by lazy {
+        Intent().apply {
+            putExtra("baseUrl", "http://invalid/url/")
+        }
+    }
+
     lateinit var mockWebServer: MockWebServer
     lateinit var baseUrlMockWebServer: String
     lateinit var blackBoardMockBackEnd: BlackBoardMockBackEnd
@@ -66,7 +72,32 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
             caseDescription: String) {
 
         val actualError = error?.toString()
-        val message = "$caseDescription, on property error of EditText with id $idString"
+        val message = "$caseDescription, on property error of EditText with id '$idString'"
+        assertEquals(message, expectedError, actualError)
+    }
+
+    internal fun TextView.assertError(
+        expectedError: String?,
+        idString: String,
+        caseDescription: String) {
+
+        val actualIsFocusable = isFocusable
+        val errorMessageIsFocusable =
+            "Expected View with id '$idString' to set property 'isFocusable'"
+        assertEquals(errorMessageIsFocusable, true, actualIsFocusable)
+
+        val actualIsFocusableInTouchMode = isFocusableInTouchMode
+        val errorMessageIsFocusableInTouchMode =
+            "Expected View with id '$idString' to set property 'isFocusableInTouchMode'"
+        assertEquals(errorMessageIsFocusableInTouchMode, true, actualIsFocusableInTouchMode)
+
+        val actualIsFocused = isFocused
+        val errorMessageIsFocused =
+            "$caseDescription, View with id '$idString' should be focused"
+        assertEquals(errorMessageIsFocused, true, actualIsFocused)
+
+        val actualError = error?.toString()
+        val message = "$caseDescription, on property error of TextView with id $idString"
         assertEquals(message, expectedError, actualError)
     }
 

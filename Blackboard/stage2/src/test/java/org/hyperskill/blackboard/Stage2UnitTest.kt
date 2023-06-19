@@ -132,7 +132,8 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
 
         testActivity(arguments = baseUrlArg) {
             LoginScreen(this).apply {
-                val caseDescription = "After clicking submit with empty strings for username and password"
+                val caseDescription =
+                    "After clicking submit with empty strings for username and password"
                 fillLogin("", "")
                 assertLoginRequestUnauthorized(caseDescription)
                 assertLoginInvalid(username = "", caseDescription = caseDescription)
@@ -167,13 +168,14 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertLoginRequestUnauthorized(caseDescriptionInvalidPass)
                 assertLoginInvalid(username = teacher.username, caseDescription = caseDescriptionInvalidPass)
 
-                val caseDescriptionRetryLoginPassOnly = "After invalid pass with existing username correcting pass only"
+                val caseDescriptionRetryLoginPassOnly =
+                    "After invalid pass with existing username correcting pass only"
                 refillLoginPassOnlyAndAssertErrorMessageCleared(
                     teacher.plainPass, caseDescriptionRetryLoginPassOnly
                 )
 
                 val caseDescriptionRetrySuccess =
-                    "On retry login with default userMap and correct ${teacher.role} ${teacher.username} login"
+                    "On retry login and correct ${teacher.role} ${teacher.username} login"
                 assertLoginRequestOk(caseDescriptionRetrySuccess)
                 assertToastTeacherLoginSuccess(teacher.username, caseDescriptionRetrySuccess)
                 assertLoginSuccessClearInput()
@@ -201,7 +203,7 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 )
 
                 val caseDescriptionRetrySuccess =
-                    "On retry login with default userMap and correct ${student.role} ${student.username} login"
+                    "On retry login and correct ${student.role} ${student.username} login"
                 assertLoginRequestOk(caseDescriptionRetrySuccess)
                 assertToastStudentLoginSuccess(student.username, caseDescriptionRetrySuccess)
                 assertLoginSuccessClearInput()
@@ -209,5 +211,18 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
         }
     }
 
-    // test login network failure
+
+    @Test
+    fun test12_checkNetworkError() {
+        val student = MockUserDatabase.users[LUCAS]!!
+
+        testActivity(arguments = invalidBaseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(student.username, student.plainPass)
+                val caseDescription = "With invalid baseUrl leading to network error"
+                val expectedError = "invalid: nodename nor servname provided, or not known"
+                assertLoginNetworkError(caseDescription, expectedError = expectedError)
+            }
+        }
+    }
 }

@@ -33,7 +33,7 @@ class LoginFragment : Fragment() {
         titleBinding.blackboardTitle.error = null
     }
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+            inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         println("LoginFragment.onCreateView")
         loginBinding = FragmentLoginBinding.inflate(inflater, container, false)
         titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
@@ -74,9 +74,9 @@ class LoginFragment : Fragment() {
             loginViewModel.messageNetworkError.observe(viewLifecycleOwner) { errorMessage ->
                 println("messageNetworkError.observe: $errorMessage")
                 if (errorMessage != null) {
-                    context!!.showToast(errorMessage)
+                    onNetworkError(errorMessage)
                 } else {
-
+                    titleBinding.blackboardTitle.error = null
                 }
             }
 
@@ -85,7 +85,14 @@ class LoginFragment : Fragment() {
         }
     }
 
+    private fun onNetworkError(errorMessage: String) {
+        println("LoginFragment.onNetworkError $errorMessage")
+        titleBinding.blackboardTitle.error = errorMessage
+        titleBinding.blackboardTitle.requestFocus()
+    }
+
     private fun onValidLogin(credential: Credential) {
+        println("LoginFragment.onValidLogin $credential")
         val message = when (credential.role) {
             Credential.Role.STUDENT -> "Hello ${credential.username}"
             Credential.Role.TEACHER -> "Good day teacher ${credential.username}"
@@ -95,11 +102,13 @@ class LoginFragment : Fragment() {
     }
 
     private fun clearUserInput() {
+        println("LoginFragment.clearUserInput")
         loginBinding.loginPassEt.setText("")
         loginBinding.loginUsernameEt.setText("")
     }
 
     private fun onInvalidLogin(message: String) {
+        println("LoginFragment.onInvalidLogin")
         loginBinding.loginPassEt.setText("")
         loginBinding.loginUsernameEt.error = message
         loginBinding.loginUsernameEt.requestFocus()
