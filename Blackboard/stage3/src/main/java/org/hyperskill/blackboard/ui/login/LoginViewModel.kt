@@ -67,6 +67,8 @@ class LoginViewModel(private val loginClient: LoginClient, private val handler: 
         when(loginResponse) {
             is LoginResponse.Success -> {
                 handler.post {
+                    _messageNetworkError.value = null
+                    _messageLoginError.value = null
                     _credential.value = loginResponse.toCredential()
                 }
             }

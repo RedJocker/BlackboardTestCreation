@@ -90,3 +90,9 @@ files:
   visible: true
 - name: src/main/java/org/hyperskill/blackboard/ui/student/StudentViewModel.kt
   visible: true
+- name: src/main/java/org/hyperskill/blackboard/ui/login/LoginViewModel.kt
+  visible: true
+- name: src/main/java/org/hyperskill/blackboard/network/student/dto/GradesResponse.kt
+  visible: true
+- name: src/main/java/org/hyperskill/blackboard/network/student/StudentClient.kt
+  visible: true

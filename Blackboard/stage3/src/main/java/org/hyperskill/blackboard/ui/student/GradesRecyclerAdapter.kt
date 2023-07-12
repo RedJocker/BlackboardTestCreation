@@ -27,8 +27,8 @@ class GradesRecyclerAdapter(grades : List<Int>, /*val onPredictionGradesChanged:
     inner class GradesViewHolder(val item: ListItemGradeBinding) : RecyclerView.ViewHolder(item.root) {
         fun bind(gradeValue: Int, gradeIndex: Int) {
             item.gradeHeaderTV.text = "T:${gradeIndex + 1}"
-
-            item.gradeValueET.setText("$gradeValue")
+            val gradeStr = if(gradeValue < 0) " " else "$gradeValue"
+            item.gradeValueET.setText(gradeStr)
             item.gradeValueET.isEnabled = false
 
 //            if(gradeValue < 0) {
