@@ -14,11 +14,16 @@ class BlackboardTitle<T: Activity>(
     @Suppress("UNUSED")
     val blackboardTitle: TextView by lazy {
         with(test) {
-            activity.findViewByString<TextView>(BLACKBOARD_TITLE_ID).apply {
+            try {
+                activity.findViewByString<TextView>(BLACKBOARD_TITLE_ID)
+            } catch (e: AssertionError) {
+                val message = "View with id \"$BLACKBOARD_TITLE_ID\" was not found on $screenName"
+                throw AssertionError(message)
+            }.apply {
                 assertText(
-                    expectedText = "::B L A C K B O A R D::",
-                    idString = BLACKBOARD_TITLE_ID,
-                    caseDescription = "On $screenName initialization"
+                        expectedText = "::B L A C K B O A R D::",
+                        idString = BLACKBOARD_TITLE_ID,
+                        caseDescription = "On $screenName initialization"
                 )
             }
         }
