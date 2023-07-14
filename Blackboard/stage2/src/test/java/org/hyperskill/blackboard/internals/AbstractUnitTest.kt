@@ -8,7 +8,10 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import org.junit.Assert.*
+import androidx.recyclerview.widget.RecyclerView
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.robolectric.Robolectric
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
@@ -169,8 +172,8 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         val latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog()
 
         assertNotNull(
-            "There was no AlertDialog found. Make sure to import android.app.AlertDialog version",
-            latestAlertDialog
+                "There was no AlertDialog found. Make sure to import android.app.AlertDialog version",
+                latestAlertDialog
         )
 
         return latestAlertDialog!!
@@ -181,8 +184,8 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
 
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             packageManager.getPackageInfo(
-                activity.packageName,
-                PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())
+                    activity.packageName,
+                    PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())
             )
         } else {
             @Suppress("DEPRECATION")
@@ -193,7 +196,104 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         val hasInternetPermission = permissions.contains(Manifest.permission.INTERNET)
 
         val messageNoInternetPermission =
-            "Internet permission is not set in the AndroidManifest.xml file"
+                "Internet permission is not set in the AndroidManifest.xml file"
         assertTrue(messageNoInternetPermission, hasInternetPermission)
+    }
+
+    /**
+     *  Makes assertions on the contents of the RecyclerView.
+     *
+     *  Asserts that the size matches the size of fakeResultList and then
+     *  calls assertItems for each item of the list with the itemViewSupplier
+     *  so that it is possible to make assertions on that itemView.
+     *
+     *  Take attention to refresh references to views coming from itemView since RecyclerView
+     *  can change the instance of View for a determinate list item after an update of the list
+     *  (ex: calling notifyItemChanged and similar methods).
+     */
+
+    fun <T> RecyclerView.assertListItems(
+            fakeResultList: List<T>,
+            assertItems: (itemViewSupplier: () -> View, position: Int, item: T) -> Unit
+    ) : Unit {
+
+        assertNotNull("Your recycler view adapter should not be null", this.adapter)
+
+        val expectedSize = fakeResultList.size
+
+        val actualSize = this.adapter!!.itemCount
+        assertEquals("Incorrect number of list items", expectedSize, actualSize)
+
+        if(expectedSize == 0) {
+            return
+        } else if(expectedSize > 0) {
+            val firstItemViewHolder = (0 until expectedSize)
+                    .asSequence()
+                    .mapNotNull {  this.findViewHolderForAdapterPosition(it) }
+                    .firstOrNull()
+                    ?: throw AssertionError("No item is being displayed on RecyclerView, is it big enough to display one item?")
+
+            val listWidth = firstItemViewHolder.itemView.width * (expectedSize + 1)
+
+            for((i, song) in fakeResultList.withIndex()) {
+                // setting width to ensure that all items are inflated. Height might change after assertItems, keep statement inside loop.
+                this.layout(0,0, listWidth, this.height)  // may increase clock time
+
+                val itemViewSupplier = {
+                    scrollToPosition(i)
+                    findViewHolderForAdapterPosition(i)?.itemView
+                            ?: throw AssertionError("Could not find list item with index $i")
+                }
+                assertItems(itemViewSupplier, i, song)
+            }
+
+        } else {
+            throw IllegalStateException("size assertion was not effective")
+        }
+    }
+
+    /**
+     *  Makes assertions on the contents of one item of the RecyclerView.
+     *
+     *  Asserts that the the size of the list is at least itemIndex + 1.
+     *
+     *  Calls assertItem with the itemViewSupplier so that it is possible to make assertions on that itemView.
+     *  Take attention to refresh references to views coming from itemView since RecyclerView
+     *  can change the instance of View for a determinate list item after an update to the list.
+     */
+    fun RecyclerView.assertSingleListItem(itemIndex: Int, assertItem: (itemViewSupplier: () -> View) -> Unit) {
+
+        assertNotNull("Your recycler view adapter should not be null", this.adapter)
+
+        val expectedMinSize = itemIndex + 1
+
+        val actualSize = this.adapter!!.itemCount
+        assertTrue(
+                "RecyclerView was expected to contain item with index $itemIndex, but its size was $actualSize",
+                actualSize >= expectedMinSize
+        )
+
+        if(actualSize >= expectedMinSize) {
+            val firstItemViewHolder = (0 until actualSize)
+                    .asSequence()
+                    .mapNotNull {  this.findViewHolderForAdapterPosition(it) }
+                    .firstOrNull()
+                    ?: throw AssertionError("No item is being displayed on RecyclerView, is it big enough to display one item?")
+
+            val listWidth = firstItemViewHolder.itemView.width * (expectedMinSize + 1)
+            this.layout(0,0, listWidth, this.height)  // may increase clock time
+
+            val itemViewSupplier = {
+                this.scrollToPosition(itemIndex)
+                val itemView = (this.findViewHolderForAdapterPosition(itemIndex)?.itemView
+                        ?: throw AssertionError("Could not find list item with index $itemIndex"))
+                itemView
+            }
+
+            assertItem(itemViewSupplier)
+
+        } else {
+            throw IllegalStateException("size assertion was not effective")
+        }
     }
 }
