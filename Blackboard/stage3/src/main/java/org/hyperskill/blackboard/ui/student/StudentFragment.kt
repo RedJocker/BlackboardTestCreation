@@ -7,6 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import org.hyperskill.blackboard.BlackboardApplication
 import org.hyperskill.blackboard.data.model.Credential.Companion.getCredential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
@@ -41,25 +45,45 @@ class StudentFragment : Fragment() {
         binding.apply {
             studentNameTv.text = studentViewModel.username
             studentViewModel.apply {
-                grades.observe(viewLifecycleOwner) { grades ->
-                    studentGradesRv.adapter = GradesRecyclerAdapter(grades)
-                }
-                examGrade.observe(viewLifecycleOwner) { examGrade ->
-                    val examGradeStr = if(examGrade < 0) " " else "$examGrade"
-                    studentExamEt.setText(examGradeStr)
-                }
-                partialGrade.observe(viewLifecycleOwner) { partialGrade ->
-                    studentPartialResultTv.text = "Partial Result: $partialGrade"
-                }
-                finalGrade.observe(viewLifecycleOwner) {
-                    val finalGradeStr = if (it == null) " " else "$it"
-                    studentFinalResultTv.text = "Final Result: $finalGradeStr"
-                }
-                messageNetworkError.observe(viewLifecycleOwner) {
-                    titleBinding.blackboardTitle.error = it
-                    titleBinding.blackboardTitle.requestFocus()
-                }
+                lifecycleScope.launch {
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        launch {
+                            grades.collect { grades ->
+                                println("grades: $grades")
+                                studentGradesRv.adapter = GradesRecyclerAdapter(grades)
+                            }
+                        }
+                        launch {
+                            examGrade.collect { examGrade ->
+                                println("examGrade: $examGrade")
+                                val examGradeStr = if(examGrade < 0) "" else "$examGrade"
+                                studentExamEt.setText(examGradeStr)
+                            }
+                        }
 
+                        launch {
+                            partialGrade.collect { partialGrade ->
+                                println("partialGrade: $partialGrade")
+                                studentPartialResultTv.text = "Partial Result: $partialGrade"
+                            }
+                        }
+
+                        launch {
+                            finalGrade.collect { finalGrade ->
+                                println("finalGrade: $finalGrade")
+                                val finalGradeStr = if (finalGrade < 0) "" else "$finalGrade"
+                                studentFinalResultTv.text = "Final Result: $finalGradeStr"
+                            }
+                        }
+
+                        launch {
+                            messageNetworkError.collect  {
+                                titleBinding.blackboardTitle.error = it
+                                titleBinding.blackboardTitle.requestFocus()
+                            }
+                        }
+                    }
+                }
             }
         }
     }

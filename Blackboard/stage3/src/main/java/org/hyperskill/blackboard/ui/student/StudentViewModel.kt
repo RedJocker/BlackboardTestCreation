@@ -1,17 +1,17 @@
 package org.hyperskill.blackboard.ui.student
 
 import android.os.Handler
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.zip
 import okhttp3.Call
 import okhttp3.Response
 import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.network.student.StudentClient
 import org.hyperskill.blackboard.network.student.dto.GradesResponse
-import org.hyperskill.blackboard.util.Extensions.combineWith
 import org.hyperskill.blackboard.util.Util.callback
 import java.io.IOException
 
@@ -23,30 +23,34 @@ class StudentViewModel(
 
     val username get() = credential.username
 
-    private val _grades: MutableLiveData<List<Int>> = MutableLiveData(listOf())
-    val grades: LiveData<List<Int>> get() = _grades
+    private val _grades: MutableStateFlow<List<Int>> = MutableStateFlow(listOf())
+    val grades: StateFlow<List<Int>> get() = _grades
 
-    private var _examGrade: MutableLiveData<Int> = MutableLiveData(-1)
-    val examGrade: LiveData<Int> get() = _examGrade
+    private var _examGrade: MutableStateFlow<Int> = MutableStateFlow(-1)
+    val examGrade: StateFlow<Int> get() = _examGrade
 
     val partialGrade = grades.map { grades ->
         if(grades.isEmpty())
             0
         else
             grades.sumOf { if (it < 0) 0 else it } / grades.size
-    }.also { println("partialGrade ${it.value}") }
-
-    val finalGrade = partialGrade.combineWith(examGrade) { partial, exam ->
-        when {
-            partial == null -> null
-            exam == null -> partial
-            exam < 0 -> partial
-            else -> (partial + exam) / 2
-        }.also { println("finalGrade $it") }
     }
 
-    private val _messageNetworkError = MutableLiveData<String?>(null)
-    val messageNetworkError: LiveData<String?> get() = _messageNetworkError
+    private val hasRemainingTests = grades.map { grades -> grades.any { it < 0 } }
+
+    val finalGrade = hasRemainingTests.zip(examGrade) { hasRemainingTests, examGrade ->
+        if(hasRemainingTests) -1
+        else examGrade
+    }.zip(partialGrade) { exam, partial->
+        when {
+            exam < 0 -> -1
+            partial !in 30 until 70 -> partial
+            else -> (partial + exam) / 2
+        }
+    }
+
+    private val _messageNetworkError = MutableStateFlow<String?>(null)
+    val messageNetworkError: StateFlow<String?> get() = _messageNetworkError
 
 
     private var fetchGradesCall : Call? = null
@@ -82,7 +86,6 @@ class StudentViewModel(
                     } else {
                         post {
                             (gradesResponse as? GradesResponse.Success)?.also {
-
 
                                 _grades.value = if(it.exam > 0) {
                                     it.grades.map { grade -> if(grade < 0) 0 else grade }
