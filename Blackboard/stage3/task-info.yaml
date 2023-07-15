@@ -96,3 +96,7 @@ files:
   visible: true
 - name: src/main/java/org/hyperskill/blackboard/network/student/StudentClient.kt
   visible: true
+- name: src/test/java/org/hyperskill/blackboard/Stage3UnitTest.kt
+  visible: true
+- name: src/test/java/org/hyperskill/blackboard/internals/screen/StudentScreen.kt
+  visible: true

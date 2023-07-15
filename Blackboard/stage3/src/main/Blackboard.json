@@ -734,7 +734,7 @@
       "id": "0g99",
       "name": "Lucas",
       "documentation": "",
-      "value": "{\n  \"name\": \"Lucas\",\n  \"grades\": [60, -1, 50, 99, 99, 80, 0],\n  \"exam\": 50\n}"
+      "value": "{\n  \"name\": \"Lucas\",\n  \"grades\": [-1, -1, -1, -1, -1, -1, -1],\n  \"exam\": -1\n}"
     },
     {
       "uuid": "aa4810a9-514b-4957-8381-30256342f614",
@@ -748,28 +748,28 @@
       "id": "d1rb",
       "name": "Harrison",
       "documentation": "",
-      "value": "{\n  \"name\": \"Harrison\",\n  \"grades\": [50, 55, 60, 60, 100, 80, -1],\n  \"exam\": -1\n}"
+      "value": "{\n  \"name\": \"Harrison\",\n  \"grades\": [50, -1, 80, 55, 75, 60, 50],\n  \"exam\": 80\n}"
     },
     {
       "uuid": "50e0f23f-08f4-4abe-ad27-c7e48d221ac3",
       "id": "0dze",
       "name": "Michael",
       "documentation": "",
-      "value": "{\n  \"name\": \"Michael\",\n  \"grades\": [10, 0, 30, 40, 50, 75, 0],\n  \"exam\": -1\n}"
+      "value": "{\n  \"name\": \"Michael\",\n  \"grades\": [10, -1, -1, 60, 50, 30, -1],\n  \"exam\": 100\n}"
     },
     {
       "uuid": "c19f1368-5357-41cb-bd8e-a063118eca61",
       "id": "634s",
       "name": "Orwell",
       "documentation": "",
-      "value": "{\n  \"name\": \"Orwell\",\n  \"grades\": [100, 80, 70, 90, 60, -1, 100],\n  \"exam\": -1\n}"
+      "value": "{\n  \"name\": \"Orwell\",\n  \"grades\": [100, 70, 30, 50, 40, 50, 40],\n  \"exam\": -1\n}"
     },
     {
       "uuid": "524bea35-40b0-479b-b8da-2912eb40f13d",
       "id": "1slz",
       "name": "Benson",
       "documentation": "",
-      "value": "{\n  \"name\": \"Benson\",\n  \"grades\": [60, -1, 50, 99, 99, 80, 0],\n  \"exam\": 50\n}"
+      "value": "{\n  \"name\": \"Benson\",\n  \"grades\": [100, 80, 95, 88, 75, 100, 100],\n  \"exam\": -1\n}"
     },
     {
       "uuid": "073946a3-335d-4544-ab1e-c6abb42f3bea",

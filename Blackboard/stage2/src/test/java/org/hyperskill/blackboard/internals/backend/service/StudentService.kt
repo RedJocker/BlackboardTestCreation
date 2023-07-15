@@ -19,8 +19,8 @@ class StudentService(val moshi: Moshi): Service {
 
         return if (request.method == "GET") {
             when(request.path) {
-                "/student/Martin/grade" -> Response.gatewayTimeout504
-                "/student/Lucas/grade" -> Response.ok200.withBody(responseAdapter.toJson(
+                "/student/Martin" -> Response.gatewayTimeout504
+                "/student/Lucas" -> Response.ok200.withBody(responseAdapter.toJson(
                     (MockUserDatabase.users[LUCAS] as Student).grades
                 ))
                 else -> Response.notFound404
