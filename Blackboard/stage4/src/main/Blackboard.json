@@ -1,0 +1,782 @@
+{
+  "uuid": "8511185a-49f6-480b-92a5-b614968434be",
+  "lastMigration": 27,
+  "name": "Blackboard",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [
+    {
+      "uuid": "c84ddb18-3a4d-4afc-9faa-a089ff522b04",
+      "name": "/teacher/student/:name",
+      "collapsed": false,
+      "children": [
+        {
+          "type": "route",
+          "uuid": "a93d4aab-2ef4-4f6f-b3af-05acda554208"
+        },
+        {
+          "type": "route",
+          "uuid": "a0497b84-62a2-402a-9d0b-122aa6c9eb21"
+        },
+        {
+          "type": "route",
+          "uuid": "038b44d5-596c-419b-b5d8-1733b01288c3"
+        },
+        {
+          "type": "route",
+          "uuid": "ef6da0f6-0254-466e-8f11-a2f9e7da531a"
+        },
+        {
+          "type": "route",
+          "uuid": "f1f6bb70-9773-4b1f-a709-0472922b31e2"
+        },
+        {
+          "type": "route",
+          "uuid": "23b3c86e-5084-41c1-8dd5-655a5124b193"
+        }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "uuid": "6f3bca1f-56e8-4337-8c84-884122f08dc7",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "login",
+      "responses": [
+        {
+          "uuid": "67376b92-bd0b-407e-8f64-f76556ce6a3e",
+          "body": "{\n  \"username\": \"George\",\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiVEVBQ0hFUiIsInN1YiI6Ikdlb3JnZSIsImlzcyI6ImJsYWNrQm9hcmRBcHAifQ.hY4fC9rkQniZMmSIREK9esqUpxK187gkEgJl4pgt_iA\",\n  \"role\": \"TEACHER\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "George login (pass: 1234)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "George",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ=",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "ed5b1779-2824-404c-9f37-10ffeb8f8dd4",
+          "body": "{\n  \"username\": \"Lucas\",\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiU1RVREVOVCIsInN1YiI6Ikx1Y2FzIiwiaXNzIjoiYmxhY2tCb2FyZEFwcCJ9.pVczvoquyVDNWqXeVJB6cwlv0I2VRzu0AmAwqwKosnY\",\n  \"role\": \"STUDENT\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Lucas login (pass: 32A1)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "Lucas",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "SfjRCkJKMPlfohEJae0FOjNlJYbaGQ++tcY3LWnX40Q=",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "a51335b8-1a61-45f0-b243-ac4a59ce58ac",
+          "body": "{\n  \"username\": \"Martin\",\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiU1RVREVOVCIsInN1YiI6Ik1hcnRpbiIsImlzcyI6ImJsYWNrQm9hcmRBcHAifQ.INNz4znUR4Y5_ET_Mz9EA30kMbz9X-P_ux7EFcccXJc\",\n  \"role\": \"STUDENT\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Martin login (pass 2222)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "Martin",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "7e4p+IJUO5VmILJtDuDn6VA5mxxCIvXeBeBkJbTJlek=",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "0a8443ee-109f-4506-9294-85d5c09f4fab",
+          "body": "{\n  \"username\": \"Harrison\",\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiU1RVREVOVCIsInN1YiI6IkhhcnJpc29uIiwiaXNzIjoiYmxhY2tCb2FyZEFwcCJ9.jrxgp2wCBJsvITrW6nkoNwJE092MK32eqdfPLCo8auQ\",\n  \"role\": \"STUDENT\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Harrison login (pass: 0909)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "Harrison",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "lVLid+vMf6GRKSxukA2U3+boN9ir92otqSfUUw0sj2k=",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "01fc326d-e096-42d2-b5e5-4e6b9c8f261d",
+          "body": "{\n  \"username\": \"Michael\",\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiU1RVREVOVCIsInN1YiI6Ik1pY2hhZWwiLCJpc3MiOiJibGFja0JvYXJkQXBwIn0.IGXt6h8DYjXb1zXB68TeN_PDtOLOsUSaT3WGxmud6Zs\",\n  \"role\": \"STUDENT\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Michael login (pass: mi)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "Michael",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "7uHBreZSXSRjGFpoFWcjuYMGg1+IqNmIyC/PbYuvhdo=",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "8207eaf0-6fec-402d-8145-27728d0732c8",
+          "body": "{\n  \"username\": \"Orwell\",\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiU1RVREVOVCIsInN1YiI6Ik9yd2VsbCIsImlzcyI6ImJsYWNrQm9hcmRBcHAifQ.aMaKH42dR4Oq77eYl0LMQjlRbHpos6zxeu1ghHJderw\",\n  \"role\": \"STUDENT\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Orwell login (pass: A$4@2ds)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "Orwell",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "mQHewdQp/j62sxHOGjJY/VQlmbPtqAg+dhI4P59ipxM=",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "5c5340cf-e6f5-4822-a850-5d2001cec02a",
+          "body": "{\n  \"username\": \"Benson\",\n  \"token\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiU1RVREVOVCIsInN1YiI6IkJlbnNvbiIsImlzcyI6ImJsYWNrQm9hcmRBcHAifQ.W_d0oGl6VULbnMQyRMpTEKpkhboyaIiXUTzSqVpG_vw\",\n  \"role\": \"STUDENT\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Benson login (pass: 35799b8)",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "Benson",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "PUGvzRCM5/IgXLYlwB5lr1HojfxF0W5F6lnksDBwTT0=",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "08de4581-56d1-491e-8c08-928460e0cebb",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "username",
+              "value": "",
+              "invert": true,
+              "operator": "null"
+            },
+            {
+              "target": "body",
+              "modifier": "pass",
+              "value": "",
+              "invert": true,
+              "operator": "null"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "d8a2fc73-31a9-4a3d-a543-e98bae417a9e",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "efa42f26-f3cb-4e44-9e8e-714d3c248c1b",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "",
+      "responses": [
+        {
+          "uuid": "cc0c0c33-4387-4293-b6c9-8a5475f8cbbc",
+          "body": "Hello",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "text/plain"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "ecbc73d1-754c-4014-8e03-72896936d25a",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "student/Martin",
+      "responses": [
+        {
+          "uuid": "9fa4d45b-54a2-40cf-8d44-c545d56554ac",
+          "body": "\n\n",
+          "latency": 0,
+          "statusCode": 504,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "header",
+              "modifier": "Authorization",
+              "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJST0xFIjoiU1RVREVOVCIsInN1YiI6Ik1hcnRpbiIsImlzcyI6ImJsYWNrQm9hcmRBcHAifQ.INNz4znUR4Y5_ET_Mz9EA30kMbz9X-P_ux7EFcccXJc",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "c9251cbf-b671-4891-8938-35097554832d",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "student/:name",
+      "responses": [
+        {
+          "uuid": "2efd7945-80fc-4726-9aec-906a3a45ccef",
+          "body": "\n  {{#each (dataRaw 'student' )}} \n    {{#if (includes  this.name   (urlParam 'name'))}}\n    {{#if (includes  (urlParam 'name') this.name)}}\n{\n  \"grades\": {{data 'student' (concat @index '.grades' )}},\n  \"exam\": {{data 'student' (concat @index '.exam' )}}\n}\n    {{/if}}\n    {{/if}}\n  {{/each}}\n",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "name",
+              "value": "Lucas",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "params",
+              "modifier": "name",
+              "value": "Michael",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "params",
+              "modifier": "name",
+              "value": "Harrison",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "params",
+              "modifier": "name",
+              "value": "Orwell",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "params",
+              "modifier": "name",
+              "value": "Benson",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "ee398e08-3892-405c-82c2-fe8a8afcae30",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "a93d4aab-2ef4-4f6f-b3af-05acda554208",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "teacher/student/Lucas",
+      "responses": [
+        {
+          "uuid": "897716c3-e437-43a9-9d54-be37edf189be",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "0g99",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "a0497b84-62a2-402a-9d0b-122aa6c9eb21",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "teacher/student/Martin",
+      "responses": [
+        {
+          "uuid": "64e7a2a4-445f-4a9b-9b8e-b2bbf4cd5898",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "oyf3",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "040439b5-0660-40da-be47-2475e9e57f1a",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "teacher/student",
+      "responses": [
+        {
+          "uuid": "dd6568aa-d0bb-400b-8644-1d2005865fbb",
+          "body": "{{setVar 'addComma' false }}\n\n{\n  \"students\": [\n    {{#each (dataRaw 'student')}}\n      {{#if @addComma}},{{/if}}{{setVar 'addComma' true }}\n      { \"name\": \"{{data 'student' (concat @index '.name' )}}\"}\n    {{/each}}\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "038b44d5-596c-419b-b5d8-1733b01288c3",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "teacher/student/Harrison",
+      "responses": [
+        {
+          "uuid": "b29a99a1-e11b-4d90-9fbe-c3fa5c02e9be",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "d1rb",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "ef6da0f6-0254-466e-8f11-a2f9e7da531a",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "teacher/student/Michael",
+      "responses": [
+        {
+          "uuid": "6fb47e01-01ef-402a-b4b3-7c725f73f6e8",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "0dze",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "f1f6bb70-9773-4b1f-a709-0472922b31e2",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "teacher/student/Orwell",
+      "responses": [
+        {
+          "uuid": "4aa95aa1-7c99-4c52-ad0d-f53fac71c60b",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "634s",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "23b3c86e-5084-41c1-8dd5-655a5124b193",
+      "type": "crud",
+      "documentation": "",
+      "method": "",
+      "endpoint": "teacher/student/Benson",
+      "responses": [
+        {
+          "uuid": "42bda487-7690-43ee-8c32-289642bdd431",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "DATABUCKET",
+          "filePath": "",
+          "databucketID": "1slz",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "6f3bca1f-56e8-4337-8c84-884122f08dc7"
+    },
+    {
+      "type": "route",
+      "uuid": "ecbc73d1-754c-4014-8e03-72896936d25a"
+    },
+    {
+      "type": "route",
+      "uuid": "c9251cbf-b671-4891-8938-35097554832d"
+    },
+    {
+      "type": "folder",
+      "uuid": "c84ddb18-3a4d-4afc-9faa-a089ff522b04"
+    },
+    {
+      "type": "route",
+      "uuid": "040439b5-0660-40da-be47-2475e9e57f1a"
+    },
+    {
+      "type": "route",
+      "uuid": "efa42f26-f3cb-4e44-9e8e-714d3c248c1b"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "proxyResHeaders": [
+    {
+      "key": "",
+      "value": ""
+    }
+  ],
+  "data": [
+    {
+      "uuid": "c222fd83-0c9f-4b40-8dfa-b5515fb59ceb",
+      "id": "0g99",
+      "name": "Lucas",
+      "documentation": "",
+      "value": "{\n  \"name\": \"Lucas\",\n  \"grades\": [-1, -1, -1, -1, -1, -1, -1],\n  \"exam\": -1\n}"
+    },
+    {
+      "uuid": "aa4810a9-514b-4957-8381-30256342f614",
+      "id": "oyf3",
+      "name": "Martin",
+      "documentation": "",
+      "value": "{\n  \"name\": \"Martin\",\n  \"grades\": [70, 60, 50, -1, -1, -1, -1],\n  \"exam\": -1\n}"
+    },
+    {
+      "uuid": "35619f3c-9086-4694-8a5e-90a45aeb5d65",
+      "id": "d1rb",
+      "name": "Harrison",
+      "documentation": "",
+      "value": "{\n  \"name\": \"Harrison\",\n  \"grades\": [50, -1, 80, 55, 75, 60, 50],\n  \"exam\": 80\n}"
+    },
+    {
+      "uuid": "50e0f23f-08f4-4abe-ad27-c7e48d221ac3",
+      "id": "0dze",
+      "name": "Michael",
+      "documentation": "",
+      "value": "{\n  \"name\": \"Michael\",\n  \"grades\": [10, -1, -1, 60, 50, 30, -1],\n  \"exam\": 100\n}"
+    },
+    {
+      "uuid": "c19f1368-5357-41cb-bd8e-a063118eca61",
+      "id": "634s",
+      "name": "Orwell",
+      "documentation": "",
+      "value": "{\n  \"name\": \"Orwell\",\n  \"grades\": [100, 70, 30, 50, 40, 50, 40],\n  \"exam\": -1\n}"
+    },
+    {
+      "uuid": "524bea35-40b0-479b-b8da-2912eb40f13d",
+      "id": "1slz",
+      "name": "Benson",
+      "documentation": "",
+      "value": "{\n  \"name\": \"Benson\",\n  \"grades\": [100, 80, 95, 88, 75, 100, 100],\n  \"exam\": -1\n}"
+    },
+    {
+      "uuid": "073946a3-335d-4544-ab1e-c6abb42f3bea",
+      "id": "jxy3",
+      "name": "student",
+      "documentation": "",
+      "value": "[\n  {{data 'Lucas'}},\n  {{data 'Martin'}},\n  {{data 'Benson'}},\n  {{data 'Michael'}},\n  {{data 'Orwell'}},\n  {{data 'Harrison'}}\n]"
+    }
+  ]
+}

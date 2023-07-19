@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+     android:layout_height="match_parent"
+     android:layout_width="match_parent">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:padding="16dp"
+        android:background="#1A005078"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include layout="@layout/blackboard_title" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="32dp"/>
+
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="16dp">
+
+            <LinearLayout
+                android:padding="8dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/student_name_tv"
+                    android:text="Student Name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingVertical="4dp"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                    />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"/>
+
+                <TextView
+                    android:id="@+id/student_grades_label"
+                    android:text="Grades:"
+                    android:paddingVertical="8dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                    />
+
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/student_grades_rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/list_item_grade" />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"/>
+
+                <TextView
+                    android:id="@+id/student_partial_result_tv"
+                    android:text="Partial Result: %s"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/student_exam_label"
+                        android:text="Exam:"
+                        android:labelFor="@id/student_exam_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        />
+
+                    <EditText
+                        android:text=""
+                        android:id="@+id/student_exam_et"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                        />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/student_final_result_tv"
+                    android:text="Final Result: %s"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                    />
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="48dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>
