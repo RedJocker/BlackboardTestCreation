@@ -137,6 +137,18 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
     }
 
     /**
+     * Use this method to find views.
+     *
+     * Returns null if the view does not exist or if it is not from the expected class
+     */
+    inline fun <reified T> Activity.findViewByStringOrNull(idString: String): T? {
+        val id = this.resources.getIdentifier(idString, "id", this.packageName)
+        val view: View? = this.findViewById(id)
+
+        return view as? T
+    }
+
+    /**
      * Use this method to perform clicks. It will also advance the clock millis milliseconds and run
      * enqueued Runnable scheduled to run on main looper in that timeframe.
      * Default value for millis is 500
@@ -172,8 +184,8 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         val latestAlertDialog = ShadowAlertDialog.getLatestAlertDialog()
 
         assertNotNull(
-                "There was no AlertDialog found. Make sure to import android.app.AlertDialog version",
-                latestAlertDialog
+            "There was no AlertDialog found. Make sure to import android.app.AlertDialog version",
+            latestAlertDialog
         )
 
         return latestAlertDialog!!
@@ -184,8 +196,8 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
 
         val packageInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             packageManager.getPackageInfo(
-                    activity.packageName,
-                    PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())
+                activity.packageName,
+                PackageManager.PackageInfoFlags.of(PackageManager.GET_PERMISSIONS.toLong())
             )
         } else {
             @Suppress("DEPRECATION")
@@ -196,7 +208,7 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         val hasInternetPermission = permissions.contains(Manifest.permission.INTERNET)
 
         val messageNoInternetPermission =
-                "Internet permission is not set in the AndroidManifest.xml file"
+            "Internet permission is not set in the AndroidManifest.xml file"
         assertTrue(messageNoInternetPermission, hasInternetPermission)
     }
 
@@ -213,8 +225,8 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
      */
 
     fun <T> RecyclerView.assertListItems(
-            fakeResultList: List<T>,
-            assertItems: (itemViewSupplier: () -> View, position: Int, item: T) -> Unit
+        fakeResultList: List<T>,
+        assertItems: (itemViewSupplier: () -> View, position: Int, item: T) -> Unit
     ) : Unit {
 
         assertNotNull("Your recycler view adapter should not be null", this.adapter)
@@ -228,10 +240,10 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
             return
         } else if(expectedSize > 0) {
             val firstItemViewHolder = (0 until expectedSize)
-                    .asSequence()
-                    .mapNotNull {  this.findViewHolderForAdapterPosition(it) }
-                    .firstOrNull()
-                    ?: throw AssertionError("No item is being displayed on RecyclerView, is it big enough to display one item?")
+                .asSequence()
+                .mapNotNull {  this.findViewHolderForAdapterPosition(it) }
+                .firstOrNull()
+                ?: throw AssertionError("No item is being displayed on RecyclerView, is it big enough to display one item?")
 
             val listWidth = firstItemViewHolder.itemView.width * (expectedSize + 1)
 
@@ -242,7 +254,7 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
                 val itemViewSupplier = {
                     scrollToPosition(i)
                     findViewHolderForAdapterPosition(i)?.itemView
-                            ?: throw AssertionError("Could not find list item with index $i")
+                        ?: throw AssertionError("Could not find list item with index $i")
                 }
                 assertItems(itemViewSupplier, i, song)
             }
@@ -269,16 +281,16 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
 
         val actualSize = this.adapter!!.itemCount
         assertTrue(
-                "RecyclerView was expected to contain item with index $itemIndex, but its size was $actualSize",
-                actualSize >= expectedMinSize
+            "RecyclerView was expected to contain item with index $itemIndex, but its size was $actualSize",
+            actualSize >= expectedMinSize
         )
 
         if(actualSize >= expectedMinSize) {
             val firstItemViewHolder = (0 until actualSize)
-                    .asSequence()
-                    .mapNotNull {  this.findViewHolderForAdapterPosition(it) }
-                    .firstOrNull()
-                    ?: throw AssertionError("No item is being displayed on RecyclerView, is it big enough to display one item?")
+                .asSequence()
+                .mapNotNull {  this.findViewHolderForAdapterPosition(it) }
+                .firstOrNull()
+                ?: throw AssertionError("No item is being displayed on RecyclerView, is it big enough to display one item?")
 
             val listWidth = firstItemViewHolder.itemView.width * (expectedMinSize + 1)
             this.layout(0,0, listWidth, this.height)  // may increase clock time
@@ -286,7 +298,7 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
             val itemViewSupplier = {
                 this.scrollToPosition(itemIndex)
                 val itemView = (this.findViewHolderForAdapterPosition(itemIndex)?.itemView
-                        ?: throw AssertionError("Could not find list item with index $itemIndex"))
+                    ?: throw AssertionError("Could not find list item with index $itemIndex"))
                 itemView
             }
 

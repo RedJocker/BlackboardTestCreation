@@ -165,12 +165,12 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
             "$caseDescription got unexpected response status, check you are doing the right request, response "
         assertEquals(messageUnexpectedResponse, expectedResponseStatus, loginResponse.status)
 
-        Thread.sleep(50)           // Callback.onResponse is async
+        Thread.sleep(150)           // Callback.onResponse is async
         shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
     }
 
     fun assertLoginNetworkError(caseDescription: String, expectedError: String) = with(test) {
-        Thread.sleep(50)           // Callback.onResponse is async
+        Thread.sleep(150)           // Callback.onResponse is async
         shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
 
         blackboardTitle.assertError(expectedError, BLACKBOARD_TITLE_ID, caseDescription)

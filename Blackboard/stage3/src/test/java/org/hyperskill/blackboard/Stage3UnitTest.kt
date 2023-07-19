@@ -1,20 +1,24 @@
 package org.hyperskill.blackboard
 
+import android.view.View
 import okhttp3.internal.closeQuietly
 import okhttp3.mockwebserver.MockWebServer
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
 import org.hyperskill.blackboard.internals.backend.BlackBoardMockBackEnd
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.BENSON
+import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.GEORGE
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.HARRISON
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.LUCAS
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.MARTIN
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.MICHAEL
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.ORWELL
 import org.hyperskill.blackboard.internals.backend.model.Student
+import org.hyperskill.blackboard.internals.backend.model.User
 import org.hyperskill.blackboard.internals.screen.LoginScreen
 import org.hyperskill.blackboard.internals.screen.StudentScreen
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -181,6 +185,29 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                         expectedError = "504 Gateway Timeout"
                 )
             }
+        }
+    }
+
+    @Test
+    fun test07_checkTeacherGeorge() {
+        val name = GEORGE
+        val teacher = MockUserDatabase.users[name]!!
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(teacher.username, teacher.plainPass)
+                val caseDescription = "With correct ${teacher.role} ${teacher.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastTeacherLoginSuccess(teacher.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+            val studentNameView = activity.findViewByStringOrNull<View>(
+                StudentScreen.ID_STUDENT_NAME_TV
+            )
+            assertTrue(
+                "A user with role ${User.Role.ROLE_TEACHER} should not navigate to student screen",
+                studentNameView == null
+            )
         }
     }
 }
