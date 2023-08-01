@@ -16,7 +16,8 @@ class BlackBoardMockBackEnd(moshi: Moshi) : Dispatcher() {
 
     override fun dispatch(request: RecordedRequest): MockResponse {
         println("dispatch $request")
-        return controller(request).also { responseList.add(it) }
+        return controller(request)
+                .also { responseList.add(it) }
     }
 
     fun controller(request: RecordedRequest): MockResponse {

@@ -85,7 +85,9 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertLoginSuccessClearInput()
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
-                assertStudentDetails(student, "After student $name login")
+                val caseDescription = "After student $name login"
+                assertGetRequestWithToken(caseDescription, student.token)
+                assertStudentDetails(student, caseDescription)
             }
         }
     }
@@ -104,7 +106,9 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertLoginSuccessClearInput()
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
-                assertStudentDetails(student, "After student $name login")
+                val caseDescription = "After student $name login"
+                assertGetRequestWithToken(caseDescription, student.token)
+                assertStudentDetails(student, caseDescription)
             }
         }
     }
@@ -123,7 +127,9 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertLoginSuccessClearInput()
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
-                assertStudentDetails(student, "After student $name login")
+                val caseDescription = "After student $name login"
+                assertGetRequestWithToken(caseDescription, student.token)
+                assertStudentDetails(student, caseDescription)
             }
         }
     }
@@ -142,7 +148,9 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertLoginSuccessClearInput()
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
-                assertStudentDetails(student, "After student $name login")
+                val caseDescription = "After student $name login"
+                assertGetRequestWithToken(caseDescription, student.token)
+                assertStudentDetails(student, caseDescription)
             }
         }
     }
@@ -161,7 +169,9 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertLoginSuccessClearInput()
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
-                assertStudentDetails(student, "After student $name login")
+                val caseDescription = "After student $name login"
+                assertGetRequestWithToken(caseDescription, student.token)
+                assertStudentDetails(student, caseDescription)
             }
         }
     }
@@ -180,6 +190,8 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertLoginSuccessClearInput()
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
+                val caseDescription = "After student $name login"
+                assertGetRequestWithToken(caseDescription, student.token)
                 assertStudentNetworkError(
                         caseDescription = "When /student/Martin responds with 504 Gateway Timeout",
                         expectedError = "504 Gateway Timeout"

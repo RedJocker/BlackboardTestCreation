@@ -22,8 +22,15 @@ class StudentService(val moshi: Moshi): Service {
                 else -> {
                     val name = path.substringAfter("/student/", "")
                     val student = MockUserDatabase.users[name] as? Student
+
+                    val authHeader = "Authorization"
+                    val actualToken = request.getHeader(authHeader)
+                    val expectedToken = "Bearer ${student?.token}"
+
                     if(student == null) {
                         Response.notFound404
+                    } else if(actualToken != expectedToken) {
+                        Response.forbidden
                     } else {
                         Response.ok200.withBody(responseAdapter.toJson(student.grades))
                     }

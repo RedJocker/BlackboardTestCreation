@@ -8,6 +8,7 @@ object Response {
     val gatewayTimeout504 get() = mockResponseOf("HTTP/1.1 504 Gateway Timeout")
     val badRequest400 get() = mockResponseOf("HTTP/1.1 400 Bad Request")
     val unauthorized401 get() = mockResponseOf("HTTP/1.1 401 Unauthorized")
+    val forbidden get() = mockResponseOf("HTTP/1.1 403 Forbidden")
     val ok200 get() = mockResponseOf("HTTP/1.1 200 OK")
 
 

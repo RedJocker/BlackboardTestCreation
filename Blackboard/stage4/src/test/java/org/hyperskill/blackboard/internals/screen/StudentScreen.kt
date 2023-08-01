@@ -7,6 +7,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
 import org.hyperskill.blackboard.internals.backend.model.Student
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import java.util.concurrent.TimeUnit
 
 class StudentScreen<T: Activity>(
         val test: BlackboardUnitTest<T>,
@@ -115,6 +118,23 @@ class StudentScreen<T: Activity>(
 
     fun assertStudentNetworkError(caseDescription: String, expectedError: String) = with(test) {
         blackboardTitle.assertError(expectedError, BlackboardTitle.BLACKBOARD_TITLE_ID, caseDescription)
+    }
+
+    fun assertGetRequestWithToken(caseDescription: String, token: String) = with(test) {
+        val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
+        assertNotNull(
+                "$caseDescription expected a request to be sent",
+                request
+        )
+
+        assertEquals("$caseDescription. Wrong request method", "GET", request!!.method)
+
+        val authHeader = "Authorization"
+        val actualTokenHeader = request.getHeader(authHeader)
+        val expectedTokenHeader = "Bearer $token"
+
+        val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
+        assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
     }
 
     inner class ItemGrade(private val root: View) {
