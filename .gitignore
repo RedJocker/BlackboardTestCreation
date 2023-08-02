@@ -21,3 +21,7 @@ local.properties
 
 # Ignore osx folder metadata
 .DS_Store
+
+
+# Emacs temp files
+*#*
