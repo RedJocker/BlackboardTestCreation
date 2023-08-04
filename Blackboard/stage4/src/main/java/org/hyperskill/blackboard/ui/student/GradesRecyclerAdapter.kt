@@ -2,17 +2,23 @@ package org.hyperskill.blackboard.ui.student
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.databinding.ListItemGradeBinding
+import org.hyperskill.blackboard.util.Util
 
-class GradesRecyclerAdapter(grades : List<Int>, /*val onPredictionGradesChanged: (List<Int>) -> Unit*/)
-    : RecyclerView.Adapter<GradesRecyclerAdapter.GradesViewHolder>() {
+class GradesRecyclerAdapter(
+    grades : List<Int>,
+    /*val onPredictionGradesChanged: (List<Int>) -> Unit*/
+) : ListAdapter<Int, GradesRecyclerAdapter.GradesViewHolder>(Util.intDiffcallback) {
+
+    init { submitList(grades) }
 
     var grades : List<Int> = grades
         set(value) {
             field = value
 //            predictionGrades = value.toMutableList()
-            notifyDataSetChanged()
+            submitList(value)
         }
 
 //    private var predictionGrades : MutableList<Int> = grades.toMutableList()
@@ -29,7 +35,7 @@ class GradesRecyclerAdapter(grades : List<Int>, /*val onPredictionGradesChanged:
             item.gradeHeaderTv.text = "T:${gradeIndex + 1}"
             val gradeStr = if(gradeValue < 0) "" else "$gradeValue"
             item.gradeValueEt.setText(gradeStr)
-            item.gradeValueEt.isEnabled = false
+            item.gradeValueEt.isEnabled = true
 
 //            if(gradeValue < 0) {
 //                item.gradeValueET.isEnabled = true
@@ -56,10 +62,6 @@ class GradesRecyclerAdapter(grades : List<Int>, /*val onPredictionGradesChanged:
             ListItemGradeBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return GradesViewHolder(itemGradeBinding)
-    }
-
-    override fun getItemCount(): Int {
-        return grades.size
     }
 
     override fun onBindViewHolder(holder: GradesViewHolder, position: Int) {

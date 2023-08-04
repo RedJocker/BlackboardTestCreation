@@ -3,17 +3,23 @@ package org.hyperskill.blackboard.ui.teacher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.setPadding
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.data.model.Student
 import org.hyperskill.blackboard.databinding.ListItemStudentBinding
+import org.hyperskill.blackboard.util.Util
 
-class StudentsRecyclerAdapter(students : List<Student>, val onStudentClick: (Student) -> Unit)
-    : RecyclerView.Adapter<StudentsRecyclerAdapter.StudentsViewHolder>() {
+class StudentsRecyclerAdapter(
+    students : List<Student>,
+    val onStudentClick: (Student) -> Unit
+) : ListAdapter<Student, StudentsRecyclerAdapter.StudentsViewHolder>(Util.StudentDiffcallback) {
+
+    init { submitList(students) }
 
     var students = students
         set(value) {
             field = value
-            notifyDataSetChanged()
+            submitList(students)
         }
 
     lateinit var listItemStudentBinding: ListItemStudentBinding

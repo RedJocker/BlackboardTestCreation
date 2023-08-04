@@ -2,7 +2,7 @@ package org.hyperskill.blackboard.data.model
 
 import android.os.Bundle
 
-class Student(val name: String) {
+data class Student(val name: String) {
 
     companion object {
         fun Bundle.putStudent(student: Student) {

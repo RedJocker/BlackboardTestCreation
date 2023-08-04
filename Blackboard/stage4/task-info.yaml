@@ -100,10 +100,6 @@ files:
   visible: true
 - name: src/test/java/org/hyperskill/blackboard/internals/screen/StudentScreen.kt
   visible: true
-- name: src/main/java/org/hyperskill/blackboard/#MainActivity.kt#
-  visible: true
-- name: src/main/java/org/hyperskill/blackboard/ui/student/#GradesRecyclerAdapter.kt#
-  visible: true
 - name: src/main/java/org/hyperskill/blackboard/network/teacher/#TeacherClient.kt#
   visible: true
 - name: src/main/java/org/hyperskill/blackboard/network/teacher/TeacherClient.kt
@@ -119,6 +115,4 @@ files:
 - name: src/main/res/drawable/baseline_send_24.xml
   visible: true
 - name: src/main/res/layout/list_item_student.xml
-  visible: true
-- name: src/main/res/layout/#fragment_login.xml#
   visible: true
