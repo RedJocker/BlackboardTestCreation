@@ -12,10 +12,27 @@
         <action
             android:id="@+id/action_loginFragment_to_studentFragment"
             app:destination="@id/studentFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_teacherFragment"
+            app:destination="@id/teacherFragment" />
     </fragment>
     <fragment
         android:id="@+id/studentFragment"
         android:name="org.hyperskill.blackboard.ui.student.StudentFragment"
         android:label="fragment_student"
         tools:layout="@layout/fragment_student" />
+    <fragment
+        android:id="@+id/teacherFragment"
+        android:name="org.hyperskill.blackboard.ui.teacher.TeacherFragment"
+        android:label="fragment_teacher"
+        tools:layout="@layout/fragment_teacher" >
+        <action
+            android:id="@+id/action_teacherFragment_to_teacherStudentDetailsFragment"
+            app:destination="@id/teacherStudentDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/teacherStudentDetailsFragment"
+        android:name="org.hyperskill.blackboard.ui.teacher.details.TeacherStudentDetailsFragment"
+        android:label="fragment_teacher_student_details"
+        tools:layout="@layout/fragment_teacher_student_details" />
 </navigation>

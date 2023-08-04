@@ -96,19 +96,22 @@ class LoginFragment : Fragment() {
 
     private fun onValidLogin(credential: Credential) {
         println("LoginFragment.onValidLogin $credential")
+        val args = Bundle().apply {
+            putCredential(credential)
+        }
+        loginViewModel.clearCredential()
         when (credential.role) {
+
             Credential.Role.STUDENT -> {
                 val message = "Hello ${credential.username}"
                 context!!.showToast(message)
-                val args = Bundle().apply {
-                    putCredential(credential)
-                }
                 findNavController().navigate(R.id.action_loginFragment_to_studentFragment, args)
-                loginViewModel.clearCredential()
+
             }
             Credential.Role.TEACHER -> {
                 val message = "Good day teacher ${credential.username}"
                 context!!.showToast(message)
+                findNavController().navigate(R.id.action_loginFragment_to_teacherFragment, args)
             }
         }
 

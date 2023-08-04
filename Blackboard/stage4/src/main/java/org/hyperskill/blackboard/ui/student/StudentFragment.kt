@@ -15,6 +15,7 @@ import org.hyperskill.blackboard.BlackboardApplication
 import org.hyperskill.blackboard.data.model.Credential.Companion.getCredential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentStudentBinding
+import org.hyperskill.blackboard.databinding.StudentDetailBinding
 
 
 class StudentFragment : Fragment() {
@@ -28,6 +29,7 @@ class StudentFragment : Fragment() {
 
     lateinit var binding: FragmentStudentBinding
     lateinit var titleBinding: BlackboardTitleBinding
+    lateinit var studentDetailBinding: StudentDetailBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,14 +37,15 @@ class StudentFragment : Fragment() {
     ): View {
         studentViewModel.fetchGrades()
         binding = FragmentStudentBinding.inflate(inflater, container, false)
-        titleBinding = BlackboardTitleBinding.bind(binding.root)
+        studentDetailBinding = StudentDetailBinding.bind(binding.root)
+        titleBinding = BlackboardTitleBinding.bind(studentDetailBinding.root)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        studentDetailBinding.apply {
             studentNameTv.text = studentViewModel.username
             studentViewModel.apply {
                 lifecycleScope.launch {
