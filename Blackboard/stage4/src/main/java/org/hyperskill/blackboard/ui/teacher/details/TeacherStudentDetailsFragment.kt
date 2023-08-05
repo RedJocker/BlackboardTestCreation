@@ -12,14 +12,17 @@ import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.data.model.Credential.Companion.getCredential
 import org.hyperskill.blackboard.data.model.Student
 import org.hyperskill.blackboard.data.model.Student.Companion.getStudent
+import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentTeacherStudentDetailsBinding
 import org.hyperskill.blackboard.databinding.StudentDetailBinding
+import org.hyperskill.blackboard.ui.HorizontalLinearLayoutManager
 import org.hyperskill.blackboard.util.Extensions.showToast
 
 class TeacherStudentDetailsFragment : Fragment() {
 
     lateinit var binding: FragmentTeacherStudentDetailsBinding
     lateinit var detailBinding: StudentDetailBinding
+    lateinit var titleBinding: BlackboardTitleBinding
     lateinit var credentials: Credential
     lateinit var student: Student
 
@@ -31,12 +34,18 @@ class TeacherStudentDetailsFragment : Fragment() {
         }
     }
 
+    private val teacherStudentGradesAdapter = TeacherGradesStudentAdapter { editedGrades ->
+        println("onGradesChanged editedGrades: $editedGrades")
+        detailsViewModel.setEditedGrades(editedGrades)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
         binding = FragmentTeacherStudentDetailsBinding.inflate(inflater, container, false)
         detailBinding = StudentDetailBinding.bind(binding.root)
+        titleBinding = BlackboardTitleBinding.bind(binding.root)
         credentials = arguments!!.getCredential()
         student = arguments!!.getStudent()
         detailsViewModel.fetchGrades(credentials, student)
@@ -45,7 +54,12 @@ class TeacherStudentDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        detailBinding.studentNameTv.text = student.name
+//        detailBinding.studentNameTv.text = student.name
+
+        detailBinding.studentGradesRv.apply {
+            adapter = teacherStudentGradesAdapter
+            layoutManager = HorizontalLinearLayoutManager(context)
+        }
 
         detailBinding.apply {
             detailsViewModel.apply {

@@ -59,9 +59,7 @@
                     android:id="@+id/student_grades_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:paddingVertical="8dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/list_item_grade" />
 
                 <Space

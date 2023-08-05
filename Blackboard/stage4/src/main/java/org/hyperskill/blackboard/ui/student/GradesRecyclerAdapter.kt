@@ -8,18 +8,9 @@ import org.hyperskill.blackboard.databinding.ListItemGradeBinding
 import org.hyperskill.blackboard.util.Util
 
 class GradesRecyclerAdapter(
-    grades : List<Int>,
     /*val onPredictionGradesChanged: (List<Int>) -> Unit*/
 ) : ListAdapter<Int, GradesRecyclerAdapter.GradesViewHolder>(Util.intDiffcallback) {
 
-    init { submitList(grades) }
-
-    var grades : List<Int> = grades
-        set(value) {
-            field = value
-//            predictionGrades = value.toMutableList()
-            submitList(value)
-        }
 
 //    private var predictionGrades : MutableList<Int> = grades.toMutableList()
 //        set(value) {
@@ -65,6 +56,6 @@ class GradesRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: GradesViewHolder, position: Int) {
-        holder.bind(grades[position], position)
+        holder.bind(currentList[position], position)
     }
 }

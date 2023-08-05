@@ -8,20 +8,10 @@ import org.hyperskill.blackboard.databinding.ListItemGradeBinding
 import org.hyperskill.blackboard.util.Util
 
 class TeacherGradesStudentAdapter(
-    grades : List<Int>,
-    val onGradesChanged: (grades: List<Int>) -> Unit
+    val onEditedGradesChanged: (grades: List<Int>) -> Unit
 ) : ListAdapter<Int, TeacherGradesStudentAdapter.GradesViewHolder>(Util.intDiffcallback) {
 
-    init { submitList(grades) }
-
-    private var grades : List<Int> = grades
-        set(value) {
-            field = value
-            editedGrades = value.toMutableList()
-            submitList(value)
-        }
-
-    private var editedGrades : MutableList<Int> = grades.toMutableList()
+    private var editedGrades : MutableList<Int> = currentList.toMutableList()
 
     inner class GradesViewHolder(val item: ListItemGradeBinding) : RecyclerView.ViewHolder(item.root) {
         fun bind(gradeValue: Int, gradeIndex: Int) {
@@ -36,7 +26,7 @@ class TeacherGradesStudentAdapter(
 //                } else inputIntValue
 //
 //                editedGrades[adapterPosition] = normalizedInputValue
-//                onGradesChanged(editedGrades)
+//                onEditedGradesChanged(editedGrades)
 //                true
 //            }
         }
@@ -50,6 +40,6 @@ class TeacherGradesStudentAdapter(
     }
 
     override fun onBindViewHolder(holder: GradesViewHolder, position: Int) {
-        holder.bind(grades[position], position)
+        holder.bind(currentList[position], position)
     }
 }

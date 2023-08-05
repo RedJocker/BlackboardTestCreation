@@ -16,6 +16,7 @@ import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.data.model.Credential.Companion.putCredential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentLoginBinding
+import org.hyperskill.blackboard.util.DevUtil.loginTeacher
 import org.hyperskill.blackboard.util.Extensions.showToast
 
 
@@ -46,7 +47,8 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("LoginFragment.onViewCreated")
-
+        loginTeacher()
+        //loginLucas()
         loginBinding.apply {
 
             loginSubmitBtn.setOnClickListener {
@@ -94,7 +96,7 @@ class LoginFragment : Fragment() {
         titleBinding.blackboardTitle.requestFocus()
     }
 
-    private fun onValidLogin(credential: Credential) {
+    fun onValidLogin(credential: Credential) {
         println("LoginFragment.onValidLogin $credential")
         val args = Bundle().apply {
             putCredential(credential)

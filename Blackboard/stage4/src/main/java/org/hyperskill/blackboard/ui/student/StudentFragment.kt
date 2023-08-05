@@ -16,6 +16,7 @@ import org.hyperskill.blackboard.data.model.Credential.Companion.getCredential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentStudentBinding
 import org.hyperskill.blackboard.databinding.StudentDetailBinding
+import org.hyperskill.blackboard.ui.HorizontalLinearLayoutManager
 
 
 class StudentFragment : Fragment() {
@@ -47,13 +48,18 @@ class StudentFragment : Fragment() {
 
         studentDetailBinding.apply {
             studentNameTv.text = studentViewModel.username
+            val gradesAdapter = GradesRecyclerAdapter()
+            studentGradesRv.apply {
+                layoutManager = HorizontalLinearLayoutManager(context)
+                adapter = gradesAdapter
+            }
             studentViewModel.apply {
                 lifecycleScope.launch {
                     repeatOnLifecycle(Lifecycle.State.STARTED) {
                         launch {
                             grades.collect { grades ->
                                 println("grades: $grades")
-                                studentGradesRv.adapter = GradesRecyclerAdapter(grades)
+                                gradesAdapter.submitList(grades)
                             }
                         }
                         launch {
