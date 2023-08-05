@@ -5,9 +5,16 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import org.hyperskill.blackboard.BlackboardApplication
+import org.hyperskill.blackboard.R
 import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.data.model.Credential.Companion.getCredential
 import org.hyperskill.blackboard.data.model.Student
@@ -17,6 +24,8 @@ import org.hyperskill.blackboard.databinding.FragmentTeacherStudentDetailsBindin
 import org.hyperskill.blackboard.databinding.StudentDetailBinding
 import org.hyperskill.blackboard.ui.HorizontalLinearLayoutManager
 import org.hyperskill.blackboard.util.Extensions.showToast
+import org.hyperskill.blackboard.util.Util
+
 
 class TeacherStudentDetailsFragment : Fragment() {
 
@@ -34,10 +43,23 @@ class TeacherStudentDetailsFragment : Fragment() {
         }
     }
 
-    private val teacherStudentGradesAdapter = TeacherGradesStudentAdapter { editedGrades ->
-        println("onGradesChanged editedGrades: $editedGrades")
-        detailsViewModel.setEditedGrades(editedGrades)
-    }
+    private val teacherStudentGradesAdapter = TeacherGradesStudentAdapter(
+            onImeNext = { nextPos ->
+                if (nextPos < currentList.size) {
+                    detailBinding.studentGradesRv.scrollToPosition(nextPos)
+                    detailBinding.studentGradesRv
+                            .findViewHolderForAdapterPosition(nextPos)
+                            ?.itemView?.findViewById<EditText>(R.id.grade_value_et)
+                            ?.requestFocus()
+                } else {
+                    detailBinding.studentExamEt.requestFocus()
+                }
+            },
+            onEditedGradesChanged = { editedGrades ->
+                println("onGradesChanged editedGrades: $editedGrades")
+                detailsViewModel.setEditedGrades(editedGrades)
+            }
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +76,7 @@ class TeacherStudentDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        detailBinding.studentNameTv.text = student.name
+        detailBinding.studentNameTv.text = student.name
 
         detailBinding.studentGradesRv.apply {
             adapter = teacherStudentGradesAdapter
@@ -63,32 +85,50 @@ class TeacherStudentDetailsFragment : Fragment() {
 
         detailBinding.apply {
             detailsViewModel.apply {
-                grades.observe(viewLifecycleOwner) { gradesList ->
-                    studentGradesRv.adapter = TeacherGradesStudentAdapter(gradesList) { editedGrades ->
-                        println("editedGrades: $editedGrades")
-                        detailsViewModel.setEditedGrades(editedGrades)
+                lifecycleScope.launch {
+                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        launch {
+                            grades.collect { gradesList ->
+                                println("observer grades $gradesList")
+                                detailsViewModel.setEditedGrades(gradesList)
+                                teacherStudentGradesAdapter.submitList(gradesList)
+                            }
+                        }
+                        launch {
+                            networkErrorMessage.collect {
+                                titleBinding.blackboardTitle.error = it
+                                if(it == null) {
+                                    titleBinding.blackboardTitle.requestFocus()
+                                }
+                            }
+                        }
+
+                        launch {
+                            examGrade.collect {
+                                studentExamEt.setText("$it")
+                            }
+                        }
+
+                        launch {
+                            partialResult.collect { partialResultString ->
+                                println("observe partialResult: $partialResultString")
+                                studentPartialResultTv.text = partialResultString
+                            }
+                        }
+
+                        launch {
+                            finalResult.collect {
+                                studentFinalResultTv.text = it
+                            }
+                        }
                     }
-                }
-
-                partialResult.observe(viewLifecycleOwner) { partialResultString ->
-                    println("observe partialResult: $partialResultString")
-                    studentPartialResultTv.text = partialResultString
-                }
-
-                finalResult.observe(viewLifecycleOwner) {
-                    studentFinalResultTv.text = it
                 }
 
                 binding.detailBtn.setOnClickListener {
                     detailsViewModel.updateGrades(credentials, student.name)
-
                 }
 
-                examGrade.observe(viewLifecycleOwner) {
-                    studentExamEt.setText("$it")
-                }
-
-                studentExamEt.setOnEditorActionListener { v, actionId, event ->
+                studentExamEt.addTextChangedListener {
                     val inputIntValue = studentExamEt.text.toString().toIntOrNull() ?: -1
                     val normalizedInputValue = if(inputIntValue > 100) {
                         studentExamEt.setText("100")
@@ -96,20 +136,8 @@ class TeacherStudentDetailsFragment : Fragment() {
 
                     } else inputIntValue
                     setEditedExamGrades(normalizedInputValue)
-                    true
                 }
-
-                isExamEnabled.observe(viewLifecycleOwner) { isExamEnabled ->
-                    if(isExamEnabled) {
-                        studentExamEt.isEnabled = true
-                        studentExamEt.setText(editedExamGrade.value?.toString() ?: "")
-
-                    }
-                    else {
-                        studentExamEt.setText("")
-                        studentExamEt.isEnabled = false
-                    }
-                }
+                studentExamEt.onFocusChangeListener = Util.onFocusEditTextPutCursorEnd
             }
         }
     }

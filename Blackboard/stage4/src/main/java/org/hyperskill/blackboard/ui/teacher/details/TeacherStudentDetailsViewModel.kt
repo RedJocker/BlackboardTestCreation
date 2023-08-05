@@ -1,18 +1,18 @@
 package org.hyperskill.blackboard.ui.teacher.details
 
 import android.os.Handler
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import okhttp3.Call
 import okhttp3.Response
 import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.data.model.Student
 import org.hyperskill.blackboard.network.student.dto.GradesResponse
 import org.hyperskill.blackboard.network.teacher.TeacherClient
-import org.hyperskill.blackboard.util.Extensions.combineWith
 import org.hyperskill.blackboard.util.Util
 import java.io.IOException
 
@@ -22,23 +22,22 @@ class TeacherStudentDetailsViewModel(
         val onUpdateSuccess: () -> Unit
 ) : ViewModel() {
 
-    private val _grades: MutableLiveData<List<Int>> = MutableLiveData(listOf())
-    val grades: LiveData<List<Int>>
-        get() = _grades
+    private val _grades = MutableStateFlow(listOf<Int>())
+    val grades: StateFlow<List<Int>> get() = _grades
 
-    private var _examGrade: MutableLiveData<Int> = MutableLiveData(-1)
-    val examGrade: LiveData<Int>
-        get() = _examGrade
+    private var _examGrade = MutableStateFlow(-1)
+    val examGrade: StateFlow<Int> get() = _examGrade
 
-    private val _editedGrades: MutableLiveData<List<Int>> = MutableLiveData(listOf())
-    val editedGrades : LiveData<List<Int>>
-        get() = _editedGrades
+    private val _editedGrades = MutableStateFlow(listOf<Int>())
+    val editedGrades : StateFlow<List<Int>> get() = _editedGrades
+            .also { println("_editedGrades ${it.value}") }
 
-    private var _editedExamGrade: MutableLiveData<Int> = MutableLiveData(-1)
-    val editedExamGrade: LiveData<Int>
-        get() = _editedExamGrade.also { println("_editedExamGrade ${it.value}") }
+    private var _editedExamGrade = MutableStateFlow(-1)
+    val editedExamGrade: StateFlow<Int> get() = _editedExamGrade
+            .also { println("_editedExamGrade ${it.value}") }
 
     val partialGrade = editedGrades.map { grades ->
+        println("partialGrade = editedGrades.map")
         (if(grades.isEmpty())
             0
         else
@@ -46,48 +45,48 @@ class TeacherStudentDetailsViewModel(
         .also { println("partialGrade $it") }
     }
 
-    val finalGrade = partialGrade.combineWith(editedExamGrade) { partial, exam ->
+    val isExamEnabled = partialGrade.map { partialGrade ->
+        println("isExamEnabled = partialGrade.map")
+        (partialGrade in (30 until 70)).also { println("isExamEnabled $it") }
+    }
+
+    val finalGrade = partialGrade.combine(isExamEnabled) { partial, isExamEnabled ->
+        partial to isExamEnabled
+    }.combine(editedExamGrade) { (partial, isExamEnabled), exam ->
         when {
-            partial == null -> null
-            exam == null -> partial
             exam < 0 -> partial
-            isExamEnabled.value == true -> (partial + exam) / 2
+            isExamEnabled -> (partial + exam) / 2
             else -> partial
         }.also { println("finalGrade $it") }
     }
 
-    val isExamEnabled = partialGrade.map { partialGrade ->
-        (partialGrade in (30 until 70)).also { println("isExamEnabled $it") }
-    }
-
-
     val partialResult = partialGrade.map {partialGrade ->
-        "Partial Result: $partialGrade"
-    }.also { println("partialResult ${it.value}") }
+        "Partial Result: $partialGrade".also { println("partialResult $it") }
+    }
 
     val finalResult = finalGrade.map { finalGrade ->
-        val finalGradeString = if(finalGrade != null) "$finalGrade" else ""
-        "Final Result: $finalGradeString"
+        "Final Result: $finalGrade"
     }
 
-    private val _networkErrorMessage: MutableLiveData<String> = MutableLiveData("")
-    val networkErrorMessage: LiveData<String>
+    private val _networkErrorMessage: MutableStateFlow<String?> = MutableStateFlow(null)
+    val networkErrorMessage: StateFlow<String?>
         get() = _networkErrorMessage
 
-    private var fetchGradesCall : Call? = null
+
 
     fun updateGrades(credential: Credential, studentName: String) {
         _grades.value = _editedGrades.value
         _examGrade.value = editedExamGrade.value
 
-        val exam = if (isExamEnabled.value == true) editedExamGrade.value else examGrade.value
         teacherClient.updateGradesRequest(
-            credential, studentName, editedGrades.value!!, exam ?: - 1, Util.callback(
+            credential, studentName, editedGrades.value, editedExamGrade.value , Util.callback(
                 onFailure = ::onCallFailure,
                 onResponse = ::onUpdateGradesResponse
             )
         )
     }
+
+    private var fetchGradesCall : Call? = null
 
     fun fetchGrades(credential: Credential, student: Student) {
         fetchGradesCall = teacherClient.fetchStudentGrades(
@@ -111,8 +110,7 @@ class TeacherStudentDetailsViewModel(
             println(response)
             when(response.code) {
                 200 -> {
-                    post {  }
-
+                    post { onUpdateSuccess() }
                 }
                 else -> {
                     post {
@@ -139,15 +137,8 @@ class TeacherStudentDetailsViewModel(
                         post {
                             (gradesResponse as? GradesResponse.Success)?.also {
 
-                                if(it.exam > 0) {
-                                    it.grades.map { grade -> if(grade < 0) 0 else grade }
-                                } else {
-                                    it.grades
-                                }.also { gradesList ->
-                                    _grades.value = gradesList
-                                    _editedGrades.value = gradesList
-                                }
-
+                                _grades.value = it.grades
+                                _editedGrades.value = it.grades
                                 _examGrade.value = it.exam
                                 _editedExamGrade.value = it.exam
                             }
@@ -164,6 +155,7 @@ class TeacherStudentDetailsViewModel(
     }
 
     fun setEditedGrades(editedGrades: List<Int>) {
+        println("setEditedGrades $editedGrades, isEqualToLast ${editedGrades == _editedGrades.value}")
         _editedGrades.value = editedGrades
     }
 

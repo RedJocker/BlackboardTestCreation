@@ -12,7 +12,7 @@ import org.hyperskill.blackboard.util.Util
 class StudentsRecyclerAdapter(
     students : List<Student>,
     val onStudentClick: (Student) -> Unit
-) : ListAdapter<Student, StudentsRecyclerAdapter.StudentsViewHolder>(Util.StudentDiffcallback) {
+) : ListAdapter<Student, StudentsRecyclerAdapter.StudentsViewHolder>(Util.studentDiffCallback) {
 
     init { submitList(students) }
 

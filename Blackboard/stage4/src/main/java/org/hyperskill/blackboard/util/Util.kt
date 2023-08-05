@@ -1,5 +1,7 @@
 package org.hyperskill.blackboard.util
 
+import android.view.View
+import android.widget.EditText
 import androidx.recyclerview.widget.DiffUtil
 import okhttp3.Call
 import okhttp3.Callback
@@ -25,7 +27,7 @@ object Util {
                 = oldItem == newItem
     }
 
-    val StudentDiffcallback = object: DiffUtil.ItemCallback<Student>(){
+    val studentDiffCallback = object: DiffUtil.ItemCallback<Student>(){
         override fun areItemsTheSame(oldItem: Student, newItem: Student): Boolean {
             return oldItem.name == newItem.name
         }
@@ -34,5 +36,13 @@ object Util {
             return oldItem == newItem
         }
 
+    }
+
+    val onFocusEditTextPutCursorEnd = View.OnFocusChangeListener { v, hasFocus ->
+        println("v $v hasFocus $hasFocus")
+        if (v !is EditText) return@OnFocusChangeListener
+        if(hasFocus) {
+            v.setSelection(v.text.length)
+        }
     }
 }

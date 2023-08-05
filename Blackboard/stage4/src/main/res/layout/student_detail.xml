@@ -60,6 +60,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingVertical="8dp"
+                    android:orientation="horizontal"
                     tools:listitem="@layout/list_item_grade" />
 
                 <Space
@@ -90,6 +91,7 @@
 
                     <EditText
                         android:text=""
+                        android:imeOptions="actionDone"
                         android:id="@+id/student_exam_et"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

@@ -1,10 +1,10 @@
 package org.hyperskill.blackboard.ui.teacher
 
 import android.os.Handler
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import okhttp3.Call
 import okhttp3.Response
 import org.hyperskill.blackboard.data.model.Credential
@@ -19,13 +19,11 @@ class TeacherViewModel(
         private val handler: Handler
 ) : ViewModel() {
 
-    private val _students = MutableLiveData(listOf<Student>())
-    val students : LiveData<List<Student>>
-        get() = _students
+    private val _students = MutableStateFlow(listOf<Student>())
+    val students : StateFlow<List<Student>> get() = _students
 
-    private val _networkErrorMessage: MutableLiveData<String> = MutableLiveData("")
-    val networkErrorMessage: LiveData<String>
-        get() = _networkErrorMessage
+    private val _networkErrorMessage = MutableStateFlow<String?>(null)
+    val networkErrorMessage: StateFlow<String?> get() = _networkErrorMessage
 
     private var fetchGradesCall : Call? = null
 
@@ -37,11 +35,12 @@ class TeacherViewModel(
     }
 
 
-
     private fun onFetchStudentsFailure(call: Call, e: IOException) {
         println(call)
         handler.post {
-            _networkErrorMessage.value = e.message
+            e.message?.also {
+                _networkErrorMessage.value = it
+            }
         }
     }
 
