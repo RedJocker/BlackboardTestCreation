@@ -9,18 +9,31 @@ manually test the app by running it.
 Password provided by tests as input is an encrypted version. 
 To validate User plain password input perform the encryption and compare with test input
 
-There will be two different user Roles, teacher and student, the plan for future stages is
+There will be two different user Roles, TEACHER and STUDENT, the plan for future stages is
 to have different screens for those roles, providing different features. 
 On this stage we will require just different Toast messages for valid logins based on the different
 roles.
 
 <br>
 
-## Objetives
+## Objectives
 - MainActivity
   - id container
     - FragmentContainerView
     - one activity pattern, fragment based screens
+
+- Input from tests
+  - intent.extras
+    - "userMap"
+      -  Map<String, Pair<String, String>>
+        - username, role to encodedPass
+  - default
+    - ```
+      val defaultUserMap = mapOf(
+      "George" to ("TEACHER" to "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ="), // plainPass = 1234
+      "Lucas" to ("STUDENT" to "SfjRCkJKMPlfohEJae0FOjNlJYbaGQ++tcY3LWnX40Q="),  // plainPass = 32A1
+      )
+      ```
 
 - LoginFragment
   - blackboard_title
