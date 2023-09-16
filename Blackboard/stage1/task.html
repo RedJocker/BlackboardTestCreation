@@ -1,0 +1,139 @@
+<h2>Description</h2>
+
+<p>TODO: PROJECT DESCRIPTION PARAGRAPH</p>
+
+<p>
+    We will start our application by creating a login screen.
+    The login will accept a username and a plain password.
+    You will convert the plain password into an encrypted version
+    and compare with a previously stored encrypted password.
+</p>
+
+<p>
+    On future stages we will receive this user data from a backend server
+    through network requests, but to make a simpler start this stage will
+    either receive user data from tests or work with default
+    hardcoded values that will be provided on the objective section.
+</p>
+
+<p>
+    There will be two different user Roles, TEACHER and STUDENT, the plan for future stages is
+    to have different screens for those roles, providing different features.
+    On this stage we will require just different Toast messages
+    for valid logins based on the different roles.
+</p>
+
+<h2>Objectives</h2>
+
+<ol>
+    <li>
+        On your <code>MainActivity</code> layout add a
+        <code>FragmentContainerView</code>
+        with id <code>container</code>.
+        This fragment will be used to display all
+        different screens of our application,
+        following the <a href="https://www.youtube.com/watch?v=2k8x8V77CrU">
+        single activity pattern</a>.
+    </li>
+    <li>
+        Tests may pass user data through <code>intent.extras</code>.
+        <ul>
+            <li>
+                The data can be retrieved with the key <code>"userMap"</code>
+            </li>
+            <li>
+                This userMap is going to be passed as Serializable
+                that you will need to cast to
+                <code>Map&lt;String, Pair&lt;String, String&gt;&gt;</code>.
+                The first string, map key, is the username.
+                The second string, pair.first, is the role.
+                The third string, pair.second, is the encrypted password.
+            </li>
+            <li>
+                In case tests don't pass a userMap through intent.extras,
+                and also for manual testing, use this map as the default value
+                <pre><code>
+
+val defaultUserMap = mapOf(
+  "George" to ("TEACHER" to "A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ="), // plainPass = 1234
+  "Lucas" to ("STUDENT" to "SfjRCkJKMPlfohEJae0FOjNlJYbaGQ++tcY3LWnX40Q="),  // plainPass = 32A1
+)
+                </code></pre>
+            </li>
+        </ul>
+    </li>
+    <li>
+        Create a <code>LoginFragment</code>
+        <ul>
+            <li>
+                Add a <code>TextView</code>
+                with id <code>blackboard_title</code>
+                and text <code>"::B L A C K B O A R D::"</code>
+            </li>
+            <li>
+                Add an <code>EditText</code>
+                with id <code>login_username_et</code>,
+                hint <code>"username"</code>
+                and inputType <code>"textPersonName"</code>
+            </li>
+            <li>
+                Add an <code>EditText</code>
+                with id <code>login_pass_et</code>,
+                hint <code>"password"</code>
+                and inputType <code>"textPassword"</code>
+            </li>
+            <li>
+                Add a <code>Button</code>
+                with id <code>login_submit_btn</code>
+                and text <code>"SUBMIT"</code>.
+                This button should trigger the login validation
+                after being clicked
+            </li>
+        </ul>
+    </li>
+    <li>
+        The password encryption will follow this scheme
+        <ul>
+            <li>take the plainPass string and convert to byte array using utf_8 charset. </li>
+            <li>get an instance of sha-256 using <code>MessageDigest.getInstance("SHA-256")</code></li>
+            <li>
+                make a sha256hashPass passing the byte array pass into the sha-256 instance
+            </li>
+            <li>
+                get the sha256hashPass and encode once more using Base64, you can use this code to make this step <code>
+                android.util.Base64.encodeToString(
+                sha256HashPass, android.util.Base64.NO_WRAP
+                )
+            </code>
+            </li>
+            <li>
+                the output from this last step is the encrypted pass for our app login
+            </li>
+        </ul>
+    </li>
+    <li>
+        if the login validation results in valid login
+        <ul>
+            <li>clear both login_username_et and login_pass_et</li>
+            <li>Toast a message depending on Role.
+                For role TEACHER the message should be
+                <code>"Good day teacher [username]"</code>.
+                For role STUDENT the message should be
+                <code>"Hello [username]"</code>.
+                In both cases [username] is a placeholder for the user username.
+            </li>
+        </ul>
+        else if the login is invalid
+        <ul>
+            <li>clear only login_pass_et</li>
+            <li>set login_username_et error to <code>"Invalid Login"</code></li>
+            <li>request focus to login_username_et</li>
+        </ul>
+    </li>
+</ol>
+
+<h2>Example</h2>
+
+<p><strong>Example 1: </strong><em>Login Screen</em></p>
+
+<p><img alt="" src="" height="660"  width="300" /></p>
