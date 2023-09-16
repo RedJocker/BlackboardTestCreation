@@ -28,6 +28,7 @@
             <EditText
                 android:id="@+id/login_username_et"
                 android:hint="username"
+                android:imeOptions="actionNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -38,6 +39,8 @@
             <EditText
                 android:id="@+id/login_pass_et"
                 android:hint="password"
+                android:imeOptions="actionDone"
+                android:nextFocusForward="@id/login_submit_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
