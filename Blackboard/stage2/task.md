@@ -32,11 +32,15 @@ login authentication
       - request
         - username
         - pass (encrypted version)
-      - response
+      - 200 response
         - username
         - token
           - jwt token used to make request on endpoints that require authorization
         - role
+      - 401 
+        - set login_username_et error to <code>"Invalid Login"</code>
+      - other status 
+        - set blackboard_title error to the response message.
 
 # to next stage
   - navigation

@@ -1,0 +1,165 @@
+<h2>Description</h2>
+
+<p>
+    We said on last stage that we would be making our authentication scheme using a
+    backend service that we communicate with though network requests.
+    Now is the time we will do it.
+</p>
+<p>
+    To make network communication we are going to use OkHttp and to assist with serialization
+    and deserialization we have included Moshi. Tests do not test serialization so you may
+    prefer to use some other library that you choose to include, but tests will expect the use
+    of OkHttp and have only been tested to work with OkHttp being used directly.
+</p>
+<p>
+    When applications start using complex objects like network clients a common pattern used
+    to organize the instantiation and access to those instances is dependency injection.
+    We will recommend the use of the Application class to make a manual dependency injection
+    pattern.
+    Tests will not test this, so other solutions might work, but avoid using mutation on
+    "static variables", which is anything that transpiles to a java static variable, as
+    this may cause state leak between different tests and may result on incorrect test behaviour.
+    This warning on mutating static variables is valid for all projects and stages of this track
+</p>
+
+<p>
+    Using internet requires permission, but it is a simple authorization that don't require
+    requesting permission at runtime. A simple declaration on manifest file is enough.
+</p>
+
+<p>
+    You most certainly will want to make manual tests to your application to see if you are
+    doing things right, but how will you be able to test network requests?
+    You could do the hard way and create a backend all yourself just for the purpose of
+    testing your application.
+    But we know that besides being a lot of work there would also be no guarantees your backend
+    would be compliant with what is expected from it. To address this issue we are recommending
+    the use of Mockoon application, which can be downloaded <a href="https://mockoon.com/">here</a>.
+    Mockoon creates a mock backend server and all the configuration of this backend will live in a
+    json file that can be shared and loaded elsewhere.
+    We have included a <code>Blackboard.json</code>, placed at the same level as the manifest file,
+    that can be loaded on Mockoon so you will be able to have a mock backend to test your application.
+    You may want to experiment changing the config of this backend, which is great, but we recommend cloning
+    the server before doing that so that you will still have the original in case you want to go back.
+    There are some limitations to Mockoon and for a very complex backend it may not be the best tool,
+    but this should be enough for our use case.
+</p>
+
+<h2>Objectives</h2>
+
+<ol>
+    <li>
+        Add permission for internet on manifest file. Also on manifest file
+        add this code on application tag
+        to be able to communicate with http
+        <code>android:usesCleartextTraffic="true"</code>
+    </li>
+    <li>
+        Create a class that extends the Application class,
+        use this class to instantiate and host your network client.
+        Declare your application class on manifest file.
+        You can find the application instance through an activity.
+        You will then be able to cast to your specific class that extends
+        the Application class and reach the client.
+    </li>
+    <li>
+        set the baseUrl
+        <ul>
+            <li>tests may pass the baseUrl through intent.extras with the key <code>"baseUrl"</code>.
+                That will be the baseUrl for the testing server.
+            </li>
+            <li>
+                if test has not passed baseUrl use a default
+                that is convenient for you to do manual testing
+            </li>
+            <li>
+                there is a special address to access your computer
+                localhost from the device you are using, which is
+                http://10.0.2.2:xxxx/, where xxxx is the port number.
+                So if you set your baseUrl to http://10.0.2.2:3001/ you
+                will reach port 3001 on your localhost.
+            </li>
+        </ul>
+    </li>
+    <li>
+        set up Mockoon for manual testing
+        <ul>
+            <li>
+                install Mockoon from the official site
+                <a href="https://mockoon.com/">https://mockoon.com/</a></li>
+            <li>
+                with Mokoon open go to 'file -> open enviroment'. On the file
+                dialog look for Blackboard.json that lives on the same folder
+                as the manifest file.
+            </li>
+            <li>
+                An server with name Blackboard and port number 3001 should be showing
+                up on Mokoon, right click on it to make duplicate so that you can have
+                a fallback copy
+            </li>
+            <li>
+                set your default baseUrl of your application
+                to the port number of the server you are using
+            </li>
+            <li>
+                click the green arrow to run the mock server and be able to serve requests
+            </li>
+        </ul>
+    </li>
+    <li>
+        Make HTTP requests to validate login
+        <ul>
+            <li>
+                Send a POST request to <code>/login</code> endpoint
+                with a json payload that contains keys <code>username</code> and <code>pass</code>
+                whose values are: 
+                For username, the input that was given on 
+                <code>login_username_et</code>
+                For pass, the input that was given on <code>login_pass_et</code> after
+                going through the encryption scheme that was already 
+                being used on previous stage.
+            </li>
+            <li>
+                If the user is authorized the response will have code 200. Receive the payload
+                which will on be a json containing keys <code>username</code>
+                <code>token</code> and <code>role</code>. 
+                Token is a jwt token that will be used on requests on further stages. Role
+                is the role associated with username and username is the same as the one in
+                request
+            </li>
+            <li>
+                If the user is not authorized the response will have code 401. That is
+                a login error that should be handled the same way as already done, setting
+                login_username_et error to <code>"Invalid Login"</code>.
+            </li>
+        </ul>
+    </li>
+    <li>
+        use <code>blackboard_title</code> error property do display network error
+        <ul>
+            <li>
+                In case you don't receive a 200 nor a 401 response or if the call fails
+                display a network error by displaying an error message on
+                <code>blackboard_title</code>
+            </li>
+            <li>
+                To be able to display error messages on a TextView
+                we have to set it as focusable.
+                On layout set <code>android:focusable="true"</code> and
+                <code>android:focusableInTouchMode="true"</code>
+            </li>
+            <li>
+                To display the error message
+                set <code>blackboardTitle.error</code> with the message
+                received on the response and also request focus to
+                <code>blackboard_title</code>
+            </li>
+        </ul>
+    </li>
+</ol>
+
+<h2>Example</h2>
+
+<p><strong>Example 1: </strong><em>Login Screen</em></p>
+
+<p><img alt="" src="" height="660"  width="300" /></p>
