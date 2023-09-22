@@ -4,6 +4,7 @@
     <TextView
         android:id="@+id/blackboard_title"
         android:text="::B L A C K B O A R D::"
+        android:background="@color/background_light_blue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

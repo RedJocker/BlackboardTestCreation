@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="8dp"
     android:orientation="vertical"
     android:gravity="center"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <include layout="@layout/blackboard_title" />
 
@@ -14,48 +17,44 @@
         android:layout_height="wrap_content"
         android:elevation="4dp"
         android:layout_margin="32dp"
-        app:cardCornerRadius="8dp">
-
+        >
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             android:background="@color/background_light_blue"
             android:gravity="center"
-            android:orientation="vertical"
-            android:paddingVertical="50dp"
-            android:paddingHorizontal="32dp"
-            >
+            android:padding="32dp">
 
             <EditText
                 android:id="@+id/login_username_et"
+                android:hint="username"
+                android:imeOptions="actionNext"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+                android:gravity="start"
                 android:layout_marginVertical="8dp"
-                android:hint="username"
-                android:background="#FAFAFA"
                 android:inputType="textPersonName"
-                android:padding="4dp"
-                android:textAlignment="center" />
+                android:paddingHorizontal="4dp" />
 
             <EditText
                 android:id="@+id/login_pass_et"
+                android:hint="password"
+                android:imeOptions="actionDone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="24dp"
+                android:gravity="start"
                 android:layout_marginVertical="8dp"
-                android:background="#FAFAFA"
-                android:hint="password"
                 android:inputType="textPassword"
-                android:padding="4dp"
-                android:textAlignment="center" />
+                android:paddingHorizontal="4dp" />
 
             <Button
                 android:id="@+id/login_submit_btn"
-                android:layout_width="wrap_content"
+                android:text="SUBMIT"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="8dp"
-                android:text="SUBMIT" />
+                />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </androidx.appcompat.widget.LinearLayoutCompat>

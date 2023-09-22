@@ -47,7 +47,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         println("LoginFragment.onViewCreated")
-        loginTeacher()
+        //loginTeacher()
         //loginLucas()
         loginBinding.apply {
 
