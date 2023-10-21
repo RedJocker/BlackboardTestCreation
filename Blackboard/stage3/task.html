@@ -26,19 +26,142 @@
     into it. For the moment teachers won't do anything else besides what is already implemented,
     which is toasting a message for a valid login.
 </p>
-<p>
-    You will notice that we will require some edit text where a text view would be fine and the
-    reason is because we have plans to implement more features on this screen in a later moment
-    which will make that make some sense (hopefully at least).
-</p>
 
 <h2>Objectives</h2>
 
 <ol>
-    <li></li>
-    <li></li>
-    <li></li>
-    <li></li>
+    <li>
+        Make the title a "reusable component"
+        <ul>
+            <li>
+                Create a new layout xml file and place
+                the view with id <code>blackboard_title</code> in it
+            </li>
+            <li>
+                Use the include tag to include <code>blackboard_title</code>
+                wherever it needs to be included, like <code>fragment_login</code>
+                for example.
+            </li>
+            <li>
+                If you are using view binding you will need to make some adjustments
+                to the binding routine.
+                Use something like this:
+                <pre><code>
+loginBinding = FragmentLoginBinding.inflate(inflater, container, false)
+titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
+                </code></pre>
+            </li>
+        </ul>
+    </li>
+
+    <li>
+        Make a GET request to retrieve student grades
+        on <code>/student/{username}</code> endpoint
+        where {username} is a placeholder for the username
+        <ul>
+            <li>
+                Use the jwt token received from login reponse
+                on this request's Authorization header using the format
+                <code>"Bearer {token}"</code> where {token}
+                is a placeholder
+            </li>
+            <li>
+                If the the response has code 200 receive the payload
+                which will be on a json containing keys <code>grades</code>
+                and <code>exam</code>.
+                <ul>
+                    <li>
+                        The value for <code>grades</code> is a list of integers from -1 up to 100,
+                        both inclusive, that denotes the value of a test grade.
+                        Grades 0 up to 100 are valid test grades
+                        that were already assigned by the teacher
+                        and the number -1 indicates that the test grade was not yet assigned.
+                    </li>
+                    <li>
+                        The value for <code>exam</code> is one integer from -1 up to 100,
+                        both inclusive, that denotes the value of an recovery exam grade.
+                        Also like grades an exam value of -1 indicates that this grade was not
+                        yet assigned.
+                    </li>
+                    <li>
+                        We will assume that the server response is always with valid format.
+                    </li>
+                </ul>
+            </li>
+            <li>
+                If the response code is not 200 treat it as a network error.
+            </li>
+        </ul>
+    </li>
+    <li>
+        Create a fragment <code>StudentFragment</code>
+        <ul>
+            <li>
+                Include <code>blackboard_title</code>.
+                Use it to display network error messages
+                in a similar way to the way used on login screen
+            </li>
+            <li>
+                Add a <code>TextView</code> with id
+                <code>student_name_tv</code>.
+                The text should match the username
+                from login response
+            </li>
+            <li>
+                Add a <code>RecyclerView</code> with id
+                <code>student_grades_rv</code>, use the
+                linear layout manager and set the orientation to
+                horizontal
+                <ul>
+                    <li>
+                        Create a list_item_grade layout
+                    </li>
+                    <li>
+                        Add a <code>TextView</code> with id
+                        <code>grade_header_tv</code>.
+                        The text should be set with <code>"T:x"</code>
+                        where x is a placeholder for an integer that is
+                        the list item position considering the first element
+                        as position one (one-indexed)
+                    </li>
+                    <li>
+                        Add a <code>EditText</code> with id
+                        <code>grade_value_et</code> and inputType number.
+                        The text should be set with a grade from the list of
+                        grades.
+                        In case of a grade with -1 value display:
+                        <ul>
+                            <li>
+                                If exam is also -1 then the grade value
+                                is considered pending and you should
+                                display an empty string
+                            </li>
+                            <li>
+                                If exam is not -1 then the grade value
+                                is zeroed and not pending, in which
+                                case you should display the value
+                                0
+                            </li>
+                        </ul>
+
+                        For this stage we won't be implementing any editing on this widget
+                        so you can disable it if you want to although tests will not enforce this.
+                    </li>
+                    <li>
+                        Use the grades list,
+                        that was received as response
+                        from calling /student/{username},
+                        as values for grade_value_et.
+                        The order of the items displayed should
+                        match the received list order.
+                    </li>
+                </ul>
+            </li>
+            <li>partial result TODO</li>
+            <li>exam grade TODO</li>
+            <li>final grade TODO</li>
+        </ul>
+    </li>
 </ol>
 
 <h2>Example</h2>
