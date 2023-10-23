@@ -16,7 +16,7 @@
 <p>
     In the end what students really care about is their final grade. Our backend, with
     good reasons (database normalization), only store the grades for each test
-    and possibly an recovery exam grade.
+    and possibly a recovery exam grade.
     Our app will be responsible for doing some calculations to know the final grade.
     Besides that there are some conditions for passing without doing exam, failing directly without
     exam or being able to do the exam.
@@ -108,6 +108,11 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                 from login response
             </li>
             <li>
+                Add a <code>TextView</code> with id <code>student_grades_label</code>
+                set the text property with
+                <code>"Grades:"</code>
+            </li>
+            <li>
                 Add a <code>RecyclerView</code> with id
                 <code>student_grades_rv</code>, use the
                 linear layout manager and set the orientation to
@@ -157,8 +162,54 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                     </li>
                 </ul>
             </li>
-            <li>partial result TODO</li>
-            <li>exam grade TODO</li>
+            <li>
+                Calculate the partial result
+                <ul>
+                    <li>the partial result is the simple arithmetic average from test grades
+                        <code>((total sum of test grades) / (total num of test grades))</code>
+                        using integer division
+                    </li>
+                    <li>
+                        negative values should not be summed up on the total, but the total num of test grades still count that test
+                        for example: <code>grades = [100, -1, 100, -1] -> partial result = 200 / 4 = 50</code>
+                        </li>
+                    <li>the partial result will be displayed in a <code>TextView</code> with id <code>student_partial_result_tv</code></li>
+                </ul>
+            </li>
+            <li>
+                Add a <code>TextView</code> with id <code>student_partial_result_tv</code>
+                <ul>
+                    <li>set the text property with
+                        <code>Partial Result: [partial result]</code>
+                        where [partial result] is a placeholder for the partial result
+                        calculation that was required just above
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Add a <code>TextView</code> with id <code>student_exam_label</code>
+                set the text property with
+                <code>"Exam:"</code>
+            </li>
+            <li>
+                Add a <code>EditText</code> with id <code>student_exam_et</code>
+                <ul>
+                    <li>
+                        students are alowed to take the exam
+                        even if the exam grade is not going
+                        to be considered for the final grade,
+                        for which reason you should display the
+                        exam if there is one in the response
+                        obtained from <code>/student/{username}</code>
+                        endpoint
+                    </li>
+                    <li>
+                        If exam is -1 then the value
+                        is considered pending and you should
+                        display an empty string
+                    </li>
+                </ul>
+            </li>
             <li>final grade TODO</li>
         </ul>
     </li>

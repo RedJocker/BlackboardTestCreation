@@ -29,6 +29,8 @@ On this stage we will make the students screen
         - simple arithmetic average from test grades ((total sum of test grades) / (total num of test grades))
           -  negative values should not be summed up on the total, but the total num of test grades still count that test
             - ex [100, -1, 100, -1] -> partial result = 200 / 4 = 50
+        - student_partial_result_tv
+          - TextView
       - exam grade
         - data from request
           - server response might contain a negative value that represent exam grades that was not yet assigned
