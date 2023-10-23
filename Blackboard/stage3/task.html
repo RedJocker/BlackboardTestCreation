@@ -56,13 +56,13 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
 
     <li>
         Make a GET request to retrieve student grades
-        on <code>/student/{username}</code> endpoint
-        where {username} is a placeholder for the username
+        on <code>/student/[username]</code> endpoint
+        where [username] is a placeholder for the username
         <ul>
             <li>
                 Use the jwt token received from login reponse
                 on this request's Authorization header using the format
-                <code>"Bearer {token}"</code> where {token}
+                <code>"Bearer [token]"</code> where [token]
                 is a placeholder
             </li>
             <li>
@@ -124,8 +124,8 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                     <li>
                         Add a <code>TextView</code> with id
                         <code>grade_header_tv</code>.
-                        The text should be set with <code>"T:x"</code>
-                        where x is a placeholder for an integer that is
+                        The text should be set with <code>"T:[x]"</code>
+                        where [x] is a placeholder for an integer that is
                         the list item position considering the first element
                         as position one (one-indexed)
                     </li>
@@ -195,8 +195,8 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                 Add a <code>EditText</code> with id <code>student_exam_et</code>
                 <ul>
                     <li>
-                        students are alowed to take the exam
-                        even if the exam grade is not going
+                        students are allowed to take the exam
+                        even if the grade for exam is not going
                         to be considered for the final grade,
                         for which reason you should display the
                         exam if there is one in the response
@@ -205,12 +205,59 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                     </li>
                     <li>
                         If exam is -1 then the value
-                        is considered pending and you should
-                        display an empty string
+                        is considered pending only if the exam is possible.
+                        Anyway, being possible or not, you should display an empty string when
+                        the exam value is -1.
                     </li>
                 </ul>
             </li>
-            <li>final grade TODO</li>
+            <li>
+                Calculate the final result
+                <ul>
+                    <li>
+                        the final result is considered pending if there are still any pending
+                        grades
+                    </li>
+                    <li>
+                        if the exam is not possible you should discard the grade for
+                        exam even if there is one and the final grade should be equal to the partial grade
+                    </li>
+                    <li>
+                        if the partial grade is below 30 the student will fail directly without exam
+                        and thus the exam is considered not possible
+                    </li>
+                    <li>
+                        if the partial grade is equal or above 70 will pass directly without exam
+                        and thus the exam is also considered not possible
+                    </li>
+                    <li>
+                        if the exam is possible the final grade should be the
+                        simple arithmetic average between partial grade and exam grade
+                        using integer division
+                    </li>
+                    <li>
+                        the exam is possible if the partial grade is above or equal to 30 and below 70
+                    </li>
+                    <li>
+                        the final grade should be displayed on a
+                        <code>TextView</code> with id <code>student_final_result_tv</code>
+                        only if the final result is not considered pending
+                    </li>
+                </ul>
+            </li>
+            <li>
+                Add a <code>TextView</code> with id <code>student_final_result_tv</code>
+                <ul>
+                    <li>set the text property with
+                        <code>Final Result: [final result]</code>
+                        where [final result] is a placeholder for the final result
+                        calculation that was required just above
+                    </li>
+                    <li>
+                        if the final result is pending replace the placeholder with an empty string
+                    </li>
+                </ul>
+            </li>
         </ul>
     </li>
 </ol>
