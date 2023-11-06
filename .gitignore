@@ -24,4 +24,6 @@ local.properties
 
 
 # Emacs temp files
-*#*
+*~
+\#*\#
+
