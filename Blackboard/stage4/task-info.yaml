@@ -139,4 +139,8 @@ files:
   - name: src/test/java/org/hyperskill/blackboard/internals/screen/TeacherStudentScreen.kt
     visible: false
   - name: src/test/java/org/hyperskill/blackboard/Stage4UnitTest.kt
-    visible: true
+    visible: false
+  - name: src/test/java/org/hyperskill/blackboard/internals/backend/service/TeacherService.kt
+    visible: false
+  - name: src/test/java/org/hyperskill/blackboard/internals/backend/dto/StudentsNamesResponse.kt
+    visible: false

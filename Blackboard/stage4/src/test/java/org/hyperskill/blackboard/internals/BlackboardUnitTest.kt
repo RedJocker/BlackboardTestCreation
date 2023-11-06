@@ -172,5 +172,6 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
 
         val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
         assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
+        shadowLooper.runToEndOfTasks()
     }
 }

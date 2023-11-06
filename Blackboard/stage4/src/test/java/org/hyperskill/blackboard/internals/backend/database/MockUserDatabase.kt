@@ -23,4 +23,6 @@ object MockUserDatabase {
         ORWELL to Student(ORWELL, "A$4@2ds", Grades(listOf(100, 70, 30, 50, 40, 50, 40), -1)),
         BENSON to Student(BENSON, "35799b8", Grades(listOf(100, 80, 95, 88, 75, 100, 100), -1)),
     )
+
+
 }

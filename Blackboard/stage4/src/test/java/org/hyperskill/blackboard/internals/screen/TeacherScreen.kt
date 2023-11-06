@@ -40,7 +40,7 @@ class TeacherScreen<T: Activity>(
         { viewSupplier, position, student  ->
             val item = ItemStudent(viewSupplier())
             item.listItemStudentNameTv.assertText(
-                expectedText = student.username + "fail",
+                expectedText = student.username,
                 idString = ID_LIST_ITEM_STUDENT_NAME_TV,
                 caseDescription = caseDescription
             )

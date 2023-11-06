@@ -61,8 +61,12 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                     .values
                     .filterIsInstance<Student>()
                 assertStudentList(expectedStudentsList, caseDescription)
-                // TODO create internals/backend/service/TeacherService
             }
         }
     }
+
+    // TODO
+    // test get teacher/student details
+    // test patch teacher/student details
+    // test grades logic in teacher/student details
 }
