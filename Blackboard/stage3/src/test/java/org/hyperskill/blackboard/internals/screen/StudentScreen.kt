@@ -91,18 +91,19 @@ class StudentScreen<T: Activity>(
 
     fun assertStudentDetails(student: Student, caseDescription: String) = with(test) {
         studentNameTv.assertText(student.username, ID_STUDENT_NAME_TV, caseDescription)
-        studentGradesRv.assertListItems(student.grades.grades) { viewSupplier, position, grade  ->
-            val expectedHeader = "T:${position + 1}"
-            val gradeNorm = when {
-                grade > 0 -> grade
-                student.grades.exam > 0 -> 0
-                else -> -1
+        studentGradesRv.doActionOnEachListItem(student.grades.grades, caseDescription)
+            { viewSupplier, position, grade  ->
+                val expectedHeader = "T:${position + 1}"
+                val gradeNorm = when {
+                    grade > 0 -> grade
+                    student.grades.exam > 0 -> 0
+                    else -> -1
+                }
+                val expectedGrade = if (gradeNorm < 0) "" else "$gradeNorm"
+                val item = ItemGrade(viewSupplier())
+                item.gradeHeaderTv.assertText(expectedHeader, ID_GRADE_HEADER_TV, caseDescription)
+                item.gradeValueET.assertText(expectedGrade, ID_GRADE_VALUE_ET, caseDescription)
             }
-            val expectedGrade = if (gradeNorm < 0) "" else "$gradeNorm"
-            val item = ItemGrade(viewSupplier())
-            item.gradeHeaderTv.assertText(expectedHeader, ID_GRADE_HEADER_TV, caseDescription)
-            item.gradeValueET.assertText(expectedGrade, ID_GRADE_VALUE_ET, caseDescription)
-        }
         val expectedPartial = "Partial Result: ${student.grades.partialGrade}"
         studentPartialResultTv
                 .assertText(expectedPartial, ID_STUDENT_PARTIAL_RESULT_TV, caseDescription)
