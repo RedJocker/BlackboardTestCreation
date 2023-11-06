@@ -11,6 +11,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.hyperskill.blackboard.internals.backend.BlackBoardMockBackEnd
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import java.util.concurrent.TimeUnit
 
 open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T>(clazz) {
 
@@ -154,5 +155,22 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
                 inputTypeString = inputTypeString,
                 idString = idString,
                 caseDescription = caseDescription)
+    }
+
+    fun assertGetRequestWithToken(caseDescription: String, token: String) {
+        val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
+        org.junit.Assert.assertNotNull(
+            "$caseDescription expected a request to be sent",
+            request
+        )
+
+        assertEquals("$caseDescription. Wrong request method", "GET", request!!.method)
+
+        val authHeader = "Authorization"
+        val actualTokenHeader = request.getHeader(authHeader)
+        val expectedTokenHeader = "Bearer $token"
+
+        val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
+        assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
     }
 }

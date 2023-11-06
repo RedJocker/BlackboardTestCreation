@@ -11,6 +11,7 @@ import okhttp3.mockwebserver.MockWebServer
 import org.hyperskill.blackboard.internals.backend.BlackBoardMockBackEnd
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import java.util.concurrent.TimeUnit
 
 open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T>(clazz) {
 
@@ -35,9 +36,9 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     lateinit var blackBoardMockBackEnd: BlackBoardMockBackEnd
 
     internal fun TextView.assertText(
-            expectedText: String,
-            idString: String,
-            caseDescription: String) {
+        expectedText: String,
+        idString: String,
+        caseDescription: String) {
 
         val actualText = text.toString()
         val message = "$caseDescription, on property text of TextView with id $idString"
@@ -46,9 +47,9 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     }
 
     internal fun Button.assertText(
-            expectedText: String,
-            idString: String,
-            caseDescription: String) {
+        expectedText: String,
+        idString: String,
+        caseDescription: String) {
 
         val actualText = text.toString()
         val message = "$caseDescription, on property text of Button with id $idString"
@@ -57,9 +58,9 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     }
 
     internal fun EditText.assertText(
-            expectedText: String,
-            idString: String,
-            caseDescription: String) {
+        expectedText: String,
+        idString: String,
+        caseDescription: String) {
 
         val actualText = text.toString()
         val message = "$caseDescription, on property text of EditText with id $idString"
@@ -67,9 +68,9 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     }
 
     internal fun EditText.assertError(
-            expectedError: String?,
-            idString: String,
-            caseDescription: String) {
+        expectedError: String?,
+        idString: String,
+        caseDescription: String) {
 
         val actualError = error?.toString()
         val message = "$caseDescription, on property error of EditText with id '$idString'"
@@ -102,9 +103,9 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     }
 
     internal fun EditText.assertFocus(
-            expectedIsFocused: Boolean,
-            idString: String,
-            caseDescription: String) {
+        expectedIsFocused: Boolean,
+        idString: String,
+        caseDescription: String) {
 
         val actualIsFocused = isFocused
         val message = "$caseDescription, on property isFocused of EditText with id $idString"
@@ -112,9 +113,9 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     }
 
     internal fun EditText.assertHint(
-            expectedHint: String,
-            idString: String,
-            caseDescription: String) {
+        expectedHint: String,
+        idString: String,
+        caseDescription: String) {
 
         val actualHint = hint.toString()
         val message = "$caseDescription, on property hint of EditText with id $idString"
@@ -122,10 +123,10 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     }
 
     internal fun EditText.assertInputType(
-            expectedInputType: Int,
-            inputTypeString: String,
-            idString: String,
-            caseDescription: String) {
+        expectedInputType: Int,
+        inputTypeString: String,
+        idString: String,
+        caseDescription: String) {
 
         val actualInputType = inputType
 
@@ -135,24 +136,41 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
     }
 
     internal fun EditText.assertValues(
-            expectedText: String,
-            expectedHint: String,
-            expectedInputType: Int,
-            inputTypeString: String,
-            idString: String,
-            caseDescription: String) {
+        expectedText: String,
+        expectedHint: String,
+        expectedInputType: Int,
+        inputTypeString: String,
+        idString: String,
+        caseDescription: String) {
         assertText(
-                expectedText = expectedText,
-                idString = idString,
-                caseDescription = caseDescription)
+            expectedText = expectedText,
+            idString = idString,
+            caseDescription = caseDescription)
         assertHint(
-                expectedHint = expectedHint,
-                idString = idString,
-                caseDescription = caseDescription)
+            expectedHint = expectedHint,
+            idString = idString,
+            caseDescription = caseDescription)
         assertInputType(
-                expectedInputType = expectedInputType,
-                inputTypeString = inputTypeString,
-                idString = idString,
-                caseDescription = caseDescription)
+            expectedInputType = expectedInputType,
+            inputTypeString = inputTypeString,
+            idString = idString,
+            caseDescription = caseDescription)
+    }
+
+    fun assertGetRequestWithToken(caseDescription: String, token: String) {
+        val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
+        org.junit.Assert.assertNotNull(
+            "$caseDescription expected a request to be sent",
+            request
+        )
+
+        assertEquals("$caseDescription. Wrong request method", "GET", request!!.method)
+
+        val authHeader = "Authorization"
+        val actualTokenHeader = request.getHeader(authHeader)
+        val expectedTokenHeader = "Bearer $token"
+
+        val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
+        assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
     }
 }

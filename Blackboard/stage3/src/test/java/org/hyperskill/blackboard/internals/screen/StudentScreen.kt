@@ -7,14 +7,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
 import org.hyperskill.blackboard.internals.backend.model.Student
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
-import java.util.concurrent.TimeUnit
 
 class StudentScreen<T: Activity>(
-        val test: BlackboardUnitTest<T>,
-        val screenName : String,
-        initViews: Boolean = true
+    val test: BlackboardUnitTest<T>,
+    val screenName : String,
+    initViews: Boolean = true
 ) {
 
 
@@ -92,21 +89,21 @@ class StudentScreen<T: Activity>(
     fun assertStudentDetails(student: Student, caseDescription: String) = with(test) {
         studentNameTv.assertText(student.username, ID_STUDENT_NAME_TV, caseDescription)
         studentGradesRv.doActionOnEachListItem(student.grades.grades, caseDescription)
-            { viewSupplier, position, grade  ->
-                val expectedHeader = "T:${position + 1}"
-                val gradeNorm = when {
-                    grade > 0 -> grade
-                    student.grades.exam > 0 -> 0
-                    else -> -1
-                }
-                val expectedGrade = if (gradeNorm < 0) "" else "$gradeNorm"
-                val item = ItemGrade(viewSupplier())
-                item.gradeHeaderTv.assertText(expectedHeader, ID_GRADE_HEADER_TV, caseDescription)
-                item.gradeValueET.assertText(expectedGrade, ID_GRADE_VALUE_ET, caseDescription)
+        { viewSupplier, position, grade  ->
+            val expectedHeader = "T:${position + 1}"
+            val gradeNorm = when {
+                grade > 0 -> grade
+                student.grades.exam > 0 -> 0
+                else -> -1
             }
+            val expectedGrade = if (gradeNorm < 0) "" else "$gradeNorm"
+            val item = ItemGrade(viewSupplier())
+            item.gradeHeaderTv.assertText(expectedHeader, ID_GRADE_HEADER_TV, caseDescription)
+            item.gradeValueET.assertText(expectedGrade, ID_GRADE_VALUE_ET, caseDescription)
+        }
         val expectedPartial = "Partial Result: ${student.grades.partialGrade}"
         studentPartialResultTv
-                .assertText(expectedPartial, ID_STUDENT_PARTIAL_RESULT_TV, caseDescription)
+            .assertText(expectedPartial, ID_STUDENT_PARTIAL_RESULT_TV, caseDescription)
 
         val expectedExam = if(student.grades.exam < 0 ) "" else "${student.grades.exam}"
         studentExamEt.assertText(expectedExam, ID_STUDENT_EXAM_ET, caseDescription)
@@ -121,22 +118,6 @@ class StudentScreen<T: Activity>(
         blackboardTitle.assertError(expectedError, BlackboardTitle.BLACKBOARD_TITLE_ID, caseDescription)
     }
 
-    fun assertGetRequestWithToken(caseDescription: String, token: String) = with(test) {
-        val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
-        assertNotNull(
-                "$caseDescription expected a request to be sent",
-                request
-        )
-
-        assertEquals("$caseDescription. Wrong request method", "GET", request!!.method)
-
-        val authHeader = "Authorization"
-        val actualTokenHeader = request.getHeader(authHeader)
-        val expectedTokenHeader = "Bearer $token"
-
-        val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
-        assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
-    }
 
     inner class ItemGrade(private val root: View) {
 
