@@ -14,10 +14,11 @@
     be presenting on the screen for students.
 </p>
 <p>
-    In the end what students really care about is their final grade. Our backend, with
-    good reasons (database normalization), only store the grades for each test
-    and possibly a recovery exam grade.
-    Our app will be responsible for doing some calculations to know the final grade.
+    In the end what students really care about is their final grade. Our database,
+    because of database normalization, only store the grades for each test
+    and possibly a recovery exam grade and our backend is acting just as a proxy to the
+    database because someone thought it would be cheaper to do that way.
+    Our app will be the one responsible for doing some calculations to know the final grade.
     Besides that there are some conditions for passing without doing exam, failing directly without
     exam or being able to do the exam.
 </p>
