@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
 import org.hyperskill.blackboard.internals.backend.model.Student
 
-class StudentScreen<T: Activity>(
+open class StudentScreen<T: Activity>(
     val test: BlackboardUnitTest<T>,
     val screenName : String,
     initViews: Boolean = true
@@ -25,6 +25,7 @@ class StudentScreen<T: Activity>(
         const val ID_STUDENT_FINAL_RESULT_TV = "student_final_result_tv"
         const val ID_GRADE_VALUE_ET = "grade_value_et"
         const val ID_GRADE_HEADER_TV = "grade_header_tv"
+        const val PATH_STUDENTS = "/student/"
     }
 
     val descriptionInitialization = "On $screenName initialization"
@@ -86,7 +87,7 @@ class StudentScreen<T: Activity>(
         }
     }
 
-    fun assertStudentDetails(student: Student, caseDescription: String) = with(test) {
+    open fun assertStudentDetails(student: Student, caseDescription: String) = with(test) {
         studentNameTv.assertText(student.username, ID_STUDENT_NAME_TV, caseDescription)
         studentGradesRv.doActionOnEachListItem(student.grades.grades, caseDescription)
         { viewSupplier, position, grade  ->
@@ -111,7 +112,6 @@ class StudentScreen<T: Activity>(
         val finalString = if(student.grades.finalGrade < 0) "" else "${student.grades.finalGrade}"
         val expectedFinal = "Final Result: $finalString"
         studentFinalResultTv.assertText(expectedFinal, ID_STUDENT_FINAL_RESULT_TV, caseDescription)
-
     }
 
     fun assertStudentNetworkError(caseDescription: String, expectedError: String) = with(test) {

@@ -14,6 +14,10 @@ data class Grades(val grades: List<Int>, val exam: Int) {
             -1
         } else { partialGrade }
     }
+    val teacherFinalGrade = if (isExamPossible) {
+        val examGrade = if (exam < 0) 0 else exam
+        (partialGrade + examGrade) / 2
+    } else { partialGrade }
 }
 
 /*

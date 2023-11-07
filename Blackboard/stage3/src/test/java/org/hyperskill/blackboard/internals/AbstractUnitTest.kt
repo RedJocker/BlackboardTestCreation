@@ -259,7 +259,7 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
                     this.layout(0,0, listHeight, listWidth)  // may increase clock time
                     scrollToPosition(i)
                     findViewHolderForAdapterPosition(i)?.itemView
-                            ?: throw AssertionError("$caseDescription Could not find list item with index $i")
+                        ?: throw AssertionError("$caseDescription Could not find list item with index $i")
                 }
                 action(itemViewSupplier, i, song)
             }
@@ -323,5 +323,19 @@ abstract class AbstractUnitTest<T : Activity>(clazz: Class<T>) {
         } else {
             throw IllegalStateException("size assertion was not effective")
         }
+    }
+
+    /**
+     * Use this method to click on BackButton. It will also advance the clock millis milliseconds and run
+     * enqueued Runnable scheduled to run on main looper in that timeframe.
+     * Default value for millis is 500
+     *
+     * Internally it calls activity.onBackPressed() and shadowLooper.idleFor(millis)
+     */
+
+    fun Activity.clickBackAndRun(millis: Long = 500) {
+        // https://developer.android.com/guide/navigation/navigation-custom-back#onbackpressed
+        @Suppress("deprecation") this.onBackPressed()
+        shadowLooper.idleFor(Duration.ofMillis(millis))
     }
 }

@@ -157,7 +157,7 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
             caseDescription = caseDescription)
     }
 
-    fun assertGetRequestWithToken(caseDescription: String, token: String) {
+    fun assertGetRequestWithToken(caseDescription: String, token: String, path: String) {
         val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
         org.junit.Assert.assertNotNull(
             "$caseDescription expected a request to be sent",
@@ -166,11 +166,17 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
 
         assertEquals("$caseDescription. Wrong request method", "GET", request!!.method)
 
+        assertEquals(
+            "$caseDescription. Wrong endpoint on request",
+            path.removeSuffix("/"),
+            request.path?.removeSuffix("/")
+        )
         val authHeader = "Authorization"
         val actualTokenHeader = request.getHeader(authHeader)
         val expectedTokenHeader = "Bearer $token"
 
         val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
         assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
+        shadowLooper.runToEndOfTasks()
     }
 }

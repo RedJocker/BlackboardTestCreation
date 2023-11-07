@@ -18,9 +18,12 @@ class StudentService(val moshi: Moshi): Service {
 
         return if (request.method == "GET") {
             when(val path = request.path ?: "") {
-                "/student/Martin" -> Response.gatewayTimeout504
+                "/student/Martin",
+                "/student/Martin/"-> Response.gatewayTimeout504
                 else -> {
-                    val name = path.substringAfter("/student/", "")
+                    val name = path
+                        .substringAfter("/student/", "")
+                        .removeSuffix("/")
                     val student = MockUserDatabase.users[name] as? Student
 
                     val authHeader = "Authorization"

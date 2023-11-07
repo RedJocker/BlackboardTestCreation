@@ -16,7 +16,6 @@ import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.data.model.Credential.Companion.putCredential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentLoginBinding
-import org.hyperskill.blackboard.util.DevUtil.loginTeacher
 import org.hyperskill.blackboard.util.Extensions.showToast
 
 

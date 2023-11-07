@@ -17,6 +17,7 @@ import org.hyperskill.blackboard.internals.backend.model.Student
 import org.hyperskill.blackboard.internals.backend.model.User
 import org.hyperskill.blackboard.internals.screen.LoginScreen
 import org.hyperskill.blackboard.internals.screen.StudentScreen
+import org.hyperskill.blackboard.internals.screen.StudentScreen.Companion.PATH_STUDENTS
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -86,7 +87,7 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
                 val caseDescription = "After student $name login"
-                assertGetRequestWithToken(caseDescription, student.token)
+                assertGetRequestWithToken(caseDescription, student.token, "$PATH_STUDENTS${student.username}")
                 assertStudentDetails(student, caseDescription)
             }
         }
@@ -107,7 +108,7 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
                 val caseDescription = "After student $name login"
-                assertGetRequestWithToken(caseDescription, student.token)
+                assertGetRequestWithToken(caseDescription, student.token, "$PATH_STUDENTS${student.username}")
                 assertStudentDetails(student, caseDescription)
             }
         }
@@ -128,7 +129,7 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
                 val caseDescription = "After student $name login"
-                assertGetRequestWithToken(caseDescription, student.token)
+                assertGetRequestWithToken(caseDescription, student.token, "$PATH_STUDENTS${student.username}")
                 assertStudentDetails(student, caseDescription)
             }
         }
@@ -149,7 +150,7 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
                 val caseDescription = "After student $name login"
-                assertGetRequestWithToken(caseDescription, student.token)
+                assertGetRequestWithToken(caseDescription, student.token, "$PATH_STUDENTS${student.username}")
                 assertStudentDetails(student, caseDescription)
             }
         }
@@ -170,7 +171,7 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
                 val caseDescription = "After student $name login"
-                assertGetRequestWithToken(caseDescription, student.token)
+                assertGetRequestWithToken(caseDescription, student.token, "$PATH_STUDENTS${student.username}")
                 assertStudentDetails(student, caseDescription)
             }
         }
@@ -191,10 +192,10 @@ class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
             StudentScreen(this, STUDENT_SCREEN_NAME).apply {
                 val caseDescription = "After student $name login"
-                assertGetRequestWithToken(caseDescription, student.token)
+                assertGetRequestWithToken(caseDescription, student.token, "$PATH_STUDENTS${student.username}")
                 assertStudentNetworkError(
-                        caseDescription = "When /student/Martin responds with 504 Gateway Timeout",
-                        expectedError = "504 Gateway Timeout"
+                    caseDescription = "When /student/Martin responds with 504 Gateway Timeout",
+                    expectedError = "504 Gateway Timeout"
                 )
             }
         }

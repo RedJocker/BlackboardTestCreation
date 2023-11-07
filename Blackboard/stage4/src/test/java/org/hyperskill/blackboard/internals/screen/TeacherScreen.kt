@@ -16,6 +16,7 @@ class TeacherScreen<T: Activity>(
     companion object {
         const val ID_TEACHER_STUDENTS_LIST_RV = "teacher_students_list_rv"
         const val ID_LIST_ITEM_STUDENT_NAME_TV = "list_item_student_name_tv"
+        const val PATH_TEACHER_STUDENTS = "/teacher/student/"
     }
 
     val blackboardTitle by lazy {
@@ -47,7 +48,15 @@ class TeacherScreen<T: Activity>(
         }
     }
 
-    inner class ItemStudent(private val root: View) {
+    fun clickStudent(studentName: Int, caseDescription: String) = with(test) {
+        teacherStudentsListRv.doActionOnSingleListItem(studentName, caseDescription)
+        { viewSupplier ->
+            val item = ItemStudent(viewSupplier())
+            item.root.clickAndRun()
+        }
+    }
+
+    inner class ItemStudent(val root: View) {
         val listItemStudentNameTv : TextView = with(test) {
             root.findViewByString(ID_LIST_ITEM_STUDENT_NAME_TV)
         }

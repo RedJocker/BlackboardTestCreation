@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm
 import org.hyperskill.blackboard.internals.backend.dto.LoginResponse
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
-import java.util.*
+import java.util.Base64
 
 abstract class User(val username: String, val role: String, val plainPass: String) {
 
