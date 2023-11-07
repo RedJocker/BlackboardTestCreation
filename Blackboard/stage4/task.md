@@ -21,6 +21,12 @@ On this stage we will make the teacher screen
         - include layout (include/merge tags)
         - different logic
             - all edit text should be enabled
+            - display response grades even when -1
+            - bound grades to [-1 .. 100]
+            - do not zero pending grades if there is an exam grade
+            - always calculate and display final grade
+            - still consider possibility of exam to calculate final grade
+            - negative grades are considered zero only when calculating partial grade and final grade
     - add a submit button
         - post grades to update grades on backend
 - Teacher Client

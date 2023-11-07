@@ -21,7 +21,7 @@ object Util {
 
     val intDiffcallback = object: DiffUtil.ItemCallback<Int>(){
         override fun areItemsTheSame(oldItem: Int, newItem: Int)
-                = oldItem == newItem
+                = false
 
         override fun areContentsTheSame(oldItem: Int, newItem: Int)
                 = oldItem == newItem

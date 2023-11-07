@@ -27,6 +27,7 @@ class TeacherStudentDetailsViewModel(
 
     private var _examGrade = MutableStateFlow(-1)
     val examGrade: StateFlow<Int> get() = _examGrade
+        .also { println("_examGrade ${it.value}") }
 
     private val _editedGrades = MutableStateFlow(listOf<Int>())
     val editedGrades : StateFlow<List<Int>> get() = _editedGrades
@@ -54,7 +55,7 @@ class TeacherStudentDetailsViewModel(
         partial to isExamEnabled
     }.combine(editedExamGrade) { (partial, isExamEnabled), exam ->
         when {
-            exam < 0 -> partial
+            exam < 0 && isExamEnabled -> partial / 2
             isExamEnabled -> (partial + exam) / 2
             else -> partial
         }.also { println("finalGrade $it") }
@@ -75,7 +76,7 @@ class TeacherStudentDetailsViewModel(
 
 
     fun updateGrades(credential: Credential, studentName: String) {
-        _grades.value = _editedGrades.value
+        _grades.value = editedGrades.value
         _examGrade.value = editedExamGrade.value
 
         teacherClient.updateGradesRequest(
@@ -136,7 +137,7 @@ class TeacherStudentDetailsViewModel(
                     } else {
                         post {
                             (gradesResponse as? GradesResponse.Success)?.also {
-
+                                println("gradesResponse: $it")
                                 _grades.value = it.grades
                                 _editedGrades.value = it.grades
                                 _examGrade.value = it.exam

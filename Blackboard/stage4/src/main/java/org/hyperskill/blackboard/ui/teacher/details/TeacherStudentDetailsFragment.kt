@@ -131,9 +131,11 @@ class TeacherStudentDetailsFragment : Fragment() {
                 studentExamEt.addTextChangedListener {
                     val inputIntValue = studentExamEt.text.toString().toIntOrNull() ?: -1
                     val normalizedInputValue = if(inputIntValue > 100) {
-                        studentExamEt.setText("100")
+                        studentExamEt.setTextKeepState("100")
                         100
-
+                    } else if(inputIntValue < -1){
+                        studentExamEt.setTextKeepState("-1")
+                        -1
                     } else inputIntValue
                     setEditedExamGrades(normalizedInputValue)
                 }

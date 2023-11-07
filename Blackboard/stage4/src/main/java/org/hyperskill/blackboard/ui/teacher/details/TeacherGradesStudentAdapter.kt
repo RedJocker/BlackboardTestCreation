@@ -30,8 +30,12 @@ class TeacherGradesStudentAdapter(
             item.gradeValueEt.addTextChangedListener(afterTextChanged = {
                 val inputIntValue = item.gradeValueEt.text.toString().toIntOrNull() ?: -1
                 val normalizedInputValue = if(inputIntValue > 100) {
-                    item.gradeValueEt.setText("100")
+                    item.gradeValueEt.setTextKeepState("100")
                     100
+                } else if(inputIntValue < -1)
+                {
+                    item.gradeValueEt.setTextKeepState("-1")
+                    -1
                 } else inputIntValue
 
                 editedGrades[adapterPosition] = normalizedInputValue
