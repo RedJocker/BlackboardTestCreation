@@ -1,13 +1,13 @@
 package org.hyperskill.blackboard.internals.backend.model
 
 data class Grades(val grades: List<Int>, val exam: Int) {
-    val partialGrade = grades.sumOf { if (it < 0) 0 else it } / grades.size
+    val partialGrade = grades.sumOf { if (it < 0) 0 else if (it > 100) 100 else it } / grades.size
 
     private val hasMoreTest = grades.any { it < 0 }
     private val isExamPossible = partialGrade in 30 until 70
     val finalGrade = if (exam >= 0) {
         if (isExamPossible) {
-            (partialGrade + exam) / 2
+            (partialGrade + (if (exam > 100) 100 else exam)) / 2
         } else { partialGrade }
     } else {
         if(hasMoreTest || isExamPossible) {
@@ -15,7 +15,7 @@ data class Grades(val grades: List<Int>, val exam: Int) {
         } else { partialGrade }
     }
     val teacherFinalGrade = if (isExamPossible) {
-        val examGrade = if (exam < 0) 0 else exam
+        val examGrade = if (exam < 0) 0 else if (exam > 100) 100 else exam
         (partialGrade + examGrade) / 2
     } else { partialGrade }
 }
