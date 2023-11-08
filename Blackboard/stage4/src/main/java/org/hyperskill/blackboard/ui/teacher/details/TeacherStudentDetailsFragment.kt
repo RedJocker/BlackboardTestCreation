@@ -96,6 +96,7 @@ class TeacherStudentDetailsFragment : Fragment() {
                         }
                         launch {
                             networkErrorMessage.collect {
+                                println("observe networkErrorMessage: $it")
                                 titleBinding.blackboardTitle.error = it
                                 if(it == null) {
                                     titleBinding.blackboardTitle.requestFocus()
@@ -105,6 +106,7 @@ class TeacherStudentDetailsFragment : Fragment() {
 
                         launch {
                             examGrade.collect {
+                                println("observe examGrade: $it")
                                 studentExamEt.setText("$it")
                             }
                         }
@@ -118,6 +120,7 @@ class TeacherStudentDetailsFragment : Fragment() {
 
                         launch {
                             finalResult.collect {
+                                println("observe finalResult: $it")
                                 studentFinalResultTv.text = it
                             }
                         }
