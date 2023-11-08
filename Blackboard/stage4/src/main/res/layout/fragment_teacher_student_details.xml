@@ -23,7 +23,7 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/detail_btn"
+        android:id="@+id/detail_submit_btn"
         android:src="@drawable/baseline_send_24"
         android:backgroundTint="@color/background_light_blue"
         android:layout_width="wrap_content"

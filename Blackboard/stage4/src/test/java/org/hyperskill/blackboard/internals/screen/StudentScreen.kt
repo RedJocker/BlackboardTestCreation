@@ -100,7 +100,7 @@ open class StudentScreen<T: Activity>(
             val expectedGrade = if (gradeNorm < 0) "" else "$gradeNorm"
             val item = ItemGrade(viewSupplier())
             item.gradeHeaderTv.assertText(expectedHeader, ID_GRADE_HEADER_TV, caseDescription)
-            item.gradeValueET.assertText(expectedGrade, ID_GRADE_VALUE_ET, caseDescription)
+            item.gradeValueEt.assertText(expectedGrade, ID_GRADE_VALUE_ET, caseDescription)
         }
         val expectedPartial = "Partial Result: ${student.grades.partialGrade}"
         studentPartialResultTv
@@ -125,7 +125,7 @@ open class StudentScreen<T: Activity>(
             root.findViewByString(ID_GRADE_HEADER_TV)
         }
 
-        val gradeValueET : EditText = with(test) {
+        val gradeValueEt : EditText = with(test) {
             root.findViewByString(ID_GRADE_VALUE_ET)
         }
     }

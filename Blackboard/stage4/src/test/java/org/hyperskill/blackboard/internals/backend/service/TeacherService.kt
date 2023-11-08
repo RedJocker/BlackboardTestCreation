@@ -15,20 +15,21 @@ import org.hyperskill.blackboard.internals.backend.response.Response.withBody
 class TeacherService(val moshi: Moshi): Service {
     val responseAdapter = moshi.adapter(StudentsNamesResponse::class.java)
     val responseGradesAdapter = moshi.adapter(Grades::class.java)
+
     override fun serve(request: RecordedRequest): MockResponse {
         println(request)
-        return if (request.method == "GET") {
-            when(val path = request.path ?: "") {
-                "/teacher/student/" -> {
+        return when(val path = request.path ?: "") {
+            "/teacher/student/" -> {
+                if (request.method == "GET") {
                     val teacher = users[GEORGE] as? Teacher
 
                     val authHeader = "Authorization"
                     val actualToken = request.getHeader(authHeader)
                     val expectedToken = "Bearer ${teacher?.token}"
 
-                    if(teacher == null) {
+                    if (teacher == null) {
                         Response.notFound404
-                    } else if(actualToken != expectedToken) {
+                    } else if (actualToken != expectedToken) {
                         Response.forbidden
                     } else {
                         val studentsNames = users.values
@@ -37,28 +38,42 @@ class TeacherService(val moshi: Moshi): Service {
                         val studentsNamesResponse = StudentsNamesResponse(studentsNames)
                         Response.ok200.withBody(responseAdapter.toJson(studentsNamesResponse))
                     }
+                } else {
+                    Response.notFound404
                 }
-                else -> {
-                    val name = path
-                        .substringAfter("/teacher/student/", "")
-                        .removeSuffix("/")
-                    val student = users[name] as? Student
-                    val teacher = users[GEORGE] as Teacher
-                    val authHeader = "Authorization"
-                    val actualToken = request.getHeader(authHeader)
-                    val expectedToken = "Bearer ${teacher.token}"
+            }
+            else -> {
+                val name = path
+                    .substringAfter("/teacher/student/", "")
+                    .removeSuffix("/")
+                val student = users[name] as? Student
+                val teacher = users[GEORGE] as Teacher
+                val authHeader = "Authorization"
+                val actualToken = request.getHeader(authHeader)
+                val expectedToken = "Bearer ${teacher.token}"
 
-                    if(student == null) {
-                        Response.notFound404
-                    } else if(actualToken != expectedToken) {
-                        Response.forbidden
-                    } else {
+                if(student == null) {
+                    Response.notFound404
+                } else if(actualToken != expectedToken) {
+                    Response.forbidden
+                } else {
+                    if (request.method == "GET") {
                         Response.ok200.withBody(responseGradesAdapter.toJson(student.grades))
+                    } else if (request.method == "PATCH") {
+
+                        val payloadString = request.body.readUtf8()
+                        val maybePayload = responseGradesAdapter.fromJson(payloadString)
+
+                        if(maybePayload == null) {
+                            Response.badRequest400
+                        } else {
+                            Response.ok200.withBody(payloadString)
+                        }
+                    } else {
+                        Response.notFound404
                     }
                 }
             }
-        } else {
-            Response.notFound404
         }
     }
 }

@@ -124,7 +124,7 @@ class TeacherStudentDetailsFragment : Fragment() {
                     }
                 }
 
-                binding.detailBtn.setOnClickListener {
+                binding.detailSubmitBtn.setOnClickListener {
                     detailsViewModel.updateGrades(credentials, student.name)
                 }
 

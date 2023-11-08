@@ -6,4 +6,12 @@ class Student(userName: String, plainPass: String, var grades: Grades) : User(us
     override fun toString(): String {
         return "Student(grades=$username, plainPass=$plainPass)"
     }
+
+    fun copy(
+        userName: String = this.username,
+        plainPass: String = this.plainPass,
+        grades: Grades = this.grades
+    ): Student {
+        return Student(userName, plainPass, grades)
+    }
 }

@@ -9,6 +9,8 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.mockwebserver.MockWebServer
 import org.hyperskill.blackboard.internals.backend.BlackBoardMockBackEnd
+import org.hyperskill.blackboard.internals.backend.model.Grades
+import org.hyperskill.blackboard.internals.backend.model.Student
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import java.util.concurrent.TimeUnit
@@ -178,5 +180,42 @@ open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T
         val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
         assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
         shadowLooper.runToEndOfTasks()
+    }
+
+    fun assertPatchRequestWithToken(caseDescription: String, token: String, path: String) {
+        val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
+        org.junit.Assert.assertNotNull(
+            "$caseDescription expected a request to be sent",
+            request
+        )
+
+        assertEquals("$caseDescription. Wrong request method", "PATCH", request!!.method)
+
+        assertEquals(
+            "$caseDescription. Wrong endpoint on request",
+            path.removeSuffix("/"),
+            request.path?.removeSuffix("/")
+        )
+        val authHeader = "Authorization"
+        val actualTokenHeader = request.getHeader(authHeader)
+        val expectedTokenHeader = "Bearer $token"
+
+        val messageTokenHeader = "$caseDescription. Expected $authHeader header on request for ${request.path}"
+        assertEquals(messageTokenHeader, expectedTokenHeader, actualTokenHeader)
+
+        shadowLooper.runToEndOfTasks()
+    }
+
+    fun assertPatchResponse(caseDescription: String, student: Student) {
+        val gradesAdapter = moshi.adapter(Grades::class.java)
+        val response = blackBoardMockBackEnd.poolResponse()
+
+        val messageUnexpectedResponse =
+            "$caseDescription got unexpected response status, check you are doing the right request, response "
+        assertEquals(messageUnexpectedResponse, "HTTP/1.1 200 OK", response.status)
+        val expectedBody = gradesAdapter.toJson(student.grades)
+        val messageUnexpectedBody =
+            "$caseDescription got unexpected response body, check you are doing the right request, response "
+        assertEquals(messageUnexpectedBody, expectedBody , response.getBody()?.readUtf8())
     }
 }
