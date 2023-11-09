@@ -90,7 +90,7 @@ class TeacherStudentDetailsFragment : Fragment() {
                         launch {
                             grades.collect { gradesList ->
                                 println("observer grades $gradesList")
-                                detailsViewModel.setEditedGrades(gradesList)
+                                detailsViewModel.setEditedGrades(gradesList.map { it.value })
                                 teacherStudentGradesAdapter.submitList(gradesList)
                             }
                         }
@@ -106,8 +106,8 @@ class TeacherStudentDetailsFragment : Fragment() {
 
                         launch {
                             examGrade.collect {
-                                println("observe examGrade: $it")
-                                studentExamEt.setText("$it")
+                                println("observe examGrade: ${it}")
+                                studentExamEt.setText("${it}")
                             }
                         }
 

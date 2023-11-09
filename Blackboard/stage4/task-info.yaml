@@ -146,3 +146,5 @@ files:
     visible: false
   - name: src/test/java/org/hyperskill/blackboard/internals/shadows/CustomShadowAsyncDifferConfig.java
     visible: false
+  - name: src/main/java/org/hyperskill/blackboard/util/Unique.kt
+    visible: true

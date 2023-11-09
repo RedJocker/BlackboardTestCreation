@@ -427,19 +427,119 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
 
                 val caseDescriptionUpdate =
                     "After editing ${ID_GRADE_VALUE_ET} at index $gradeIndexChanged " +
-                            "with negative out of bounds grade"
+                            "with positive out of bounds grade"
                 editGradesChangeAtIndex(gradeIndexChanged, outOfBoundsStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit =
-                    "After clicking $ID_DETAIL_SUBMIT_BTN with negative out of bounds grade"
+                    "After clicking $ID_DETAIL_SUBMIT_BTN with positive out of bounds grade"
                 submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
                 assertStudentDetails(updatedStudent, caseDescriptionSubmit)
             }
         }
     }
 
+    @Test
+    fun test08_checkTeacherStudentDetailExamGradeEmptyString() {
+        val name = GEORGE
+        val teacher = MockUserDatabase.users[name]!! as Teacher
 
-    // TODO
-    // test empty grade
-    // maybe test multiple editions
+        val students = MockUserDatabase.users
+            .values
+            .filterIsInstance<Student>()
+        val student = MockUserDatabase.users[HARRISON] as Student
+        val studentIndex = students.indexOf(student)
+        val updatedStudent = student.copy(grades = student.grades.copy(
+            exam = -1
+        ))
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(teacher.username, teacher.plainPass)
+                val caseDescription = "With correct ${teacher.role} ${teacher.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastTeacherLoginSuccess(teacher.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+            TeacherScreen(this, TEACHER_SCREEN_NAME).apply {
+                val caseDescription = "After teacher $name login"
+                assertGetRequestWithToken(caseDescription, teacher.token, PATH_TEACHER_STUDENTS)
+                clickStudent(studentIndex, caseDescription)
+            }
+            TeacherStudentScreen(this, TEACHER_STUDENT_SCREEN_NAME).apply {
+                val caseDescriptionClickItem =
+                    "After clicking on ${student.username} item in $TEACHER_SCREEN_NAME"
+                assertGetRequestWithToken(
+                    caseDescriptionClickItem,
+                    teacher.token,
+                    "$PATH_TEACHER_STUDENTS${student.username}/"
+                )
+                blackBoardMockBackEnd.clearResponseList()
+                assertStudentDetails(student, caseDescriptionClickItem)
+
+                val caseDescriptionUpdate = "After editing $ID_STUDENT_EXAM_ET with empty string grade"
+                editExamChangeWithString("", updatedStudent, caseDescriptionUpdate)
+
+                val caseDescriptionSubmit = "After clicking $ID_DETAIL_SUBMIT_BTN after editing exam grade with empty string"
+                submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
+                assertStudentDetails(updatedStudent, caseDescriptionSubmit)
+            }
+        }
+    }
+
+    @Test
+    fun test09_checkTeacherStudentDetailSingleGradeEditEmptyString() {
+        val name = GEORGE
+        val teacher = MockUserDatabase.users[name]!! as Teacher
+
+        val students = MockUserDatabase.users
+            .values
+            .filterIsInstance<Student>()
+        val student = MockUserDatabase.users[LUCAS] as Student
+        val studentIndex = students.indexOf(student)
+        val gradeIndexChanged = 4
+
+        val updatedStudent = student.copy(grades = student.grades.copy(
+            grades = student.grades.grades.toMutableList().apply {
+                this[gradeIndexChanged] = -1
+            }
+        ))
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(teacher.username, teacher.plainPass)
+                val caseDescription = "With correct ${teacher.role} ${teacher.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastTeacherLoginSuccess(teacher.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+            TeacherScreen(this, TEACHER_SCREEN_NAME).apply {
+                val caseDescription = "After teacher $name login"
+                assertGetRequestWithToken(caseDescription, teacher.token, PATH_TEACHER_STUDENTS)
+                clickStudent(studentIndex, caseDescription)
+            }
+            TeacherStudentScreen(this, TEACHER_STUDENT_SCREEN_NAME).apply {
+                val caseDescriptionClickItem =
+                    "After clicking on ${student.username} item in $TEACHER_SCREEN_NAME"
+                assertGetRequestWithToken(
+                    caseDescriptionClickItem,
+                    teacher.token,
+                    "$PATH_TEACHER_STUDENTS${student.username}/"
+                )
+                blackBoardMockBackEnd.clearResponseList()
+                assertStudentDetails(student, caseDescriptionClickItem)
+
+                val caseDescriptionUpdate =
+                    "After editing ${ID_GRADE_VALUE_ET} at index $gradeIndexChanged " +
+                            "with empty string grade"
+                editGradesChangeAtIndexWithString(
+                    "", gradeIndexChanged, updatedStudent, caseDescriptionUpdate
+                )
+
+                val caseDescriptionSubmit =
+                    "After clicking $ID_DETAIL_SUBMIT_BTN with empty string grade at index $gradeIndexChanged"
+                submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
+                assertStudentDetails(updatedStudent, caseDescriptionSubmit)
+            }
+        }
+    }
 }

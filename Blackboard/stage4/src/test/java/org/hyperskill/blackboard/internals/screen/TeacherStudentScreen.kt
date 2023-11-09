@@ -50,26 +50,45 @@ class TeacherStudentScreen<T: Activity>(
         studentFinalResultTv.assertText(expectedFinal, ID_STUDENT_FINAL_RESULT_TV, caseDescription)
     }
 
-    fun editExamChange(updatedStudent: Student, caseDescription: String) = with(test) {
-        studentExamEt.setText("${updatedStudent.grades.exam}")
+    fun editExamChangeWithString(examGrade: String, updatedStudent: Student, caseDescription: String) = with(test) {
+        studentExamEt.setText(examGrade)
         shadowLooper.runToEndOfTasks()
         assertCalculation(updatedStudent, caseDescription)
     }
 
-    fun editGradesChangeAtIndex(index: Int, updatedStudent: Student, caseDescription: String) = with(test) {
+    fun editExamChange(updatedStudent: Student, caseDescription: String) = with(test) {
+        editExamChangeWithString(
+            "${updatedStudent.grades.exam}",
+            updatedStudent,
+            caseDescription
+        )
+    }
+
+    fun editGradesChangeAtIndexWithString(
+        grade: String, index: Int, updatedStudent: Student, caseDescription: String) = with(test) {
         studentGradesRv.doActionOnSingleListItem(index, caseDescription) { itemViewSupplier ->
             ItemGrade(itemViewSupplier()).apply {
-                gradeValueEt.setText("${updatedStudent.grades.grades[index]}")
+                gradeValueEt.setText(grade)
                 shadowLooper.runToEndOfTasks()
                 assertCalculation(updatedStudent, caseDescription)
             }
         }
     }
 
+    fun editGradesChangeAtIndex(
+        index: Int, updatedStudent: Student, caseDescription: String) = with(test) {
+        editGradesChangeAtIndexWithString(
+            grade ="${updatedStudent.grades.grades[index]}",
+            index,
+            updatedStudent,
+            caseDescription
+        )
+    }
+
     fun submitChangesAssertPatch(caseDescription: String, teacher: Teacher, student: Student) = with(test) {
         detailSubmitButton.clickAndRun()
+        shadowLooper.runToEndOfTasks()
         assertPatchRequestWithToken(caseDescription, teacher.token, "$PATH_TEACHER_STUDENTS${student.username}")
         assertPatchResponse(caseDescription, student)
     }
-
 }

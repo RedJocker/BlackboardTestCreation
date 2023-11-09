@@ -7,18 +7,19 @@ import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.databinding.ListItemGradeBinding
+import org.hyperskill.blackboard.util.Unique
 import org.hyperskill.blackboard.util.Util
 
 class TeacherGradesStudentAdapter(
         val onImeNext: TeacherGradesStudentAdapter.(pos: Int) -> Unit,
         val onEditedGradesChanged: (grades: List<Int>) -> Unit
-) : ListAdapter<Int, TeacherGradesStudentAdapter.GradesViewHolder>(Util.intDiffcallback) {
+) : ListAdapter<Unique<Int>, TeacherGradesStudentAdapter.GradesViewHolder>(Util.uniqueIntCallback) {
 
-    private var editedGrades : MutableList<Int> = currentList.toMutableList()
+    private var editedGrades : MutableList<Int> = currentList.map { it.value }.toMutableList()
 
-    override fun submitList(list: List<Int>?) {
+    override fun submitList(list: List<Unique<Int>>?) {
         if(list != null) {
-            editedGrades = list.toMutableList()
+            editedGrades = list.map { it.value }.toMutableList()
         }
         super.submitList(list)
     }
@@ -59,6 +60,6 @@ class TeacherGradesStudentAdapter(
     }
 
     override fun onBindViewHolder(holder: GradesViewHolder, position: Int) {
-        holder.bind(currentList[position], position)
+        holder.bind(currentList[position].value, position)
     }
 }

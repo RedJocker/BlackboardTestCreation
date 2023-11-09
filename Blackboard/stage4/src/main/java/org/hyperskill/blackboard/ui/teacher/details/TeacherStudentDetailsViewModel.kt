@@ -3,16 +3,20 @@ package org.hyperskill.blackboard.ui.teacher.details
 import android.os.Handler
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import okhttp3.Call
 import okhttp3.Response
 import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.data.model.Student
 import org.hyperskill.blackboard.network.student.dto.GradesResponse
 import org.hyperskill.blackboard.network.teacher.TeacherClient
+import org.hyperskill.blackboard.util.Unique
 import org.hyperskill.blackboard.util.Util
 import java.io.IOException
 
@@ -22,12 +26,11 @@ class TeacherStudentDetailsViewModel(
         val onUpdateSuccess: () -> Unit
 ) : ViewModel() {
 
-    private val _grades = MutableStateFlow(listOf<Int>())
-    val grades: StateFlow<List<Int>> get() = _grades
+    private val _grades = MutableStateFlow(listOf<Unique<Int>>())
+    val grades: StateFlow<List<Unique<Int>>> get() = _grades
 
-    private var _examGrade = MutableStateFlow(-1)
-    val examGrade: StateFlow<Int> get() = _examGrade
-        .also { println("_examGrade ${it.value}") }
+    private var _examGrade = MutableStateFlow(Unique(-1))
+    val examGrade: Flow<Int> = _examGrade.map { it.value }
 
     private val _editedGrades = MutableStateFlow(listOf<Int>())
     val editedGrades : StateFlow<List<Int>> get() = _editedGrades
@@ -76,8 +79,8 @@ class TeacherStudentDetailsViewModel(
 
 
     fun updateGrades(credential: Credential, studentName: String) {
-        _grades.value = editedGrades.value
-        _examGrade.value = editedExamGrade.value
+        _grades.value = editedGrades.value.map { Unique(it) }
+        _examGrade.value = Unique(editedExamGrade.value)
 
         teacherClient.updateGradesRequest(
             credential, studentName, editedGrades.value, editedExamGrade.value , Util.callback(
@@ -138,9 +141,9 @@ class TeacherStudentDetailsViewModel(
                         post {
                             (gradesResponse as? GradesResponse.Success)?.also {
                                 println("gradesResponse: $it")
-                                _grades.value = it.grades
+                                _grades.value = it.grades.map { Unique(it) }
                                 _editedGrades.value = it.grades
-                                _examGrade.value = it.exam
+                                _examGrade.value = Unique(it.exam)
                                 _editedExamGrade.value = it.exam
                             }
                         }

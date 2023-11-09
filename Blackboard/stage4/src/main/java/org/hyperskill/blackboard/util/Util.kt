@@ -19,12 +19,25 @@ object Util {
         }
     }
 
+    val uniqueIntCallback = object: DiffUtil.ItemCallback<Unique<Int>>() {
+        override fun areItemsTheSame(oldItem: Unique<Int>, newItem: Unique<Int>): Boolean {
+            return false
+        }
+
+        override fun areContentsTheSame(oldItem: Unique<Int>, newItem: Unique<Int>): Boolean {
+            return false
+        }
+    }
+
     val intDiffcallback = object: DiffUtil.ItemCallback<Int>(){
         override fun areItemsTheSame(oldItem: Int, newItem: Int)
                 = false
 
-        override fun areContentsTheSame(oldItem: Int, newItem: Int)
-                = oldItem == newItem
+        override fun areContentsTheSame(oldItem: Int, newItem: Int): Boolean {
+            println("oldItem: $oldItem, newItem: $newItem")
+            return if (newItem == -1 ) false else oldItem == newItem
+        }
+
     }
 
     val studentDiffCallback = object: DiffUtil.ItemCallback<Student>(){
