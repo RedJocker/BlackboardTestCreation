@@ -60,7 +60,7 @@ class TeacherFragment : Fragment() {
         binding.teacherStudentsListRv.adapter = studentsAdapter
 
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
                 launch {
                     teacherViewModel.students.collect {
                         studentsAdapter.students = it

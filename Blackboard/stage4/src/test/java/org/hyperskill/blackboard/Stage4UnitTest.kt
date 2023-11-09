@@ -208,7 +208,7 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 blackBoardMockBackEnd.clearResponseList()
                 assertStudentDetails(student, caseDescriptionClickItem)
 
-                val caseDescriptionUpdate = "After editing ${ID_GRADE_VALUE_ET} at index $gradeIndexChanged"
+                val caseDescriptionUpdate = "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged"
                 editGradesChangeAtIndex(gradeIndexChanged, updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit = "After clicking $ID_DETAIL_SUBMIT_BTN"
@@ -367,7 +367,7 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertStudentDetails(student, caseDescriptionClickItem)
 
                 val caseDescriptionUpdate =
-                    "After editing ${ID_GRADE_VALUE_ET} at index $gradeIndexChanged " +
+                    "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged " +
                             "with negative out of bounds grade"
                 editGradesChangeAtIndex(gradeIndexChanged, outOfBoundsStudent, caseDescriptionUpdate)
 
@@ -426,7 +426,7 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertStudentDetails(student, caseDescriptionClickItem)
 
                 val caseDescriptionUpdate =
-                    "After editing ${ID_GRADE_VALUE_ET} at index $gradeIndexChanged " +
+                    "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged " +
                             "with positive out of bounds grade"
                 editGradesChangeAtIndex(gradeIndexChanged, outOfBoundsStudent, caseDescriptionUpdate)
 
@@ -529,7 +529,7 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertStudentDetails(student, caseDescriptionClickItem)
 
                 val caseDescriptionUpdate =
-                    "After editing ${ID_GRADE_VALUE_ET} at index $gradeIndexChanged " +
+                    "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged " +
                             "with empty string grade"
                 editGradesChangeAtIndexWithString(
                     "", gradeIndexChanged, updatedStudent, caseDescriptionUpdate

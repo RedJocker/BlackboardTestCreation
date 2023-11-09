@@ -55,7 +55,7 @@ class StudentFragment : Fragment() {
             }
             studentViewModel.apply {
                 lifecycleScope.launch {
-                    repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    repeatOnLifecycle(Lifecycle.State.CREATED) {
                         launch {
                             grades.collect { grades ->
                                 println("grades: $grades")
