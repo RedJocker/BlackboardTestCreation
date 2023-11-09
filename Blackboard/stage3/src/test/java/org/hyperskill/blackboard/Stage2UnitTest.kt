@@ -9,6 +9,7 @@ import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.GEO
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.LUCAS
 import org.hyperskill.blackboard.internals.backend.model.Teacher
 import org.hyperskill.blackboard.internals.screen.LoginScreen
+import org.hyperskill.blackboard.internals.shadows.CustomShadowAsyncDifferConfig
 import org.junit.After
 import org.junit.Before
 import org.junit.FixMethodOrder
@@ -16,10 +17,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 
 @RunWith(RobolectricTestRunner::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Config(shadows = [CustomShadowAsyncDifferConfig::class])
 class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java){
 
 

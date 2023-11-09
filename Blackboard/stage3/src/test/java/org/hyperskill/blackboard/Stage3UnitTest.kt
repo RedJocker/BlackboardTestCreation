@@ -18,6 +18,7 @@ import org.hyperskill.blackboard.internals.backend.model.User
 import org.hyperskill.blackboard.internals.screen.LoginScreen
 import org.hyperskill.blackboard.internals.screen.StudentScreen
 import org.hyperskill.blackboard.internals.screen.StudentScreen.Companion.PATH_STUDENTS
+import org.hyperskill.blackboard.internals.shadows.CustomShadowAsyncDifferConfig
 import org.junit.After
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -26,10 +27,12 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.MethodSorters
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 
 @RunWith(RobolectricTestRunner::class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@Config(shadows = [CustomShadowAsyncDifferConfig::class])
 class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java){
 
     companion object {
