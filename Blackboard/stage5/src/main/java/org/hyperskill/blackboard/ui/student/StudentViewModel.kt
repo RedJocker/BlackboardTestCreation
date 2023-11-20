@@ -36,6 +36,10 @@ class StudentViewModel(
             grades.sumOf { if (it < 0) 0 else it } / grades.size
     }
 
+    val partialGradeText = partialGrade.map { partialGrade ->
+        "Partial Result: $partialGrade"
+    }
+
     private val hasRemainingTests = grades.map { grades ->
         grades.any {
             it < 0
@@ -60,6 +64,14 @@ class StudentViewModel(
                 partialGrade
             }
         }
+    }
+
+    val finalGradeText = finalGrade.map { finalGrade ->
+        val finalText = if (finalGrade < 0)
+            ""
+        else
+            "$finalGrade"
+        "Final Result: $finalText"
     }
 
     private val _messageNetworkError = MutableStateFlow<String?>(null)
