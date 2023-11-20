@@ -148,3 +148,5 @@ files:
     visible: false
   - name: src/main/java/org/hyperskill/blackboard/util/Unique.kt
     visible: true
+  - name: src/test/java/org/hyperskill/blackboard/Stage5UnitTest.kt
+    visible: false

@@ -65,8 +65,13 @@ class StudentFragment : Fragment() {
                         launch {
                             examGrade.collect { examGrade ->
                                 println("examGrade: $examGrade")
-                                val examGradeStr = if(examGrade < 0) "" else "$examGrade"
-                                studentExamEt.setText(examGradeStr)
+                                if(examGrade < 0) {
+                                    studentDetailBinding.studentExamEt.isEnabled = true
+                                    studentExamEt.setText("")
+                                } else {
+                                    studentDetailBinding.studentExamEt.isEnabled = false
+                                    studentExamEt.setText("$examGrade")
+                                }
                             }
                         }
 

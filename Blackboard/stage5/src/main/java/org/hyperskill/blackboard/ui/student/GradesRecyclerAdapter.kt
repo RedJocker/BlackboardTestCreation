@@ -24,12 +24,9 @@ class GradesRecyclerAdapter(
     inner class GradesViewHolder(val item: ListItemGradeBinding) : RecyclerView.ViewHolder(item.root) {
         fun bind(gradeValue: Int, gradeIndex: Int) {
             item.gradeHeaderTv.text = "T:${gradeIndex + 1}"
-            val gradeStr = if(gradeValue < 0) "" else "$gradeValue"
-            item.gradeValueEt.setText(gradeStr)
-            item.gradeValueEt.isEnabled = true
-
-//            if(gradeValue < 0) {
-//                item.gradeValueET.isEnabled = true
+            if(gradeValue < 0) {
+                item.gradeValueEt.setText("")
+                item.gradeValueEt.isEnabled = true
 //                item.gradeValueET.setOnEditorActionListener { _, _, _ ->
 //                    val inputIntValue = item.gradeValueET.text.toString().toIntOrNull() ?: 0
 //                    val normalizedInputValue = if(inputIntValue > 100) {
@@ -41,10 +38,10 @@ class GradesRecyclerAdapter(
 //                    onPredictionGradesChanged(predictionGrades)
 //                    true
 //                }
-//            } else {
-//                item.gradeValueET.setText("$gradeValue")
-//                item.gradeValueET.isEnabled = false
-//            }
+            } else {
+                item.gradeValueEt.setText("$gradeValue")
+                item.gradeValueEt.isEnabled = false
+            }
         }
     }
 
