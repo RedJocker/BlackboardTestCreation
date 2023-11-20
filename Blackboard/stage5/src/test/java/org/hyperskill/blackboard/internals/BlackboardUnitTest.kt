@@ -17,6 +17,13 @@ import java.util.concurrent.TimeUnit
 
 open class BlackboardUnitTest<T : Activity>(clazz: Class<T>): AbstractUnitTest<T>(clazz) {
 
+    companion object {
+        const val TEACHER_SCREEN_NAME = "TeacherFragment"
+        const val TEACHER_STUDENT_SCREEN_NAME = "TeacherStudentDetailsFragment"
+        const val STUDENT_SCREEN_NAME = "StudentFragment"
+    }
+
+
     val moshi = Moshi.Builder()
         .add(KotlinJsonAdapterFactory())
         .build()

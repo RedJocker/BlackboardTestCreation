@@ -37,10 +37,7 @@ import org.robolectric.annotation.Config
 @Config(shadows = [CustomShadowAsyncDifferConfig::class])
 class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java){
 
-    companion object {
-        private const val TEACHER_SCREEN_NAME = "TeacherFragment"
-        private const val TEACHER_STUDENT_SCREEN_NAME = "TeacherStudentDetailsFragment"
-    }
+
 
     @Before
     fun setUp() {

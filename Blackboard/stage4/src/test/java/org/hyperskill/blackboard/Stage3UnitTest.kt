@@ -35,10 +35,6 @@ import org.robolectric.annotation.Config
 @Config(shadows = [CustomShadowAsyncDifferConfig::class])
 class Stage3UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java){
 
-    companion object {
-        private const val STUDENT_SCREEN_NAME = "StudentFragment"
-    }
-
     @Before
     fun setUp() {
         mockWebServer = MockWebServer()
