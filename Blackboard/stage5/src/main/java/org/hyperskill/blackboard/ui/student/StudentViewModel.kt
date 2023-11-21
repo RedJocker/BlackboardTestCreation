@@ -3,6 +3,7 @@ package org.hyperskill.blackboard.ui.student
 import android.os.Handler
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -12,6 +13,7 @@ import okhttp3.Response
 import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.network.student.StudentClient
 import org.hyperskill.blackboard.network.student.dto.GradesResponse
+import org.hyperskill.blackboard.util.Unique
 import org.hyperskill.blackboard.util.Util.callback
 import java.io.IOException
 
@@ -26,8 +28,14 @@ class StudentViewModel(
     private val _grades: MutableStateFlow<List<Int>> = MutableStateFlow(listOf())
     val grades: StateFlow<List<Int>> get() = _grades
 
+    private val _predictionGrades: MutableStateFlow<Unique<List<Int>>> = MutableStateFlow(Unique(listOf()))
+    val predictionGrades: Flow<List<Int>> get() = _predictionGrades.map { it.value }
+
     private var _examGrade: MutableStateFlow<Int> = MutableStateFlow(-1)
     val examGrade: StateFlow<Int> get() = _examGrade
+
+    private var _predictionExamGrade: MutableStateFlow<Int> = MutableStateFlow(-1)
+    val predictionExamGrade: StateFlow<Int> get() = _predictionExamGrade
 
     val partialGrade = grades.map { grades ->
         if(grades.isEmpty())
@@ -36,14 +44,28 @@ class StudentViewModel(
             grades.sumOf { if (it < 0) 0 else it } / grades.size
     }
 
-    val partialGradeText = partialGrade.map { partialGrade ->
-        "Partial Result: $partialGrade"
+    val partialPredictionGrade = predictionGrades.map { grades ->
+        if(grades.isEmpty())
+            0
+        else
+            grades.sumOf { if (it < 0) 0 else it } / grades.size
+    }
+
+    val partialGradeText = partialGrade.combine(partialPredictionGrade)
+    { partialGrade, partialPredictionGrade ->
+        println("partialGrade.combine(partialPredictionGrade)")
+        if (partialGrade != partialPredictionGrade)
+            "Partial Result: $partialGrade ($partialPredictionGrade)"
+        else
+            "Partial Result: $partialGrade"
     }
 
     private val hasRemainingTests = grades.map { grades ->
-        grades.any {
-            it < 0
-        }
+        grades.any { it < 0 }
+    }
+
+    private val hasRemainingTestsPrediction = predictionGrades.map { grades ->
+        grades.any { it < 0 }
     }
 
     val finalGrade = hasRemainingTests.combine(examGrade) { hasRemainingTests, examGrade ->
@@ -112,12 +134,15 @@ class StudentViewModel(
                         post {
                             (gradesResponse as? GradesResponse.Success)?.also {
 
-                                _grades.value = if(it.exam > 0) {
-                                    it.grades.map { grade -> if(grade < 0) 0 else grade }
+                                val normGrades = if (it.exam > 0) {
+                                    it.grades.map { grade -> if (grade < 0) 0 else grade }
                                 } else {
                                     it.grades
                                 }
+                                _grades.value = normGrades
+                                _predictionGrades.value = Unique(normGrades)
                                 _examGrade.value = it.exam
+                                _predictionExamGrade.value = it.exam
                                 _messageNetworkError.value = null
                             }
                         }
@@ -132,6 +157,15 @@ class StudentViewModel(
         }
     }
 
+    fun setPredictionGradesList(predictionGrades: List<Int>) {
+        println("setPredictionGradesList $predictionGrades ${_predictionGrades.value == predictionGrades}")
+        _predictionGrades.value = Unique(predictionGrades)
+    }
+
+    fun setPredictionExamGrade(predictionExamGrade: Int) {
+        println("setPredictionExamGrade $predictionExamGrade")
+        _predictionExamGrade.value = predictionExamGrade
+    }
 
 
     class Factory(

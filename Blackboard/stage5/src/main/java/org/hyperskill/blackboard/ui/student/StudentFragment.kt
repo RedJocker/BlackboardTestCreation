@@ -64,6 +64,7 @@ class StudentFragment : Fragment() {
                 },
                 onPredictionGradesChanged = {
                     println("========= PREDICTION GRADES $it =========")
+                    studentViewModel.setPredictionGradesList(it)
                 }
             )
             studentGradesRv.apply {

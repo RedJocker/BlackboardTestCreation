@@ -6,7 +6,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.databinding.ListItemGradeBinding
-import org.hyperskill.blackboard.ui.teacher.details.TeacherGradesStudentAdapter
 import org.hyperskill.blackboard.util.Util
 
 class GradesRecyclerAdapter(
@@ -21,7 +20,7 @@ class GradesRecyclerAdapter(
             for(i in value.indices) {
                 value[i] = if(value[i] < 0) 0 else value[i]
             }
-            onPredictionGradesChanged(predictionGrades)
+            onPredictionGradesChanged(predictionGrades.map { it })
         }
 
     override fun submitList(list: List<Int>?) {
@@ -38,14 +37,17 @@ class GradesRecyclerAdapter(
                 item.gradeValueEt.setText("")
                 item.gradeValueEt.isEnabled = true
                 item.gradeValueEt.setOnEditorActionListener { v, actionId, event ->
-                    val inputIntValue = item.gradeValueEt.text.toString().toIntOrNull() ?: -1
+                    val inputIntValue = item.gradeValueEt.text.toString().trim().toIntOrNull() ?: -1
                     val normalizedInputValue = if(inputIntValue > 100) {
                         item.gradeValueEt.setText("100")
                         100
                     } else if (inputIntValue < 0 ) {
-                        item.gradeValueEt.setText(" ")
+                        item.gradeValueEt.setText("")
                         0
-                    } else inputIntValue
+                    } else {
+                        item.gradeValueEt.setText("$inputIntValue")
+                        inputIntValue
+                    }
                     predictionGrades[gradeIndex] = normalizedInputValue
                     onPredictionGradesChanged(predictionGrades)
                     if (actionId == EditorInfo.IME_ACTION_NEXT){
