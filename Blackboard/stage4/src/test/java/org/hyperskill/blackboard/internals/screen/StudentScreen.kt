@@ -2,11 +2,15 @@ package org.hyperskill.blackboard.internals.screen
 
 import android.app.Activity
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
 import org.hyperskill.blackboard.internals.backend.model.Student
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
+import org.robolectric.Shadows.shadowOf
 
 open class StudentScreen<T: Activity>(
     val test: BlackboardUnitTest<T>,
@@ -102,21 +106,117 @@ open class StudentScreen<T: Activity>(
             item.gradeHeaderTv.assertText(expectedHeader, ID_GRADE_HEADER_TV, caseDescription)
             item.gradeValueEt.assertText(expectedGrade, ID_GRADE_VALUE_ET, caseDescription)
         }
+
+        assertExam(student, caseDescription)
+        assertCalculation(student, caseDescription)
+    }
+
+    open fun assertExam(student: Student, caseDescription: String) = with(test) {
+        val expectedExam = if(student.grades.exam < 0 ) "" else "${student.grades.exam}"
+        studentExamEt.assertText(expectedExam, ID_STUDENT_EXAM_ET, caseDescription)
+    }
+
+    fun assertStudentNetworkError(caseDescription: String, expectedError: String) = with(test) {
+        blackboardTitle.assertError(expectedError, BlackboardTitle.BLACKBOARD_TITLE_ID, caseDescription)
+    }
+
+    fun assertGradesEditTextEnabledDisabled(caseDescription: String, student: Student) = with(test) {
+        studentGradesRv.doActionOnEachListItem(student.grades.grades, caseDescription)
+        { itemViewSupplier, position, grade ->
+            if (grade < 0 && student.grades.exam < 0) {
+                val messageEnabledEditText =
+                    "$caseDescription on grade at index $position " +
+                            "with value $grade expected $ID_GRADE_VALUE_ET to be enabled"
+                val itemGrade = ItemGrade(itemViewSupplier())
+                assertTrue(messageEnabledEditText, itemGrade.gradeValueEt.isEnabled)
+            } else {
+                val messageDisabledEditText =
+                    "$caseDescription on grade at index $position " +
+                            "with value $grade expected $ID_GRADE_VALUE_ET to be disabled"
+                val itemGrade = ItemGrade(itemViewSupplier())
+                assertFalse(messageDisabledEditText, itemGrade.gradeValueEt.isEnabled)
+            }
+        }
+        if (student.grades.exam < 0){
+            val messageEnabledEditText =
+                "$caseDescription on exam grade with value ${student.grades.exam} " +
+                        "expected $ID_STUDENT_EXAM_ET to be enabled"
+            assertTrue(messageEnabledEditText, studentExamEt.isEnabled)
+        } else {
+            val messageDisabledEditText =
+                "$caseDescription on exam grade with value ${student.grades.exam} " +
+                        "expected $ID_STUDENT_EXAM_ET to be disabled"
+            assertFalse(messageDisabledEditText, studentExamEt.isEnabled)
+        }
+    }
+
+    open fun assertCalculation(student: Student, caseDescription: String) = with(test) {
         val expectedPartial = "Partial Result: ${student.grades.partialGrade}"
         studentPartialResultTv
             .assertText(expectedPartial, ID_STUDENT_PARTIAL_RESULT_TV, caseDescription)
-
-        val expectedExam = if(student.grades.exam < 0 ) "" else "${student.grades.exam}"
-        studentExamEt.assertText(expectedExam, ID_STUDENT_EXAM_ET, caseDescription)
 
         val finalString = if(student.grades.finalGrade < 0) "" else "${student.grades.finalGrade}"
         val expectedFinal = "Final Result: $finalString"
         studentFinalResultTv.assertText(expectedFinal, ID_STUDENT_FINAL_RESULT_TV, caseDescription)
     }
 
-    fun assertStudentNetworkError(caseDescription: String, expectedError: String) = with(test) {
-        blackboardTitle.assertError(expectedError, BlackboardTitle.BLACKBOARD_TITLE_ID, caseDescription)
+    fun assertCalculationWithPrediction(
+        student: Student,
+        studentPrediction: Student,
+        caseDescription: String
+    ) = with(test) {
+        val expectedPredictionPartial =
+            if(studentPrediction.grades.partialGrade == student.grades.partialGrade)
+                ""
+            else " (${studentPrediction.grades.partialGrade})"
+        val expectedPartial = "Partial Result: ${student.grades.partialGrade}$expectedPredictionPartial"
+        studentPartialResultTv
+            .assertText(expectedPartial, ID_STUDENT_PARTIAL_RESULT_TV, caseDescription)
+
+        val finalString = if(student.grades.finalGrade < 0) "" else "${student.grades.finalGrade}"
+        val expectedPredictionFinal =
+            if(student.grades.exam > 0 || student.grades.teacherFinalGrade == studentPrediction.grades.teacherFinalGrade)
+                ""
+            else
+                " (${studentPrediction.grades.finalGrade})"
+        val expectedFinal = "Final Result: $finalString$expectedPredictionFinal"
+        studentFinalResultTv.assertText(expectedFinal, ID_STUDENT_FINAL_RESULT_TV, caseDescription)
     }
+
+    fun editExamChangeWithString(examGrade: String) = with(test) {
+        studentExamEt.setText(examGrade)
+        val shadowStudentExamEt = shadowOf(studentExamEt)
+        shadowStudentExamEt.onEditorActionListener?.onEditorAction(studentExamEt, EditorInfo.IME_ACTION_NEXT, null)
+        shadowLooper.runToEndOfTasks()
+    }
+
+    fun editExamChange(updatedStudent: Student) = with(test) {
+        editExamChangeWithString("${updatedStudent.grades.exam}")
+    }
+
+    fun editGradesChangeAtIndexWithString(
+        grade: String, index: Int, caseDescription: String) = with(test) {
+        shadowLooper.runToEndOfTasks()
+        studentGradesRv.doActionOnSingleListItem(index, caseDescription) { itemViewSupplier ->
+            ItemGrade(itemViewSupplier()).apply {
+                gradeValueEt.setText(grade)
+                val shadowGradeValueEt = shadowOf(gradeValueEt)
+                shadowGradeValueEt.onEditorActionListener?.onEditorAction(gradeValueEt, EditorInfo.IME_ACTION_NEXT, null)
+                shadowLooper.runToEndOfTasks()
+            }
+        }
+    }
+
+    fun editGradesChangeAtIndex(
+        index: Int, updatedStudent: Student, caseDescription: String) = with(test) {
+        editGradesChangeAtIndexWithString(
+            grade ="${updatedStudent.grades.grades[index]}",
+            index,
+            caseDescription
+        )
+    }
+
+
 
 
     inner class ItemGrade(private val root: View) {

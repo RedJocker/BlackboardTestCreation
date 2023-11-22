@@ -49,10 +49,12 @@ class TeacherScreen<T: Activity>(
     }
 
     fun clickStudent(studentName: Int, caseDescription: String) = with(test) {
+        shadowLooper.runToEndOfTasks()
         teacherStudentsListRv.doActionOnSingleListItem(studentName, caseDescription)
         { viewSupplier ->
             val item = ItemStudent(viewSupplier())
             item.root.clickAndRun()
+            shadowLooper.runToEndOfTasks()
         }
     }
 

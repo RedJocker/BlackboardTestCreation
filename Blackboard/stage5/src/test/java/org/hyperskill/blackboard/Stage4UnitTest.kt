@@ -155,7 +155,9 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertStudentDetails(student, caseDescriptionClickItem)
 
                 val caseDescriptionUpdate = "After editing $ID_STUDENT_EXAM_ET"
-                editExamChange(updatedStudent, caseDescriptionUpdate)
+                editExamChange(updatedStudent)
+                assertExam(updatedStudent, caseDescriptionUpdate)
+                assertCalculation(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit = "After clicking $ID_DETAIL_SUBMIT_BTN"
                 submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
@@ -207,6 +209,7 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
 
                 val caseDescriptionUpdate = "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged"
                 editGradesChangeAtIndex(gradeIndexChanged, updatedStudent, caseDescriptionUpdate)
+                assertStudentDetails(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit = "After clicking $ID_DETAIL_SUBMIT_BTN"
                 submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
@@ -257,7 +260,9 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertStudentDetails(student, caseDescriptionClickItem)
 
                 val caseDescriptionUpdate = "After editing $ID_STUDENT_EXAM_ET with negative out of bounds grade"
-                editExamChange(outOfBounds, caseDescriptionUpdate)
+                editExamChange(outOfBounds)
+                assertExam(updatedStudent, caseDescriptionUpdate)
+                assertCalculation(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit = "After clicking $ID_DETAIL_SUBMIT_BTN after editing with negative out of bounds grade"
                 submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
@@ -308,7 +313,9 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertStudentDetails(student, caseDescriptionClickItem)
 
                 val caseDescriptionUpdate = "After editing $ID_STUDENT_EXAM_ET with positive out of bounds grade"
-                editExamChange(outOfBoundsStudent, caseDescriptionUpdate)
+                editExamChange(outOfBoundsStudent)
+                assertExam(updatedStudent, caseDescriptionUpdate)
+                assertCalculation(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit = "After clicking $ID_DETAIL_SUBMIT_BTN after editing with positive out of bounds grade"
                 submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
@@ -367,6 +374,7 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                     "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged " +
                             "with negative out of bounds grade"
                 editGradesChangeAtIndex(gradeIndexChanged, outOfBoundsStudent, caseDescriptionUpdate)
+                assertStudentDetails(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit =
                     "After clicking $ID_DETAIL_SUBMIT_BTN with negative out of bounds grade"
@@ -426,6 +434,7 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                     "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged " +
                             "with positive out of bounds grade"
                 editGradesChangeAtIndex(gradeIndexChanged, outOfBoundsStudent, caseDescriptionUpdate)
+                assertStudentDetails(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit =
                     "After clicking $ID_DETAIL_SUBMIT_BTN with positive out of bounds grade"
@@ -474,7 +483,9 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 assertStudentDetails(student, caseDescriptionClickItem)
 
                 val caseDescriptionUpdate = "After editing $ID_STUDENT_EXAM_ET with empty string grade"
-                editExamChangeWithString("", updatedStudent, caseDescriptionUpdate)
+                editExamChangeWithString("")
+                assertExam(updatedStudent, caseDescriptionUpdate)
+                assertCalculation(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit = "After clicking $ID_DETAIL_SUBMIT_BTN after editing exam grade with empty string"
                 submitChangesAssertPatch(caseDescriptionSubmit, teacher, updatedStudent)
@@ -529,8 +540,9 @@ class Stage4UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                     "After editing $ID_GRADE_VALUE_ET at index $gradeIndexChanged " +
                             "with empty string grade"
                 editGradesChangeAtIndexWithString(
-                    "", gradeIndexChanged, updatedStudent, caseDescriptionUpdate
+                    "", gradeIndexChanged, caseDescriptionUpdate
                 )
+                assertStudentDetails(updatedStudent, caseDescriptionUpdate)
 
                 val caseDescriptionSubmit =
                     "After clicking $ID_DETAIL_SUBMIT_BTN with empty string grade at index $gradeIndexChanged"

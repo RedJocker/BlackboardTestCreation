@@ -7,11 +7,11 @@ import org.hyperskill.blackboard.internals.backend.model.Teacher
 object MockUserDatabase {
     const val GEORGE = "George"         // Teacher
     const val LUCAS = "Lucas"           // no grades case
-    const val MARTIN = "Martin"         //
-    const val HARRISON = "Harrison"
-    const val MICHAEL = "Michael"
-    const val ORWELL = "Orwell"
-    const val BENSON = "Benson"
+    const val MARTIN = "Martin"         // error case
+    const val HARRISON = "Harrison"     // not pending after exam, count exam
+    const val MICHAEL = "Michael"       // not pending after exam, discard exam
+    const val ORWELL = "Orwell"         // all grades, count exam
+    const val BENSON = "Benson"         // all grades, discard exam
 
 
     val users = mapOf(
