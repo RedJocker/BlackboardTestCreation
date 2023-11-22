@@ -3,7 +3,6 @@ package org.hyperskill.blackboard.ui.teacher.details
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import org.hyperskill.blackboard.databinding.ListItemGradeBinding
@@ -11,8 +10,8 @@ import org.hyperskill.blackboard.util.Unique
 import org.hyperskill.blackboard.util.Util
 
 class TeacherGradesStudentAdapter(
-        val onImeNext: TeacherGradesStudentAdapter.(pos: Int) -> Unit,
-        val onEditedGradesChanged: (grades: List<Int>) -> Unit
+    val onImeNext: TeacherGradesStudentAdapter.(pos: Int) -> Unit,
+    val onEditedGradesChanged: (grades: List<Int>) -> Unit
 ) : ListAdapter<Unique<Int>, TeacherGradesStudentAdapter.GradesViewHolder>(Util.uniqueIntCallback) {
 
     private var editedGrades : MutableList<Int> = currentList.map { it.value }.toMutableList()
@@ -28,21 +27,21 @@ class TeacherGradesStudentAdapter(
         fun bind(gradeValue: Int, gradeIndex: Int) {
             item.gradeHeaderTv.text = "T:${gradeIndex + 1}"
             item.gradeValueEt.setText("$gradeValue")
-            item.gradeValueEt.addTextChangedListener(afterTextChanged = {
+            item.gradeValueEt.setOnEditorActionListener { v, actionId, event ->
                 val inputIntValue = item.gradeValueEt.text.toString().toIntOrNull() ?: -1
                 val normalizedInputValue = if(inputIntValue > 100) {
                     item.gradeValueEt.setTextKeepState("100")
                     100
-                } else if(inputIntValue < -1)
-                {
+                } else if(inputIntValue <= -1) {
                     item.gradeValueEt.setTextKeepState("-1")
                     -1
-                } else inputIntValue
+                } else {
+                    item.gradeValueEt.setTextKeepState("$inputIntValue")
+                    inputIntValue
+                }
 
                 editedGrades[adapterPosition] = normalizedInputValue
                 onEditedGradesChanged(editedGrades.toList())
-            })
-            item.gradeValueEt.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_NEXT){
                     onImeNext(gradeIndex + 1)
                 }

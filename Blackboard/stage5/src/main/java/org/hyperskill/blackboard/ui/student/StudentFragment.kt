@@ -75,13 +75,13 @@ class StudentFragment : Fragment() {
             studentExamEt.setOnEditorActionListener { v, actionId, event ->
                 val inputIntValue = studentExamEt.text.toString().trim().toIntOrNull() ?: -1
                 val normalizedInputValue = if(inputIntValue > 100) {
-                    studentExamEt.setText("100")
+                    studentExamEt.setTextKeepState("100")
                     100
                 } else if (inputIntValue < 0 ) {
-                    studentExamEt.setText("")
+                    studentExamEt.setTextKeepState("")
                     -1
                 } else {
-                    studentExamEt.setText("$inputIntValue")
+                    studentExamEt.setTextKeepState("$inputIntValue")
                     inputIntValue
                 }
                 studentViewModel.setPredictionExamGrade(normalizedInputValue)

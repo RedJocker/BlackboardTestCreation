@@ -39,13 +39,13 @@ class GradesRecyclerAdapter(
                 item.gradeValueEt.setOnEditorActionListener { v, actionId, event ->
                     val inputIntValue = item.gradeValueEt.text.toString().trim().toIntOrNull() ?: -1
                     val normalizedInputValue = if(inputIntValue > 100) {
-                        item.gradeValueEt.setText("100")
+                        item.gradeValueEt.setTextKeepState("100")
                         100
                     } else if (inputIntValue < 0 ) {
-                        item.gradeValueEt.setText("")
+                        item.gradeValueEt.setTextKeepState("")
                         0
                     } else {
-                        item.gradeValueEt.setText("$inputIntValue")
+                        item.gradeValueEt.setTextKeepState("$inputIntValue")
                         inputIntValue
                     }
                     predictionGrades[gradeIndex] = normalizedInputValue

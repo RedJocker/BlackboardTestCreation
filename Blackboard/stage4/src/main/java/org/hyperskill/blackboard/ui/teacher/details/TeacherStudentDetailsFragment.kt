@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -44,21 +43,21 @@ class TeacherStudentDetailsFragment : Fragment() {
     }
 
     private val teacherStudentGradesAdapter = TeacherGradesStudentAdapter(
-            onImeNext = { nextPos ->
-                if (nextPos < currentList.size) {
-                    detailBinding.studentGradesRv.scrollToPosition(nextPos)
-                    detailBinding.studentGradesRv
-                            .findViewHolderForAdapterPosition(nextPos)
-                            ?.itemView?.findViewById<EditText>(R.id.grade_value_et)
-                            ?.requestFocus()
-                } else {
-                    detailBinding.studentExamEt.requestFocus()
-                }
-            },
-            onEditedGradesChanged = { editedGrades ->
-                println("onGradesChanged editedGrades: $editedGrades")
-                detailsViewModel.setEditedGrades(editedGrades)
+        onImeNext = { nextPos ->
+            if (nextPos < currentList.size) {
+                detailBinding.studentGradesRv.scrollToPosition(nextPos)
+                detailBinding.studentGradesRv
+                    .findViewHolderForAdapterPosition(nextPos)
+                    ?.itemView?.findViewById<EditText>(R.id.grade_value_et)
+                    ?.requestFocus()
+            } else {
+                detailBinding.studentExamEt.requestFocus()
             }
+        },
+        onEditedGradesChanged = { editedGrades ->
+            println("onGradesChanged editedGrades: $editedGrades")
+            detailsViewModel.setEditedGrades(editedGrades)
+        }
     )
 
     override fun onCreateView(
@@ -131,16 +130,21 @@ class TeacherStudentDetailsFragment : Fragment() {
                     detailsViewModel.updateGrades(credentials, student.name)
                 }
 
-                studentExamEt.addTextChangedListener {
+                studentExamEt.setOnEditorActionListener { v, actionId, event ->
                     val inputIntValue = studentExamEt.text.toString().toIntOrNull() ?: -1
                     val normalizedInputValue = if(inputIntValue > 100) {
                         studentExamEt.setTextKeepState("100")
                         100
-                    } else if(inputIntValue < -1){
+                    } else if(inputIntValue <= -1){
                         studentExamEt.setTextKeepState("-1")
                         -1
-                    } else inputIntValue
+                    } else {
+                        studentExamEt.setTextKeepState("$inputIntValue")
+                        inputIntValue
+                    }
+
                     setEditedExamGrades(normalizedInputValue)
+                    true
                 }
                 studentExamEt.onFocusChangeListener = Util.onFocusEditTextPutCursorEnd
             }
