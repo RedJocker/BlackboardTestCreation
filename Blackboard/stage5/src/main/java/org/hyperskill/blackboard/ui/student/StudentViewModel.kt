@@ -44,14 +44,14 @@ class StudentViewModel(
             grades.sumOf { if (it < 0) 0 else it } / grades.size
     }
 
-    val partialPredictionGrade = predictionGrades.map { grades ->
+    val predictionPartialGrade = predictionGrades.map { grades ->
         if(grades.isEmpty())
             0
         else
             grades.sumOf { if (it < 0) 0 else it } / grades.size
     }
 
-    val partialGradeText = partialGrade.combine(partialPredictionGrade)
+    val partialGradeText = partialGrade.combine(predictionPartialGrade)
     { partialGrade, partialPredictionGrade ->
         println("partialGrade.combine(partialPredictionGrade)")
         if (partialGrade != partialPredictionGrade)
@@ -64,36 +64,48 @@ class StudentViewModel(
         grades.any { it < 0 }
     }
 
-    private val hasRemainingTestsPrediction = predictionGrades.map { grades ->
-        grades.any { it < 0 }
+    val finalGradeData = examGrade.combine(partialGrade) { examGrade, partialGrade ->
+        val isExamPossible = partialGrade in 30 until 70
+        println("isExamPossible: $isExamPossible, examGrade: $examGrade")
+        val finalGradeValue = if (isExamPossible) {
+            (partialGrade + examGrade) / 2
+        } else {
+            partialGrade
+        }
+        Triple(finalGradeValue, isExamPossible, examGrade)
     }
 
-    val finalGrade = hasRemainingTests.combine(examGrade) { hasRemainingTests, examGrade ->
-        hasRemainingTests to examGrade
-    }.combine(partialGrade) { (hasRemainingTests, exam), partialGrade ->
-        val isExamPossible = partialGrade in 30 until 70
-        println("hasRemainingTests: $hasRemainingTests, isExamPossible: $isExamPossible, exam: $exam")
-        if (exam >= 0) {
-            if (isExamPossible) {
-                (partialGrade + exam) / 2
-            } else {
-                partialGrade
-            }
+    val finalGradeNormToFinalGradeValue = hasRemainingTests.combine(finalGradeData)
+    { hasRemainingTests, (finaGradeValue, isExamPossible, examGrade) ->
+        println("hasRemainingTests: $hasRemainingTests isExamPossible: $isExamPossible")
+        if (examGrade >= 0) {
+            finaGradeValue
         } else {
             if(hasRemainingTests || isExamPossible) {
                 -1
             } else {
-                partialGrade
+                finaGradeValue
             }
+        } to finaGradeValue
+    }
+
+    val predictionFinalGrade = predictionExamGrade.combine(predictionPartialGrade)
+    { predictionExamGrade, predictionPartialGrade ->
+        val isExamPossible = predictionPartialGrade in 30 until 70
+        println("predictionIsExamPossible: $isExamPossible, predictionExamGrade: $predictionExamGrade")
+        if (isExamPossible) {
+            (predictionPartialGrade + predictionExamGrade) / 2
+        } else {
+            predictionPartialGrade
         }
     }
 
-    val finalGradeText = finalGrade.map { finalGrade ->
-        val finalText = if (finalGrade < 0)
-            ""
-        else
-            "$finalGrade"
-        "Final Result: $finalText"
+    val finalGradeText = finalGradeNormToFinalGradeValue.combine(predictionFinalGrade)
+    { (finalGradeNorm, finalGradeValue), predictionFinalGrade ->
+        val predictionText =
+            if (finalGradeValue == predictionFinalGrade) "" else " ($predictionFinalGrade)"
+        val finalText = if (finalGradeNorm < 0) "" else "$finalGradeNorm"
+        "Final Result: $finalText$predictionText"
     }
 
     private val _messageNetworkError = MutableStateFlow<String?>(null)

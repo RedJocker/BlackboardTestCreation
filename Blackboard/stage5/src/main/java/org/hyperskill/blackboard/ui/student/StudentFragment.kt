@@ -19,6 +19,7 @@ import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentStudentBinding
 import org.hyperskill.blackboard.databinding.StudentDetailBinding
 import org.hyperskill.blackboard.ui.HorizontalLinearLayoutManager
+import org.hyperskill.blackboard.util.Util
 
 
 class StudentFragment : Fragment() {
@@ -71,6 +72,22 @@ class StudentFragment : Fragment() {
                 layoutManager = HorizontalLinearLayoutManager(context)
                 adapter = gradesAdapter
             }
+            studentExamEt.setOnEditorActionListener { v, actionId, event ->
+                val inputIntValue = studentExamEt.text.toString().trim().toIntOrNull() ?: -1
+                val normalizedInputValue = if(inputIntValue > 100) {
+                    studentExamEt.setText("100")
+                    100
+                } else if (inputIntValue < 0 ) {
+                    studentExamEt.setText("")
+                    -1
+                } else {
+                    studentExamEt.setText("$inputIntValue")
+                    inputIntValue
+                }
+                studentViewModel.setPredictionExamGrade(normalizedInputValue)
+                true
+            }
+            studentExamEt.onFocusChangeListener = Util.onFocusEditTextPutCursorEnd
             studentViewModel.apply {
                 lifecycleScope.launch {
                     repeatOnLifecycle(Lifecycle.State.CREATED) {

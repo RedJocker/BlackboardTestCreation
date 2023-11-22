@@ -74,4 +74,11 @@ class Stage5UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
         }
     }
+
+    //TODO
+    // test student ORWELL
+    //      give exam grade 100
+    //           expect prediction final value
+    //      remove exam grade
+    //           expect prediction empty
 }
