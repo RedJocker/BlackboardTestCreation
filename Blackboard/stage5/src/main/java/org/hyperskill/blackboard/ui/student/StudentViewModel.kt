@@ -92,9 +92,12 @@ class StudentViewModel(
     val predictionFinalGrade = predictionExamGrade.combine(predictionPartialGrade)
     { predictionExamGrade, predictionPartialGrade ->
         val isExamPossible = predictionPartialGrade in 30 until 70
-        println("predictionIsExamPossible: $isExamPossible, predictionExamGrade: $predictionExamGrade")
+        val predictionExamGradeNorm = if (predictionExamGrade < 0) 0
+            else if (predictionExamGrade > 100) 100
+            else predictionExamGrade
+        println("predictionIsExamPossible: $isExamPossible, predictionExamGradeNorm: $predictionExamGradeNorm")
         if (isExamPossible) {
-            (predictionPartialGrade + predictionExamGrade) / 2
+            (predictionPartialGrade + predictionExamGradeNorm) / 2
         } else {
             predictionPartialGrade
         }

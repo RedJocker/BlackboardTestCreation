@@ -175,10 +175,10 @@ open class StudentScreen<T: Activity>(
 
         val finalString = if(student.grades.finalGrade < 0) "" else "${student.grades.finalGrade}"
         val expectedPredictionFinal =
-            if(student.grades.exam > 0 || student.grades.teacherFinalGrade == studentPrediction.grades.teacherFinalGrade)
+            if(student.grades.exam >= 0 || student.grades.teacherFinalGrade == studentPrediction.grades.teacherFinalGrade)
                 ""
             else
-                " (${studentPrediction.grades.finalGrade})"
+                " (${studentPrediction.grades.teacherFinalGrade})"
         val expectedFinal = "Final Result: $finalString$expectedPredictionFinal"
         studentFinalResultTv.assertText(expectedFinal, ID_STUDENT_FINAL_RESULT_TV, caseDescription)
     }

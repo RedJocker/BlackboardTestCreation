@@ -6,6 +6,7 @@ import org.hyperskill.blackboard.internals.BlackboardUnitTest
 import org.hyperskill.blackboard.internals.backend.BlackBoardMockBackEnd
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.BENSON
+import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.LUCAS
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.MARTIN
 import org.hyperskill.blackboard.internals.backend.database.MockUserDatabase.ORWELL
 import org.hyperskill.blackboard.internals.backend.model.Student
@@ -74,7 +75,7 @@ class Stage5UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
     }
 
     @Test
-    fun test01_checkOrwellRemoveGradeAfterGivingOneHundred() {
+    fun test01_checkOrwellRemoveExamGradeAfterGivingOneHundred() {
 
         val orwell = MockUserDatabase.users[ORWELL] as Student
         val orwell100 = orwell.copy(grades = orwell.grades.copy(exam = 100))
@@ -110,7 +111,7 @@ class Stage5UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
     }
 
     @Test
-    fun test02_checkBensonRemoveGradeAfterGivingOneHundred() {
+    fun test02_checkBensonRemoveExamGradeAfterGivingOneHundred() {
 
         val benson = MockUserDatabase.users[BENSON] as Student
         val benson100 = benson.copy(grades = benson.grades.copy(exam = 100))
@@ -141,6 +142,89 @@ class Stage5UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
                 editExamChangeWithString("")
                 assertExam(benson, caseDescriptionAfterRemoving100)
                 assertStudentDetails(benson, caseDescriptionAfterRemoving100)
+            }
+        }
+    }
+
+    @Test
+    fun test03_checkLucasRemoveGradeAfterGivingOneHundred() {
+
+        val lucas = MockUserDatabase.users[LUCAS] as Student
+        val indexChanged = 2
+        val lucas100 = lucas.copy(
+            grades = lucas.grades.copy(
+                grades = lucas.grades.grades.mapIndexed { i, grade ->
+                    if (i == indexChanged) 100 else grade
+                }
+            )
+        )
+
+        testActivity(arguments = baseUrlArg) {
+
+            LoginScreen(this).apply {
+                fillLogin(lucas.username, lucas.plainPass)
+                val caseDescription = "With correct ${lucas.role} ${lucas.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastStudentLoginSuccess(lucas.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+
+            StudentScreen(this, STUDENT_SCREEN_NAME).apply {
+                mockWebServer.takeRequest()
+
+                val caseDescriptionBefore = "For student ${lucas.username} before changing grade at index $indexChanged to 100"
+                assertGradesEditTextEnabledDisabled(caseDescriptionBefore, lucas)
+                assertStudentDetails(lucas, caseDescriptionBefore)
+
+                val caseDescriptionAfterChangingTo100 =
+                    "For student ${lucas.username} after changing grade at index $indexChanged to 100"
+                editGradesChangeAtIndex(indexChanged, lucas100, caseDescriptionAfterChangingTo100)
+                assertCalculationWithPrediction(lucas, lucas100, caseDescriptionAfterChangingTo100)
+
+                val caseDescriptionAfterRemoving100 =
+                    "For student ${lucas.username} after changing grade at index $indexChanged from 100 to empty"
+                editGradesChangeAtIndexWithString("", indexChanged, caseDescriptionAfterChangingTo100)
+                assertStudentDetails(lucas, caseDescriptionAfterRemoving100)
+            }
+        }
+    }
+
+    @Test
+    fun test04_checkLucasFillGrades() {
+
+        val student = MockUserDatabase.users[LUCAS] as Student
+
+        testActivity(arguments = baseUrlArg) {
+
+            LoginScreen(this).apply {
+                fillLogin(student.username, student.plainPass)
+                val caseDescription = "With correct ${student.role} ${student.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastStudentLoginSuccess(student.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+
+            StudentScreen(this, STUDENT_SCREEN_NAME).apply {
+                mockWebServer.takeRequest()
+
+                val caseDescriptionBefore = "For student ${student.username} before changing grades"
+                assertGradesEditTextEnabledDisabled(caseDescriptionBefore, student)
+                assertStudentDetails(student, caseDescriptionBefore)
+                var updatedStudent = student
+                (0..student.grades.grades.lastIndex).forEach { indexChanged ->
+                    val gradeUpdate = 100 / (indexChanged + 1)
+                    updatedStudent = updatedStudent.copy(
+                        grades = updatedStudent.grades.copy(
+                            grades = updatedStudent.grades.grades.mapIndexed { i, grade ->
+                                if (i == indexChanged) gradeUpdate else grade
+                            }
+                        )
+                    )
+                    val caseDescriptionAfterChangingGrade =
+                        "For student ${student.username} after changing grade at index $indexChanged to $gradeUpdate"
+                    editGradesChangeAtIndex(indexChanged, updatedStudent, caseDescriptionAfterChangingGrade)
+                    assertCalculationWithPrediction(student, updatedStudent, caseDescriptionAfterChangingGrade)
+                }
             }
         }
     }

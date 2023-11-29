@@ -6,3 +6,5 @@ predictions on their partial and final results, by giving values to pending grad
 
 - disable edit text for grades that are not pending 
   and enable edit text for grades that are pending
+
+- implement predictions for pending grades
