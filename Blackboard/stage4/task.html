@@ -1,0 +1,50 @@
+<h2>Description</h2>
+
+<p>
+    On this stage we will create the teacher section of the application.
+</p>
+
+<p>
+    This section will contain two different screens.
+    One that will contain a list of student names and
+    to which teachers will navigate to just after
+    a successful login.
+    Another that teachers will navigate to after clicking
+    on one of the student names, which will have almost the
+    same structure as the student screen, but will have
+    one extra button to submit data and all edit text will be
+    editable so that the teacher can assign or revise grades
+    for their students.
+    The logic behind the screen will be different, like for example
+    final grades will always be calculated on this screen and pending
+    grades will be displayed with -1.
+</p>
+
+<p>
+    The suggested implementation will be to make a component that contains all
+    the views that are included in <code>fragment_student</code> so that you can
+    reuse those to make the <code>fragment_teacher_student_detail</code>
+    using the merge and include tags just adding the extra button that is not shared
+    by both screens on the teacher section.
+</p>
+
+<p>
+    The contents of the list with student names will be retrieved by making a GET request to
+    the endpoint <code>/teacher/student</code>.
+    The student data will be retrieved by making a GET request to the endpoint
+    <code>/teacher/student/[name]</code>, where [name] is a placeholder for a student name.
+    The student data will be updated by making a PATCH request to the same endpoint
+    <code>/teacher/student/[name]</code>
+</p>
+
+<h2>Objectives</h2>
+
+<ol>
+    <li></li>
+</ol>
+
+<h2>Example</h2>
+
+<p><strong>Example 1: </strong><em></em></p>
+
+<p><img alt="" src="" height="660"  width="300" /></p>
