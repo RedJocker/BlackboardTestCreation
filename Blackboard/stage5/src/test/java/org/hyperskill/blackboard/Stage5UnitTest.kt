@@ -228,4 +228,165 @@ class Stage5UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
             }
         }
     }
+
+    @Test
+    fun test05_checkStudentPredictionExamGradeNegativeOutOfBounds() {
+
+        val student = MockUserDatabase.users[ORWELL] as Student
+        val outOfBounds = student.copy(grades = student.grades.copy(
+            exam = -100
+        ))
+        val updatedStudent = student.copy(grades = student.grades.copy(
+            exam = -1
+        ))
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(student.username, student.plainPass)
+                val caseDescription = "With correct ${student.role} ${student.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastStudentLoginSuccess(student.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+
+            StudentScreen(this, STUDENT_SCREEN_NAME).apply {
+                mockWebServer.takeRequest()
+
+                val caseDescriptionBefore = "For student ${student.username} before changing exam to negative out of bounds"
+                assertGradesEditTextEnabledDisabled(caseDescriptionBefore, student)
+                assertStudentDetails(student, caseDescriptionBefore)
+
+                val caseDescriptionAfterChangingExamToNegativeOutOfBounds =
+                    "For student ${student.username} after changing exam to negative out of bounds"
+                editExamChange(outOfBounds)
+                assertExam(updatedStudent, caseDescriptionAfterChangingExamToNegativeOutOfBounds)
+                assertCalculationWithPrediction(student, updatedStudent, caseDescriptionAfterChangingExamToNegativeOutOfBounds)
+            }
+        }
+    }
+
+    @Test
+    fun test06_checkStudentPredictionExamGradePositiveOutOfBounds() {
+        val student = MockUserDatabase.users[ORWELL] as Student
+        val outOfBounds = student.copy(grades = student.grades.copy(
+            exam = 500
+        ))
+        val updatedStudent = student.copy(grades = student.grades.copy(
+            exam = 100
+        ))
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(student.username, student.plainPass)
+                val caseDescription = "With correct ${student.role} ${student.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastStudentLoginSuccess(student.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+
+            StudentScreen(this, STUDENT_SCREEN_NAME).apply {
+                mockWebServer.takeRequest()
+
+                val caseDescriptionBefore = "For student ${student.username} before changing exam to positive out of bounds"
+                assertGradesEditTextEnabledDisabled(caseDescriptionBefore, student)
+                assertStudentDetails(student, caseDescriptionBefore)
+
+                val caseDescriptionAfterChangingToPositiveOutOfBounds = "For student ${student.username} after changing exam to positive out of bounds"
+                editExamChange(outOfBounds)
+                assertExam(updatedStudent, caseDescriptionAfterChangingToPositiveOutOfBounds)
+                assertCalculationWithPrediction(student, updatedStudent, caseDescriptionAfterChangingToPositiveOutOfBounds)
+            }
+        }
+    }
+
+    @Test
+    fun test07_checkStudentPredictionSingleGradeEditNegativeOutOfBounds() {
+        val student = MockUserDatabase.users[LUCAS] as Student
+        val indexChanged = 3
+        val outOfBounds = student.copy(
+            grades = student.grades.copy(
+                grades = student.grades.grades.mapIndexed { i, grade ->
+                    if (i == indexChanged) -100 else grade
+                }
+            )
+        )
+        val updatedStudent = student.copy(
+            grades = student.grades.copy(
+                grades = student.grades.grades.mapIndexed { i, grade ->
+                    if (i == indexChanged) -1 else grade
+                }
+            )
+        )
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(student.username, student.plainPass)
+                val caseDescription = "With correct ${student.role} ${student.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastStudentLoginSuccess(student.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+
+            StudentScreen(this, STUDENT_SCREEN_NAME).apply {
+                mockWebServer.takeRequest()
+
+                val caseDescriptionBefore =
+                    "For student ${student.username} before changing grade at index $indexChanged to negative out of bounds"
+                assertGradesEditTextEnabledDisabled(caseDescriptionBefore, student)
+                assertStudentDetails(student, caseDescriptionBefore)
+
+
+                val caseDescriptionAfterChangingGradeToNegativeOutOfBounds =
+                    "For student ${student.username} after changing grade at index $indexChanged to negative out of bounds"
+                editGradesChangeAtIndex(indexChanged, outOfBounds, caseDescriptionAfterChangingGradeToNegativeOutOfBounds)
+                assertExam(updatedStudent, caseDescriptionAfterChangingGradeToNegativeOutOfBounds)
+                assertCalculationWithPrediction(student, updatedStudent, caseDescriptionAfterChangingGradeToNegativeOutOfBounds)
+            }
+        }
+    }
+
+    @Test
+    fun test08_checkTeacherStudentDetailSingleGradeEditPositiveOutOfBounds() {
+        val student = MockUserDatabase.users[LUCAS] as Student
+        val indexChanged = 5
+        val outOfBounds = student.copy(
+            grades = student.grades.copy(
+                grades = student.grades.grades.mapIndexed { i, grade ->
+                    if (i == indexChanged) 999 else grade
+                }
+            )
+        )
+        val updatedStudent = student.copy(
+            grades = student.grades.copy(
+                grades = student.grades.grades.mapIndexed { i, grade ->
+                    if (i == indexChanged) 100 else grade
+                }
+            )
+        )
+
+        testActivity(arguments = baseUrlArg) {
+            LoginScreen(this).apply {
+                fillLogin(student.username, student.plainPass)
+                val caseDescription = "With correct ${student.role} ${student.username} login"
+                assertLoginRequestOk(caseDescription)
+                assertToastStudentLoginSuccess(student.username, caseDescription)
+                assertLoginSuccessClearInput()
+            }
+
+            StudentScreen(this, STUDENT_SCREEN_NAME).apply {
+                mockWebServer.takeRequest()
+
+                val caseDescriptionBefore =
+                    "For student ${student.username} before changing grade at index $indexChanged to positive out of bounds"
+                assertGradesEditTextEnabledDisabled(caseDescriptionBefore, student)
+                assertStudentDetails(student, caseDescriptionBefore)
+
+                val caseDescriptionAfterChangingGradeToPositiveOutOfBounds =
+                    "For student ${student.username} after changing grade at index $indexChanged to positive out of bounds"
+                editGradesChangeAtIndex(indexChanged, outOfBounds, caseDescriptionAfterChangingGradeToPositiveOutOfBounds)
+                assertExam(updatedStudent, caseDescriptionAfterChangingGradeToPositiveOutOfBounds)
+                assertCalculationWithPrediction(student, updatedStudent, caseDescriptionAfterChangingGradeToPositiveOutOfBounds)
+            }
+        }
+    }
 }

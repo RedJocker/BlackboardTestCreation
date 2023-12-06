@@ -66,9 +66,12 @@ class StudentViewModel(
 
     val finalGradeData = examGrade.combine(partialGrade) { examGrade, partialGrade ->
         val isExamPossible = partialGrade in 30 until 70
-        println("isExamPossible: $isExamPossible, examGrade: $examGrade")
+        val examGradeNorm = if (examGrade < 0) 0
+            else if (examGrade > 100) 100
+            else examGrade
+        println("isExamPossible: $isExamPossible, examGradeNorm: $examGradeNorm")
         val finalGradeValue = if (isExamPossible) {
-            (partialGrade + examGrade) / 2
+            (partialGrade + examGradeNorm) / 2
         } else {
             partialGrade
         }
@@ -77,7 +80,7 @@ class StudentViewModel(
 
     val finalGradeNormToFinalGradeValue = hasRemainingTests.combine(finalGradeData)
     { hasRemainingTests, (finaGradeValue, isExamPossible, examGrade) ->
-        println("hasRemainingTests: $hasRemainingTests isExamPossible: $isExamPossible")
+        println("hasRemainingTests: $hasRemainingTests isExamPossible: $isExamPossible, examGrade: $examGrade")
         if (examGrade >= 0) {
             finaGradeValue
         } else {
