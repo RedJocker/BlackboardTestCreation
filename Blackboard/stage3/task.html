@@ -56,6 +56,12 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
     </li>
 
     <li>
+        After a successful login of a user with role <code>STUDENT</code>
+        navigate to <code>StudentFragment</code> which is described bellow.
+        Only students should be allowed to navigate to that screen.
+    </li>
+
+    <li>
         Make a GET request to retrieve student grades
         on <code>/student/[username]</code> endpoint
         where [username] is a placeholder for the username
@@ -156,7 +162,7 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                     <li>
                         Use the grades list,
                         that was received as response
-                        from calling /student/{username},
+                        from calling /student/[username],
                         as values for grade_value_et.
                         The order of the items displayed should
                         match the received list order.
@@ -201,7 +207,7 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                         to be considered for the final grade,
                         for which reason you should display the
                         exam if there is one in the response
-                        obtained from <code>/student/{username}</code>
+                        obtained from <code>/student/[username]</code>
                         endpoint
                     </li>
                     <li>
@@ -265,6 +271,6 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
 
 <h2>Example</h2>
 
-<p><strong>Example 1: </strong><em>Login Screen</em></p>
+<p><strong>Example 1: </strong><em>Student Screen</em></p>
 
 <p><img alt="" src="" height="660"  width="300" /></p>
