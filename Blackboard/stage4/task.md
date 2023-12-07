@@ -45,6 +45,8 @@ On this stage we will make the teacher screen
     - patch grades from teacher student detail on click to submit button
       - /teacher/student/[name]
       - PATCH
+      - payload body
+        - {"grades":[100,-1,-1,-1,-1,-1,-1],"exam":-1}
       - response
           - 200 OK
           - echoes request (may ignore)
