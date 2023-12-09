@@ -162,14 +162,14 @@
     </li>
 
     <li>
-        Make the student details a "reusable component"
+        Make the student details a reusable layout
         <ul>
             <li>
                 Create a new layout xml file and place
                 all the views with ids that are currently present at
                 <code>fragment_student</code> in it.
                 Namely
-                <code>blackboard_title</code>
+                <code>blackboard_title</code>,
                 <code>student_name_tv</code>,
                 <code>student_grades_label</code>,
                 <code>student_grades_rv</code>,
@@ -180,7 +180,7 @@
                 should all be included in this new component.
             </li>
             <li>
-                Use the include tag to include the new component
+                Use the include tag to include the new layout
                 wherever it needs to be included, like <code>fragment_student</code>
                 for example.
             </li>
@@ -201,7 +201,7 @@ titleBinding = BlackboardTitleBinding.bind(studentDetailBinding.root)
         Create a fragment <code>TeacherStudentDetailsFragment</code>
         <ul>
             <li>
-                Include the component just created above.
+                Include the reusable layout with student details just created above.
             </li>
             <li>
                 On the already included <code>TextView</code> with id
@@ -222,7 +222,7 @@ titleBinding = BlackboardTitleBinding.bind(studentDetailBinding.root)
                 horizontal
                 <ul>
                     <li>
-                        Keep using list_item_grade layout
+                        Keep using list_item_grade layout for list items
                     </li>
                     <li>
                         The <code>TextView</code> with id
@@ -240,7 +240,7 @@ titleBinding = BlackboardTitleBinding.bind(studentDetailBinding.root)
                             </li>
                             <li>
                                 All grades should be displayed as received
-                                as response to the GET request on
+                                on response to the GET request on
                                 <code>teacher/student/[studentName]</code> endpoint.
                             </li>
                             <li>
@@ -363,192 +363,28 @@ titleBinding = BlackboardTitleBinding.bind(studentDetailBinding.root)
                 Add a <code>FloatingActionButton</code> with id <code>detail_submit_btn</code>
                 <ul>
                     <li>
-                        <--
-                        TODO describe submission on click requirement
-                        - click
-                        - PATCH request
-                        - toast message
-                        -->
-
-                    </li>
-
-                </ul>
-            </li>
-        </ul>
-    </li>
-
-
-
-</ol>
-
-
-
-<ol>
-
-
-
-    <li>
-        Create a fragment <code>StudentFragment</code>
-        <ul>
-            <li>
-                Include <code>blackboard_title</code>.
-                Use it to display network error messages
-                in a similar way to the way used on login screen
-            </li>
-            <li>
-                Add a <code>TextView</code> with id
-                <code>student_name_tv</code>.
-                The text should match the username
-                from login response
-            </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_grades_label</code>
-                set the text property with
-                <code>"Grades:"</code>
-            </li>
-            <li>
-                Add a <code>RecyclerView</code> with id
-                <code>student_grades_rv</code>, use the
-                linear layout manager and set the orientation to
-                horizontal
-                <ul>
-                    <li>
-                        Create a list_item_grade layout
+                        On click make a submission of the current values on grades and exam using
+                        a PATCH request
                     </li>
                     <li>
-                        Add a <code>TextView</code> with id
-                        <code>grade_header_tv</code>.
-                        The text should be set with <code>"T:[x]"</code>
-                        where [x] is a placeholder for an integer that is
-                        the list item position considering the first element
-                        as position one (one-indexed)
+                        Use the jwt token received from login reponse
+                        on this request's Authorization header using the format
+                        <code>"Bearer [token]"</code> where [token]
+                        is a placeholder
                     </li>
                     <li>
-                        Add a <code>EditText</code> with id
-                        <code>grade_value_et</code> and inputType number.
-                        The text should be set with a grade from the list of
-                        grades.
-                        In case of a grade with -1 value display:
-                        <ul>
-                            <li>
-                                If exam is also -1 then the grade value
-                                is considered pending and you should
-                                display an empty string
-                            </li>
-                            <li>
-                                If exam is not -1 then the grade value
-                                is zeroed and not pending, in which
-                                case you should display the value
-                                0
-                            </li>
-                        </ul>
-
-                        For this stage we won't be implementing any editing on this widget
-                        so you can disable it if you want to although tests will not enforce this.
+                        the PATCH request should have a payload with keys <code>grades</code>,
+                        and <code>exam</code> and hit the endpoint <code>teacher/student/[studentName]</code>
                     </li>
                     <li>
-                        Use the grades list,
-                        that was received as response
-                        from calling /student/[username],
-                        as values for grade_value_et.
-                        The order of the items displayed should
-                        match the received list order.
-                    </li>
-                </ul>
-            </li>
-            <li>
-                Calculate the partial result
-                <ul>
-                    <li>the partial result is the simple arithmetic average from test grades
-                        <code>((total sum of test grades) / (total num of test grades))</code>
-                        using integer division
+                        <code>grades</code>is a list of integers with the values of <code>grade_value_et</code>
+                        on <code>student_grades_rv</code> in the same order
                     </li>
                     <li>
-                        negative values should not be summed up on the total, but the total num of test grades still count that test
-                        for example: <code>grades = [100, -1, 100, -1] -> partial result = 200 / 4 = 50</code>
-                    </li>
-                    <li>the partial result will be displayed in a <code>TextView</code> with id <code>student_partial_result_tv</code></li>
-                </ul>
-            </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_partial_result_tv</code>
-                <ul>
-                    <li>set the text property with
-                        <code>Partial Result: [partial result]</code>
-                        where [partial result] is a placeholder for the partial result
-                        calculation that was required just above
-                    </li>
-                </ul>
-            </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_exam_label</code>
-                set the text property with
-                <code>"Exam:"</code>
-            </li>
-            <li>
-                Add a <code>EditText</code> with id <code>student_exam_et</code>
-                <ul>
-                    <li>
-                        students are allowed to take the exam
-                        even if the grade for exam is not going
-                        to be considered for the final grade,
-                        for which reason you should display the
-                        exam if there is one in the response
-                        obtained from <code>/student/[username]</code>
-                        endpoint
+                        <code>exam</code> is a integer with the value of <code>student_exam_et</code>
                     </li>
                     <li>
-                        If exam is -1 then the value
-                        is considered pending only if the exam is possible.
-                        Anyway, being possible or not, you should display an empty string when
-                        the exam value is -1.
-                    </li>
-                </ul>
-            </li>
-            <li>
-                Calculate the final result
-                <ul>
-                    <li>
-                        the final result is considered pending if there are still any pending
-                        grades or exam
-                    </li>
-                    <li>
-                        if the exam is not possible you should discard the grade for
-                        exam even if there is one and the final grade should be equal to the partial grade
-                    </li>
-                    <li>
-                        if the partial grade is below 30 the student will fail directly without exam
-                        and thus the exam is considered not possible
-                    </li>
-                    <li>
-                        if the partial grade is equal or above 70 the student will pass directly without exam
-                        and thus the exam is also considered not possible
-                    </li>
-                    <li>
-                        if the exam is possible the final grade should be the
-                        simple arithmetic average between partial grade and exam grade
-                        using integer division
-                    </li>
-                    <li>
-                        the exam is possible if the partial grade is above or equal to 30 and below 70
-                    </li>
-                    <li>
-                        the final grade should be displayed on a
-                        <code>TextView</code> with id <code>student_final_result_tv</code>
-                        only if the final result is not considered pending
-                    </li>
-                </ul>
-            </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_final_result_tv</code>
-                <ul>
-                    <li>set the text property with
-                        <code>Final Result: [final result]</code>
-                        where [final result] is a placeholder for the final result
-                        calculation that was required just above
-                    </li>
-                    <li>
-                        if the final result is pending replace the placeholder with an empty string
+                        If the response code is not 200 treat it as a network error.
                     </li>
                 </ul>
             </li>
