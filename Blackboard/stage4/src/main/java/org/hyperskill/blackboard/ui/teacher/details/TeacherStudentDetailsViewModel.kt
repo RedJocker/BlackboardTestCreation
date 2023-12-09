@@ -7,9 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
 import okhttp3.Call
 import okhttp3.Response
 import org.hyperskill.blackboard.data.model.Credential
@@ -79,9 +77,6 @@ class TeacherStudentDetailsViewModel(
 
 
     fun updateGrades(credential: Credential, studentName: String) {
-        _grades.value = editedGrades.value.map { Unique(it) }
-        _examGrade.value = Unique(editedExamGrade.value)
-
         teacherClient.updateGradesRequest(
             credential, studentName, editedGrades.value, editedExamGrade.value , Util.callback(
                 onFailure = ::onCallFailure,
@@ -114,7 +109,12 @@ class TeacherStudentDetailsViewModel(
             println(response)
             when(response.code) {
                 200 -> {
-                    post { onUpdateSuccess() }
+                    post {
+                        onUpdateSuccess()
+                        _grades.value = editedGrades.value.map { Unique(it) }
+                        _examGrade.value = Unique(editedExamGrade.value)
+                        _networkErrorMessage.value = null
+                    }
                 }
                 else -> {
                     post {
@@ -145,6 +145,7 @@ class TeacherStudentDetailsViewModel(
                                 _editedGrades.value = it.grades
                                 _examGrade.value = Unique(it.exam)
                                 _editedExamGrade.value = it.exam
+                                _networkErrorMessage.value = null
                             }
                         }
                     }

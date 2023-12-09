@@ -15,8 +15,8 @@ import org.hyperskill.blackboard.util.Util
 import java.io.IOException
 
 class TeacherViewModel(
-        private val teacherClient: TeacherClient,
-        private val handler: Handler
+    private val teacherClient: TeacherClient,
+    private val handler: Handler
 ) : ViewModel() {
 
     private val _students = MutableStateFlow(listOf<Student>())
@@ -60,6 +60,7 @@ class TeacherViewModel(
                         post {
                             (gradesResponse as? StudentsResponse.Success)?.also {
                                 _students.value = it.students
+                                _networkErrorMessage.value = null
                             }
                         }
                     }

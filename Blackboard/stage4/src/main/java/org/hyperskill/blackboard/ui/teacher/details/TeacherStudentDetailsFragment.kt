@@ -97,7 +97,7 @@ class TeacherStudentDetailsFragment : Fragment() {
                             networkErrorMessage.collect {
                                 println("observe networkErrorMessage: $it")
                                 titleBinding.blackboardTitle.error = it
-                                if(it == null) {
+                                if(it != null) {
                                     titleBinding.blackboardTitle.requestFocus()
                                 }
                             }

@@ -60,6 +60,7 @@ class TeacherViewModel(
                         post {
                             (gradesResponse as? StudentsResponse.Success)?.also {
                                 _students.value = it.students
+                                _networkErrorMessage.value = null
                             }
                         }
                     }
