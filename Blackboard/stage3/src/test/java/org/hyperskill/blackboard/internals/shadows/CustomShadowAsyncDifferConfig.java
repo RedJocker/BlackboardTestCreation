@@ -1,5 +1,7 @@
 package org.hyperskill.blackboard.internals.shadows;
 
+import static org.robolectric.Shadows.shadowOf;
+
 import android.os.Handler;
 import android.os.Looper;
 
@@ -20,6 +22,7 @@ public class CustomShadowAsyncDifferConfig {
         @Override
         public void execute(Runnable r) {
             handler.post(r);
+            shadowOf(handler.getLooper()).runToEndOfTasks();
         }
     }
     Executor mainExecutor;
