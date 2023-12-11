@@ -1,0 +1,133 @@
+<h2>Description</h2>
+
+<p>
+    On this stage we will add a feature on students section so that they can make
+    predictions on their grades and have predictions for their partial and final grades
+    so that they can plan better their semester/year.
+</p>
+
+<p>
+    To distinguish real results from prediction results a simple heuristic
+    of placing predictions inside parentheses next to the real result will
+    be adopted. This will make possible to keep using the same layout
+    while still giving a visual cue on the semantic of the screen content
+</p>
+
+<h2>Objectives</h2>
+
+<ol>
+    <li>
+        All below objectives are related to student section
+    </li>
+    <li>
+        If a grade or exam is not pending disable the related edit text so
+        that students cannot make predictions on grades that were
+        already assigned
+    </li>
+    <li>
+        If a grade or exam is pending enable the related edit text so
+        that students can make prediction on the grades
+        that are still pending
+    </li>
+    <li>
+        Calculate the partial result for the predictions
+        <ul>
+            <li>
+                Same calculation rules applies for partial result
+                predictions as for the partial result real grades,
+                but real grades only take into account grades that are not pending
+                while predictions take into account student input
+                on enabled edit text as well
+            </li>
+            <li>
+                Empty edit text should be counted as zero while
+                calculating the predictions
+            </li>
+            <li>
+                Making a prediction for exam grade does not change
+                the pending status of other grades.
+            </li>
+        </ul>
+    </li>
+    <li>
+        Display the prediction partial result only if it is different
+        than the real partial result
+        <ul>
+            <li>
+                the prediction partial result should be displayed
+                on the already existing <code>student_partial_result_tv</code>
+            </li>
+            <li>
+                use the following format to display both the real and the prediction
+                partial result together.
+                <code>"Partial Result: [partialGrade] ([partialPredictionGrade])"</code>
+                where [partialGrade] is a placeholder for the real partial grade and
+                [partialPredictionGrade] is a placeholder
+                for the prediction partial grade
+            </li>
+            <li>
+                if the prediction and the partial are equal use the following format
+                <code>"Partial Result: [partialGrade]"</code>.
+                Do not add extra spaces after [partialGrade]
+            </li>
+        </ul>
+    </li>
+
+    <li>
+        Calculate the final result for the predictions
+        <ul>
+            <li>
+                same calculation rules applies for final result
+                predictions as for the final result real grades,
+                but real grades only take into account grades that are not pending
+                while predictions take into account student input
+                on enabled edit text as well.
+                Prediction for final grades should still take into account
+                if the exam is possible or not.
+            </li>
+
+            <li>
+                empty edit text should be counted as zero while
+                calculating the predictions
+            </li>
+        </ul>
+    </li>
+    <li>
+        Display the prediction final result only if it is different
+        than the real final result
+        <ul>
+            <li>
+                The prediction final result should be displayed
+                on the already existing <code>student_final_result_tv</code>
+            </li>
+            <li>
+                Use the following format to display the prediction
+                final result.
+                <code>"Final Result:  ([finalPredictionGrade])"</code>
+                [finalPredictionGrade] is a placeholder
+                for the prediction final grade. Notice that there are two spaces
+                before the opening parentheses.
+                The extra space is denoting the missing real grade.
+            </li>
+            <li>
+                If the prediction and the partial are equal use the following format
+                <code>"Final Result: [finalGrade]"</code>.
+                if the final grade still pending [finalGrade] should still be replaced
+                by an empty string.
+                Notice there is no following space after [finalGrade], but one space before it
+            </li>
+            <li>
+                Logically it should not be possible for displaying both prediction
+                and the real grade for the final result. That is because
+                if the final result should be displayed then
+                there is no pending grades to make predictions for.
+            </li>
+        </ul>
+    </li>
+</ol>
+
+<h2>Example</h2>
+
+<p><strong>Example 1: </strong><em></em></p>
+
+<p><img alt="" src="" height="660"  width="300" /></p>
