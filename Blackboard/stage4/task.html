@@ -7,21 +7,20 @@
 <p>
     This section will contain two different screens.
     One that will contain a list of student names and
-    to which teachers will navigate to just after
+    to which only teachers will navigate to after
     a successful login.
-    Another that teachers will navigate to after clicking
-    on one of the student names, which will have almost the
-    same structure as the student screen, but will have
-    one extra button to submit data and all edit text will be
-    editable so that the teacher can assign or revise grades
-    for their students.
-    The logic behind the screen will be different, like for example
-    final grades will always be calculated on this screen and pending
-    grades will be displayed with -1.
+    Another screen that teachers will navigate to after clicking
+    on one of the student names containing student details. This second screen
+    will have almost the same structure as the student screen, except that
+    all edit text will be editable so that the teacher can assign or revise grades
+    for their students and that it has one extra button to submit the edited grade data.
+    Although similar in structure some of the logic behind this screen
+    will be different, like for example final grades will always
+    be calculated on this screen and pending grades will be displayed with -1.
 </p>
 
 <p>
-    The suggested implementation will be to make a component that contains all
+    The suggested implementation will be to make a reusable layout that contains all
     the views that are included in <code>fragment_student</code> so that you can
     reuse those to make the <code>fragment_teacher_student_detail</code>
     using the merge and include tags just adding the extra button that is not shared
@@ -40,9 +39,6 @@
 <h2>Objectives</h2>
 
 <ol>
-
-
-
     <li>
         After a successful login of a user with role <code>TEACHER</code>
         navigate to <code>TeacherFragment</code> which is described bellow.
@@ -385,6 +381,10 @@ titleBinding = BlackboardTitleBinding.bind(studentDetailBinding.root)
                     </li>
                     <li>
                         If the response code is not 200 treat it as a network error.
+                    </li>
+                    <li>
+                        if the update is successful toast a message with the text
+                        <code>"Grades submitted"</code>
                     </li>
                 </ul>
             </li>
