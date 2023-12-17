@@ -1,6 +1,7 @@
 package org.hyperskill.blackboard.internals.screen
 
 import android.app.Activity
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
@@ -22,10 +23,13 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     val loginUsernameEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_USERNAME_ET_ID).apply {
+
+                val textPersonNameType = 97
+
                 assertValues(
                     expectedText = "",
                     expectedHint = "username",
-                    expectedInputType = 97,
+                    expectedInputType = textPersonNameType,
                     inputTypeString = "textPersonName",
                     idString = LOGIN_USERNAME_ET_ID,
                     caseDescription = DESCRIPTION_INITIALIZATION
@@ -36,10 +40,13 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     val loginPassEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_PASS_ET_ID).apply {
+
+                val textPasswordType = 129
+
                 assertValues(
                         expectedText = "",
                         expectedHint = "password",
-                        expectedInputType = 129,
+                        expectedInputType = textPasswordType,
                         inputTypeString = "textPassword",
                         idString = LOGIN_PASS_ET_ID,
                         caseDescription = DESCRIPTION_INITIALIZATION
