@@ -24,7 +24,7 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
         with(test) {
             activity.findViewByString<EditText>(LOGIN_USERNAME_ET_ID).apply {
 
-                val textPersonNameType = 97
+                val textPersonNameType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PERSON_NAME
 
                 assertValues(
                     expectedText = "",
@@ -41,8 +41,7 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
         with(test) {
             activity.findViewByString<EditText>(LOGIN_PASS_ET_ID).apply {
 
-                val textPasswordType = 129
-
+                val textPasswordType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 assertValues(
                         expectedText = "",
                         expectedHint = "password",
