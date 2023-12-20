@@ -1,269 +1,97 @@
 <h2>Description</h2>
 
-<p>
-    We have finished our login screen, now it is time to start
-    navigating somewhere else since our app is not just about logging into it.
-</p>
-<p>
-    We will start by creating a screen for students to check the current state of
-    their grades.
-</p>
-<p>
-    This information will be on our backend service and we will use the jwt token
-    we received from our backend to be able to retrieve the data that we will
-    be presenting on the screen for students.
-</p>
-<p>
-    In the end what students really care about is their final grade. Our database,
-    because of database normalization, only store the grades for each test
-    and possibly a recovery exam grade and our backend is acting just as a proxy to the
-    database because someone thought it would be cheaper to do that way.
-    Our app will be the one responsible for doing some calculations to know the final grade.
-    Besides that there are some conditions for passing without doing exam, failing directly without
-    exam or being able to do the exam.
-</p>
-<p>
-    This screen is for students only so only users with role STUDENT should be navigating
-    into it. For the moment teachers won't do anything else besides what is already implemented,
-    which is toasting a message for a valid login.
-</p>
+<p>We have finished our login screen, now it is time to start navigating somewhere else since our app is not just about logging into it.</p>
+
+<p>We will start by creating a screen for students to check the current state of their grades.</p>
+
+<p>This information will be on our backend service and we will use the jwt token we received from our backend to be able to retrieve the data that we will be presenting on the screen for students.</p>
+
+<p>In the end what students really care about is their final grade. Our database, because of database normalization, only store the grades for each test and possibly a recovery exam grade and our backend is acting just as a proxy to the database because someone thought it would be cheaper to do that way. Our app will be the one responsible for doing some calculations to know the final grade. Besides that there are some conditions for passing without doing exam, failing directly without exam or being able to do the exam.</p>
+
+<p>This screen is for students only so only users with role STUDENT should be navigating into it. For the moment teachers won&#39;t do anything else besides what is already implemented, which is toasting a message for a valid login.</p>
 
 <h2>Objectives</h2>
 
 <ol>
-    <li>
-        Make the title a "reusable component"
+    <li>Make the title a &quot;reusable component&quot;
         <ul>
-            <li>
-                Create a new layout xml file and place
-                the view with id <code>blackboard_title</code> in it
-            </li>
-            <li>
-                Use the include tag to include <code>blackboard_title</code>
-                wherever it needs to be included, like <code>fragment_login</code>
-                for example.
-            </li>
-            <li>
-                If you are using view binding you will need to make some adjustments
-                to the binding routine.
-                Use something like this:
-                <pre><code>
+            <li>Create a new layout xml file and place the view with id <code>blackboard_title</code> in it</li>
+            <li>Use the include tag to include <code>blackboard_title</code> wherever it needs to be included, like <code>fragment_login</code> for example.</li>
+            <li>If you are using view binding you will need to make some adjustments to the binding routine. Use something like this:
+                <pre>
+<code>
 loginBinding = FragmentLoginBinding.inflate(inflater, container, false)
 titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
                 </code></pre>
             </li>
         </ul>
     </li>
-
-    <li>
-        After a successful login of a user with role <code>STUDENT</code>
-        navigate to <code>StudentFragment</code> which is described bellow.
-        Only students should be allowed to navigate to that screen.
-    </li>
-
-    <li>
-        Make a GET request to retrieve student grades
-        on <code>/student/[username]</code> endpoint
-        where [username] is a placeholder for the username
+    <li>After a successful login of a user with role <code>STUDENT</code> navigate to <code>StudentFragment</code> which is described bellow. Only students should be allowed to navigate to that screen.</li>
+    <li>Make a GET request to retrieve student grades on <code>/student/[username]</code> endpoint where [username] is a placeholder for the username
         <ul>
-            <li>
-                Use the jwt token received from login reponse
-                on this request's Authorization header using the format
-                <code>"Bearer [token]"</code> where [token]
-                is a placeholder
-            </li>
-            <li>
-                If the the response has code 200 receive the payload
-                which will be on a json containing keys <code>grades</code>
-                and <code>exam</code>.
+            <li>Use the jwt token received from login reponse on this request&#39;s Authorization header using the format <code>&quot;Bearer [token]&quot;</code> where [token] is a placeholder</li>
+            <li>If the the response has code 200 receive the payload which will be on a json containing keys <code>grades</code> and <code>exam</code>.
                 <ul>
-                    <li>
-                        The value for <code>grades</code> is a list of integers from -1 up to 100,
-                        both inclusive, that denotes the value of a test grade.
-                        Grades 0 up to 100 are valid test grades
-                        that were already assigned by the teacher
-                        and the number -1 indicates that the test grade was not yet assigned.
-                    </li>
-                    <li>
-                        The value for <code>exam</code> is one integer from -1 up to 100,
-                        both inclusive, that denotes the value of an recovery exam grade.
-                        Also like grades an exam value of -1 indicates that this grade was not
-                        yet assigned.
-                    </li>
-                    <li>
-                        We will assume that the server response is always with valid format.
-                    </li>
+                    <li>The value for <code>grades</code> is a list of integers from -1 up to 100, both inclusive, that denotes the value of a test grade. Grades 0 up to 100 are valid test grades that were already assigned by the teacher and the number -1 indicates that the test grade was not yet assigned.</li>
+                    <li>The value for <code>exam</code> is one integer from -1 up to 100, both inclusive, that denotes the value of an recovery exam grade. Also like grades an exam value of -1 indicates that this grade was not yet assigned.</li>
+                    <li>We will assume that the server response is always with valid format.</li>
                 </ul>
             </li>
-            <li>
-                If the response code is not 200 treat it as a network error.
-            </li>
+            <li>If the response code is not 200 treat it as a network error.</li>
         </ul>
     </li>
-    <li>
-        Create a fragment <code>StudentFragment</code>
+    <li>Create a fragment <code>StudentFragment</code>
         <ul>
-            <li>
-                Include <code>blackboard_title</code>.
-                Use it to display network error messages
-                in a similar way to the way used on login screen
-            </li>
-            <li>
-                Add a <code>TextView</code> with id
-                <code>student_name_tv</code>.
-                The text should match the username
-                from login response
-            </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_grades_label</code>
-                set the text property with
-                <code>"Grades:"</code>
-            </li>
-            <li>
-                Add a <code>RecyclerView</code> with id
-                <code>student_grades_rv</code>, use the
-                linear layout manager and set the orientation to
-                horizontal
+            <li>Include <code>blackboard_title</code>. Use it to display network error messages in a similar way to the way used on login screen</li>
+            <li>Add a <code>TextView</code> with id <code>student_name_tv</code>. The text should match the username from login response</li>
+            <li>Add a <code>TextView</code> with id <code>student_grades_label</code> set the text property with <code>&quot;Grades:&quot;</code></li>
+            <li>Add a <code>RecyclerView</code> with id <code>student_grades_rv</code>, use the linear layout manager and set the orientation to horizontal
                 <ul>
-                    <li>
-                        Create a list_item_grade layout
-                    </li>
-                    <li>
-                        Add a <code>TextView</code> with id
-                        <code>grade_header_tv</code>.
-                        The text should be set with <code>"T:[x]"</code>
-                        where [x] is a placeholder for an integer that is
-                        the list item position considering the first element
-                        as position one (one-indexed)
-                    </li>
-                    <li>
-                        Add a <code>EditText</code> with id
-                        <code>grade_value_et</code> and inputType number.
-                        The text should be set with a grade from the list of
-                        grades.
-                        In case of a grade with -1 value display:
+                    <li>Create a list_item_grade layout</li>
+                    <li>Add a <code>TextView</code> with id <code>grade_header_tv</code>. The text should be set with <code>&quot;T:[x]&quot;</code> where [x] is a placeholder for an integer that is the list item position considering the first element as position one (one-indexed)</li>
+                    <li>Add a <code>EditText</code> with id <code>grade_value_et</code> and inputType number. The text should be set with a grade from the list of grades. In case of a grade with -1 value display:
                         <ul>
-                            <li>
-                                If exam is also -1 then the grade value
-                                is considered pending and you should
-                                display an empty string
-                            </li>
-                            <li>
-                                If exam is not -1 then the grade value
-                                is zeroed and not pending, in which
-                                case you should display the value
-                                0
-                            </li>
+                            <li>If exam is also -1 then the grade value is considered pending and you should display an empty string</li>
+                            <li>If exam is not -1 then the grade value is zeroed and not pending, in which case you should display the value 0</li>
                         </ul>
-
-                        For this stage we won't be implementing any editing on this widget
-                        so you can disable it if you want to although tests will not enforce this.
-                    </li>
-                    <li>
-                        Use the grades list,
-                        that was received as response
-                        from calling /student/[username],
-                        as values for grade_value_et.
-                        The order of the items displayed should
-                        match the received list order.
-                    </li>
+                        For this stage we won&#39;t be implementing any editing on this widget so you can disable it if you want to although tests will not enforce this.</li>
+                    <li>Use the grades list, that was received as response from calling /student/[username], as values for grade_value_et. The order of the items displayed should match the received list order.</li>
                 </ul>
             </li>
-            <li>
-                Calculate the partial result
+            <li>Calculate the partial result
                 <ul>
-                    <li>the partial result is the simple arithmetic average from test grades
-                        <code>((total sum of test grades) / (total num of test grades))</code>
-                        using integer division
-                    </li>
-                    <li>
-                        negative values should not be summed up on the total, but the total num of test grades still count that test
-                        for example: <code>grades = [100, -1, 100, -1] -> partial result = 200 / 4 = 50</code>
-                        </li>
+                    <li>the partial result is the simple arithmetic average from test grades <code>((total sum of test grades) / (total num of test grades))</code> using integer division</li>
+                    <li>negative values should not be summed up on the total, but the total num of test grades still count that test for example: <code>grades = [100, -1, 100, -1] -&gt; partial result = 200 / 4 = 50</code></li>
                     <li>the partial result will be displayed in a <code>TextView</code> with id <code>student_partial_result_tv</code></li>
                 </ul>
             </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_partial_result_tv</code>
+            <li>Add a <code>TextView</code> with id <code>student_partial_result_tv</code>
                 <ul>
-                    <li>set the text property with
-                        <code>Partial Result: [partial result]</code>
-                        where [partial result] is a placeholder for the partial result
-                        calculation that was required just above
-                    </li>
+                    <li>set the text property with <code>Partial Result: [partial result]</code> where [partial result] is a placeholder for the partial result calculation that was required just above</li>
                 </ul>
             </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_exam_label</code>
-                set the text property with
-                <code>"Exam:"</code>
-            </li>
-            <li>
-                Add a <code>EditText</code> with id <code>student_exam_et</code>
+            <li>Add a <code>TextView</code> with id <code>student_exam_label</code> set the text property with <code>&quot;Exam:&quot;</code></li>
+            <li>Add a <code>EditText</code> with id <code>student_exam_et</code>
                 <ul>
-                    <li>
-                        students are allowed to take the exam
-                        even if the grade for exam is not going
-                        to be considered for the final grade,
-                        for which reason you should display the
-                        exam if there is one in the response
-                        obtained from <code>/student/[username]</code>
-                        endpoint
-                    </li>
-                    <li>
-                        If exam is -1 then the value
-                        is considered pending only if the exam is possible.
-                        Anyway, being possible or not, you should display an empty string when
-                        the exam value is -1.
-                    </li>
+                    <li>students are allowed to take the exam even if the grade for exam is not going to be considered for the final grade, for which reason you should display the exam if there is one in the response obtained from <code>/student/[username]</code> endpoint</li>
+                    <li>If exam is -1 then the value is considered pending only if the exam is possible. Anyway, being possible or not, you should display an empty string when the exam value is -1.</li>
                 </ul>
             </li>
-            <li>
-                Calculate the final result
+            <li>Calculate the final result
                 <ul>
-                    <li>
-                        the final result is considered pending if there are still any pending
-                        grades or exam
-                    </li>
-                    <li>
-                        if the exam is not possible you should discard the grade for
-                        exam even if there is one and the final grade should be equal to the partial grade
-                    </li>
-                    <li>
-                        if the partial grade is below 30 the student will fail directly without exam
-                        and thus the exam is considered not possible
-                    </li>
-                    <li>
-                        if the partial grade is equal or above 70 the student will pass directly without exam
-                        and thus the exam is also considered not possible
-                    </li>
-                    <li>
-                        if the exam is possible the final grade should be the
-                        simple arithmetic average between partial grade and exam grade
-                        using integer division
-                    </li>
-                    <li>
-                        the exam is possible if the partial grade is above or equal to 30 and below 70
-                    </li>
-                    <li>
-                        the final grade should be displayed on a
-                        <code>TextView</code> with id <code>student_final_result_tv</code>
-                        only if the final result is not considered pending
-                    </li>
+                    <li>the final result is considered pending if there are still any pending grades or exam</li>
+                    <li>if the exam is not possible you should discard the grade for exam even if there is one and the final grade should be equal to the partial grade</li>
+                    <li>if the partial grade is below 30 the student will fail directly without exam and thus the exam is considered not possible</li>
+                    <li>if the partial grade is equal or above 70 the student will pass directly without exam and thus the exam is also considered not possible</li>
+                    <li>if the exam is possible the final grade should be the simple arithmetic average between partial grade and exam grade using integer division</li>
+                    <li>the exam is possible if the partial grade is above or equal to 30 and below 70</li>
+                    <li>the final grade should be displayed on a <code>TextView</code> with id <code>student_final_result_tv</code> only if the final result is not considered pending</li>
                 </ul>
             </li>
-            <li>
-                Add a <code>TextView</code> with id <code>student_final_result_tv</code>
+            <li>Add a <code>TextView</code> with id <code>student_final_result_tv</code>
                 <ul>
-                    <li>set the text property with
-                        <code>Final Result: [final result]</code>
-                        where [final result] is a placeholder for the final result
-                        calculation that was required just above.
-                    </li>
-                    <li>
-                        if the final result is pending replace the placeholder with an empty string.
-                        Notice that the space before the placeholder should still be there.
-                    </li>
+                    <li>set the text property with <code>Final Result: [final result]</code> where [final result] is a placeholder for the final result calculation that was required just above.</li>
+                    <li>if the final result is pending replace the placeholder with an empty string. Notice that the space before the placeholder should still be there.</li>
                 </ul>
             </li>
         </ul>
@@ -272,6 +100,30 @@ titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
 
 <h2>Example</h2>
 
-<p><strong>Example 1: </strong><em>Student Screen</em></p>
+<p><strong>Example 1: </strong><em>Student Lucas</em> (wide image, better viewed on web)</p>
 
-<p><img alt="" src="" height="660"  width="300" /></p>
+<p><img alt="no grades" height="660" src="https://ucarecdn.com/072d0276-f3e3-4939-a4db-112b1c8f503f/" width="1300" /></p>
+
+<p><strong>Example 2: </strong><em>Student Martin</em> (wide image, better viewed on web)</p>
+
+<p><img alt="network error" height="660" src="https://ucarecdn.com/b0cade08-4521-4e13-a32c-877dd6169eb6/" width="1300" /></p>
+
+<p><strong>Example 3: </strong><em>Student Harrison</em> (wide image, better viewed on web)</p>
+
+<p><img alt="after exam, count exam" height="660" src="https://ucarecdn.com/4068e162-b188-41dc-99ec-9131bad95fd5/" width="1300" /></p>
+
+<p><strong>Example 4: </strong><em>Student Michael</em> (wide image, better viewed on web)</p>
+
+<p><img alt="after exam, discard exam" height="660" src="https://ucarecdn.com/fe0986a6-4fc2-467e-bd6f-a17ff0d5754f/" width="1300" /></p>
+
+<p><strong>Example 5: </strong><em>Student Orwell</em> (wide image, better viewed on web)</p>
+
+<p><img alt="all grades, pending exam" height="660" src="https://ucarecdn.com/27d513d3-c0d1-44cf-a001-845dab9707ee/" width="1300" /></p>
+
+<p><strong>Example 6: </strong><em>Student Benson</em> (wide image, better viewed on web)</p>
+
+<p><img alt="all grades, pending exam" height="660" src="https://ucarecdn.com/49fa65a7-d07f-4d1b-aaf5-6f074d125e15/" width="1300" /></p>
+
+<p><strong>Example 7: </strong><em>Teacher George</em> (wide image, better viewed on web)</p>
+
+<p><img alt="teacher login don't navigate to student section" height="660" src="https://ucarecdn.com/225202de-8672-4d56-994e-9d6c89868c4f/" width="1300" /></p>
