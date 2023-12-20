@@ -5,7 +5,11 @@ import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
+import org.hyperskill.blackboard.internals.screen.BlackboardTitle.Companion.BLACKBOARD_TITLE_ID
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.robolectric.shadows.ShadowToast
+import java.util.concurrent.TimeUnit
 
 class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boolean = true) {
 
@@ -17,7 +21,7 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     }
 
     val blackboardTitle by lazy {
-        BlackboardTitle("LoginFragment", test)
+        BlackboardTitle("LoginFragment", test).blackboardTitle
     }
 
     val loginUsernameEt: EditText by lazy {
@@ -37,28 +41,30 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
             }
         }
     }
+
     val loginPassEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_PASS_ET_ID).apply {
 
                 val textPasswordType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                 assertValues(
-                        expectedText = "",
-                        expectedHint = "password",
-                        expectedInputType = textPasswordType,
-                        inputTypeString = "textPassword",
-                        idString = LOGIN_PASS_ET_ID,
-                        caseDescription = DESCRIPTION_INITIALIZATION
+                    expectedText = "",
+                    expectedHint = "password",
+                    expectedInputType = textPasswordType,
+                    inputTypeString = "textPassword",
+                    idString = LOGIN_PASS_ET_ID,
+                    caseDescription = DESCRIPTION_INITIALIZATION
                 )
             }
         }
     }
+
     val loginSubmitBt: Button by lazy {
         with(test) {
             activity.findViewByString<Button>(LOGIN_SUBMIT_BTN_ID).apply {
                 assertText(
                     expectedText = "SUBMIT",
-                    idString = BlackboardTitle.BLACKBOARD_TITLE_ID,
+                    idString = BLACKBOARD_TITLE_ID,
                     caseDescription = DESCRIPTION_INITIALIZATION
                 )
             }
@@ -88,28 +94,28 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
 
     fun assertToastStudentLoginSuccess(studentUsername: String, caseDescription: String) = with(test) {
         assertToastLoginSuccess(
-                expectedMessage = "Hello $studentUsername",
-                caseDescription = caseDescription)
+            expectedMessage = "Hello $studentUsername",
+            caseDescription = caseDescription)
     }
 
     private fun assertToastLoginSuccess(expectedMessage: String, caseDescription: String) = with(test) {
         assertLastToastMessageEquals(
-                errorMessage = "$caseDescription expected toast message with text",
-                expectedMessage = expectedMessage)
+            errorMessage = "$caseDescription expected toast message with text",
+            expectedMessage = expectedMessage)
         ShadowToast.reset()
     }
 
     fun assertLoginSuccessClearInput() = with(test) {
         val caseDescription = "After successful login input should be cleared"
         loginUsernameEt.assertText(
-                expectedText = "",
-                idString = LOGIN_USERNAME_ET_ID,
-                caseDescription = caseDescription)
+            expectedText = "",
+            idString = LOGIN_USERNAME_ET_ID,
+            caseDescription = caseDescription)
 
         loginPassEt.assertText(
-                expectedText = "",
-                idString = LOGIN_PASS_ET_ID,
-                caseDescription = caseDescription)
+            expectedText = "",
+            idString = LOGIN_PASS_ET_ID,
+            caseDescription = caseDescription)
     }
 
     fun assertLoginInvalid(username: String, caseDescription: String) = with(test) {
@@ -135,10 +141,48 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     }
 
     fun refillLoginPassOnlyAndAssertErrorMessageCleared(
-            plainPass: String, caseDescription: String) = with(test) {
+        plainPass: String, caseDescription: String) = with(test) {
 
         loginPassEt.setText(plainPass)
         loginUsernameEt.assertError(null, LOGIN_USERNAME_ET_ID, caseDescription)
         loginSubmitBt.clickAndRun()
+    }
+
+    fun assertLoginRequestOk(caseDescription: String) {
+        assertLoginRequest(caseDescription, expectedResponseStatus = "HTTP/1.1 200 OK")
+    }
+
+    fun assertLoginRequestUnauthorized(caseDescription: String) {
+        assertLoginRequest(caseDescription, expectedResponseStatus = "HTTP/1.1 401 Unauthorized")
+    }
+
+    private fun assertLoginRequest(caseDescription: String, expectedResponseStatus: String) = with(test) {
+        val request = mockWebServer.takeRequest(10L, TimeUnit.SECONDS)
+        assertNotNull(
+            "$caseDescription expected a request to be sent",
+            request
+        )
+        request!!
+        assertEquals("Wrong request method", "POST", request.method)
+        assertEquals("Wrong request path", "/login", request.path)
+
+
+        val loginResponse = blackBoardMockBackEnd.poolResponse()
+
+        val messageUnexpectedResponse =
+            "$caseDescription got unexpected response status, check you are doing the right request, response "
+        assertEquals(messageUnexpectedResponse, expectedResponseStatus, loginResponse.status)
+
+        Thread.sleep(150)           // Callback.onResponse is async
+        shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
+    }
+
+    fun assertLoginNetworkError(caseDescription: String, expectedError: String) = with(test) {
+        Thread.sleep(150)           // Callback.onResponse is async
+        shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
+
+        blackboardTitle.assertError(expectedError, BLACKBOARD_TITLE_ID, caseDescription)
+        loginUsernameEt.assertError(null, LOGIN_USERNAME_ET_ID, caseDescription)
+        loginPassEt.assertError(null, LOGIN_PASS_ET_ID, caseDescription)
     }
 }
