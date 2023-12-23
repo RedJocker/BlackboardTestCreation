@@ -1,6 +1,7 @@
 package org.hyperskill.blackboard.internals.screen
 
 import android.app.Activity
+import android.text.InputType
 import android.widget.Button
 import android.widget.EditText
 import org.hyperskill.blackboard.internals.BlackboardUnitTest
@@ -26,10 +27,13 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     val loginUsernameEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_USERNAME_ET_ID).apply {
+
+                val textPersonNameType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PERSON_NAME
+
                 assertValues(
                     expectedText = "",
                     expectedHint = "username",
-                    expectedInputType = 97,
+                    expectedInputType = textPersonNameType,
                     inputTypeString = "textPersonName",
                     idString = LOGIN_USERNAME_ET_ID,
                     caseDescription = DESCRIPTION_INITIALIZATION
@@ -40,10 +44,13 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     val loginPassEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_PASS_ET_ID).apply {
+
+                val textPasswordType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
                 assertValues(
                         expectedText = "",
                         expectedHint = "password",
-                        expectedInputType = 129,
+                        expectedInputType = textPasswordType,
                         inputTypeString = "textPassword",
                         idString = LOGIN_PASS_ET_ID,
                         caseDescription = DESCRIPTION_INITIALIZATION
@@ -172,7 +179,6 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     fun assertLoginNetworkError(caseDescription: String, expectedError: String) = with(test) {
         Thread.sleep(150)           // Callback.onResponse is async
         shadowLooper.runToEndOfTasks()  // runOnUiThread goes to Handler queue
-
         blackboardTitle.assertError(expectedError, BLACKBOARD_TITLE_ID, caseDescription)
         loginUsernameEt.assertError(null, LOGIN_USERNAME_ET_ID, caseDescription)
         loginPassEt.assertError(null, LOGIN_PASS_ET_ID, caseDescription)

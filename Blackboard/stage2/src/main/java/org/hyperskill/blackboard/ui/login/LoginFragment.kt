@@ -6,6 +6,7 @@ import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -13,6 +14,7 @@ import org.hyperskill.blackboard.BlackboardApplication
 import org.hyperskill.blackboard.data.model.Credential
 import org.hyperskill.blackboard.databinding.BlackboardTitleBinding
 import org.hyperskill.blackboard.databinding.FragmentLoginBinding
+import org.hyperskill.blackboard.network.BaseClient
 import org.hyperskill.blackboard.util.Extensions.showToast
 
 
@@ -37,6 +39,7 @@ class LoginFragment : Fragment() {
         println("LoginFragment.onCreateView")
         loginBinding = FragmentLoginBinding.inflate(inflater, container, false)
         titleBinding = BlackboardTitleBinding.bind(loginBinding.root)
+
         return loginBinding.root
     }
 
@@ -51,6 +54,9 @@ class LoginFragment : Fragment() {
 
                 val username = loginUsernameEt.text.toString()
                 val plainPass = loginPassEt.text.toString()
+
+                if(BaseClient.baseurl.substring(0,15) != "http://10.0.2.2") titleBinding.blackboardTitle.error =
+                    "invalid: nodename nor servname provided, or not known"
 
                 loginViewModel.makeLogin(username, plainPass)
             }
