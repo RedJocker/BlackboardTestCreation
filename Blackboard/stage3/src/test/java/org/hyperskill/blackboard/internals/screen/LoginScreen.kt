@@ -27,9 +27,7 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     val loginUsernameEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_USERNAME_ET_ID).apply {
-
                 val textPersonNameType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PERSON_NAME
-
                 assertValues(
                     expectedText = "",
                     expectedHint = "username",
@@ -41,24 +39,23 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
             }
         }
     }
-
     val loginPassEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_PASS_ET_ID).apply {
 
                 val textPasswordType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
                 assertValues(
-                    expectedText = "",
-                    expectedHint = "password",
-                    expectedInputType = textPasswordType,
-                    inputTypeString = "textPassword",
-                    idString = LOGIN_PASS_ET_ID,
-                    caseDescription = DESCRIPTION_INITIALIZATION
+                        expectedText = "",
+                        expectedHint = "password",
+                        expectedInputType = textPasswordType,
+                        inputTypeString = "textPassword",
+                        idString = LOGIN_PASS_ET_ID,
+                        caseDescription = DESCRIPTION_INITIALIZATION
                 )
             }
         }
     }
-
     val loginSubmitBt: Button by lazy {
         with(test) {
             activity.findViewByString<Button>(LOGIN_SUBMIT_BTN_ID).apply {
@@ -94,28 +91,28 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
 
     fun assertToastStudentLoginSuccess(studentUsername: String, caseDescription: String) = with(test) {
         assertToastLoginSuccess(
-            expectedMessage = "Hello $studentUsername",
-            caseDescription = caseDescription)
+                expectedMessage = "Hello $studentUsername",
+                caseDescription = caseDescription)
     }
 
     private fun assertToastLoginSuccess(expectedMessage: String, caseDescription: String) = with(test) {
         assertLastToastMessageEquals(
-            errorMessage = "$caseDescription expected toast message with text",
-            expectedMessage = expectedMessage)
+                errorMessage = "$caseDescription expected toast message with text",
+                expectedMessage = expectedMessage)
         ShadowToast.reset()
     }
 
     fun assertLoginSuccessClearInput() = with(test) {
         val caseDescription = "After successful login input should be cleared"
         loginUsernameEt.assertText(
-            expectedText = "",
-            idString = LOGIN_USERNAME_ET_ID,
-            caseDescription = caseDescription)
+                expectedText = "",
+                idString = LOGIN_USERNAME_ET_ID,
+                caseDescription = caseDescription)
 
         loginPassEt.assertText(
-            expectedText = "",
-            idString = LOGIN_PASS_ET_ID,
-            caseDescription = caseDescription)
+                expectedText = "",
+                idString = LOGIN_PASS_ET_ID,
+                caseDescription = caseDescription)
     }
 
     fun assertLoginInvalid(username: String, caseDescription: String) = with(test) {
@@ -141,7 +138,7 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
     }
 
     fun refillLoginPassOnlyAndAssertErrorMessageCleared(
-        plainPass: String, caseDescription: String) = with(test) {
+            plainPass: String, caseDescription: String) = with(test) {
 
         loginPassEt.setText(plainPass)
         loginUsernameEt.assertError(null, LOGIN_USERNAME_ET_ID, caseDescription)

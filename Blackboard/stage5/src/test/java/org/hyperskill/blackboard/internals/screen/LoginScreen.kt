@@ -41,24 +41,23 @@ class LoginScreen<T: Activity>(val test: BlackboardUnitTest<T>, initViews: Boole
             }
         }
     }
-
     val loginPassEt: EditText by lazy {
         with(test) {
             activity.findViewByString<EditText>(LOGIN_PASS_ET_ID).apply {
 
                 val textPasswordType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+
                 assertValues(
-                    expectedText = "",
-                    expectedHint = "password",
-                    expectedInputType = textPasswordType,
-                    inputTypeString = "textPassword",
-                    idString = LOGIN_PASS_ET_ID,
-                    caseDescription = DESCRIPTION_INITIALIZATION
+                        expectedText = "",
+                        expectedHint = "password",
+                        expectedInputType = textPasswordType,
+                        inputTypeString = "textPassword",
+                        idString = LOGIN_PASS_ET_ID,
+                        caseDescription = DESCRIPTION_INITIALIZATION
                 )
             }
         }
     }
-
     val loginSubmitBt: Button by lazy {
         with(test) {
             activity.findViewByString<Button>(LOGIN_SUBMIT_BTN_ID).apply {
