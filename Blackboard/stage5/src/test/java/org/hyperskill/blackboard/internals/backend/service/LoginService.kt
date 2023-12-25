@@ -31,6 +31,9 @@ class LoginService(val moshi: Moshi): Service {
             if (requestPass == null || username == null) {
                 println("Expected login request to have both username and pass fields")
                 Response.badRequest400
+            } else if(username == "error") {
+                println("Testing network error")
+                Response.gatewayTimeout504
             } else MockUserDatabase.users[username].let { user ->
                 when {
                     user == null -> {

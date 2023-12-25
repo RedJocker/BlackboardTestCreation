@@ -214,16 +214,14 @@ class Stage2UnitTest : BlackboardUnitTest<MainActivity>(MainActivity::class.java
         }
     }
 
-
     @Test
     fun test12_checkNetworkError() {
-        val student = MockUserDatabase.users[LUCAS]!!
 
-        testActivity(arguments = invalidBaseUrlArg) {
+        testActivity(arguments = baseUrlArg) {
             LoginScreen(this).apply {
-                fillLogin(student.username, student.plainPass)
-                val caseDescription = "With invalid baseUrl leading to network error"
-                val expectedError = "invalid: nodename nor servname provided, or not known"
+                fillLogin("error", "error")
+                val caseDescription = "When server responds with error"
+                val expectedError = "Gateway Timeout"
                 assertLoginNetworkError(caseDescription, expectedError = expectedError)
             }
         }

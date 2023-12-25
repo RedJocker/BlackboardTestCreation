@@ -29,15 +29,24 @@ class LoginService(val moshi: Moshi): Service {
             val username = mapBody?.get("username")
 
             if (requestPass == null || username == null) {
+                println("Expected login request to have both username and pass fields")
                 Response.badRequest400
+            } else if(username == "error") {
+                println("Testing network error")
+                Response.gatewayTimeout504
             } else MockUserDatabase.users[username].let { user ->
                 when {
-                    user == null ->
-                        Response.notFound404
+                    user == null -> {
+                        println("401 No user with username '$username'")
+                        Response.unauthorized401
+                    }
                     user.base64sha256HashPass == requestPass ->
                         Response.ok200.withBody(responseAdapter.toJson(user.toLoginResponse()))
-                    else ->
+                    else -> {
+                        println("401, Expected base64sha256HashPass '${user.base64sha256HashPass}', " +
+                                "actual base64sha256HashPass '$requestPass'")
                         Response.unauthorized401
+                    }
                 }
             }
         } else { Response.notFound404 }
